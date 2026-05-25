@@ -1,0 +1,2416 @@
+ <!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Servicios & Gestiones – Compra Ya GE</title>
+<meta name="description" content="Todos los servicios y gestiones disponibles en Compra Ya Guinea Ecuatorial.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://firestore.googleapis.com" crossorigin>
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;600;700&family=Cormorant+Garamond:wght@400;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/styles.css">
+<script src="/js/utils.js" defer></script>
+<script type="module" src="/js/compra-ya-bridge.mjs"></script>
+
+<style>
+/* ═══════════════════════════════════════════════════════════
+   COMPRA YA GE — SERVICIOS Y GESTIONES
+   Fusión completa · Halftone Wave · SVG Icons · Light Theme
+═══════════════════════════════════════════════════════════ */
+
+:root {
+  --blue:        #1A73E8;
+  --blue-d:      #1558C0;
+  --blue-05:     rgba(26,115,232,.05);
+  --blue-08:     rgba(26,115,232,.08);
+  --blue-12:     rgba(26,115,232,.12);
+  --blue-20:     rgba(26,115,232,.20);
+  --blue-30:     rgba(26,115,232,.30);
+  --teal:        #0EA5E9;
+  --emerald:     #10B981;
+  --amber:       #F59E0B;
+  --rose:        #F43F5E;
+  --violet:      #8B5CF6;
+  --orange:      #F97316;
+  --gold:        #F4A100;
+
+  --bg:          #F2F4F7;
+  --white:       #FFFFFF;
+  --card:        #FFFFFF;
+  --surf:        #F8FAFC;
+
+  --text:        #0F172A;
+  --text2:       #1E293B;
+  --text3:       #475569;
+  --muted:       #6B7280;
+  --subtle:      #94A3B8;
+
+  --border:      rgba(15,23,42,.07);
+  --border-md:   rgba(15,23,42,.11);
+  --border-str:  rgba(15,23,42,.17);
+
+  --sh-xs: 0 1px 2px rgba(15,23,42,.04);
+  --sh-sm: 0 1px 4px rgba(15,23,42,.06), 0 2px 8px rgba(15,23,42,.04);
+  --sh-md: 0 4px 14px rgba(15,23,42,.08), 0 1px 3px rgba(15,23,42,.05);
+  --sh-lg: 0 8px 30px rgba(15,23,42,.10), 0 2px 8px rgba(15,23,42,.05);
+  --sh-xl: 0 20px 50px rgba(15,23,42,.12), 0 4px 12px rgba(15,23,42,.06);
+  --sh-blue: 0 6px 20px rgba(26,115,232,.22);
+
+  --fh: 'Plus Jakarta Sans', sans-serif;
+  --fb: 'DM Sans', sans-serif;
+
+  --nav-h: 64px;
+  --hdr-h: 58px;
+  --r: 10px;
+  --rg: 14px;
+  --rl: 18px;
+}
+
+*, *::before, *::after {
+  margin: 0; padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--fb);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+  padding-bottom: calc(var(--nav-h) + 24px);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Halftone Wave Background ── */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  pointer-events: none; z-index: 0;
+  background-image:
+    radial-gradient(circle, rgba(26,115,232,.05) 1.2px, transparent 1.2px),
+    radial-gradient(circle, rgba(14,165,233,.03) 1px, transparent 1px);
+  background-size: 26px 26px, 13px 13px;
+  background-position: 0 0, 13px 13px;
+}
+body::after {
+  content: '';
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 260px; pointer-events: none; z-index: 0;
+  background: linear-gradient(180deg, rgba(26,115,232,.04) 0%, transparent 100%);
+}
+
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-md); border-radius: 99px; }
+
+/* ══════════════════════════════════════
+   HEADER
+══════════════════════════════════════ */
+.hdr {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 700;
+  height: var(--hdr-h);
+  background: rgba(255,255,255,.96);
+  backdrop-filter: blur(20px) saturate(1.6);
+  -webkit-backdrop-filter: blur(20px) saturate(1.6);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 10px;
+  padding: 0 16px;
+  box-shadow: var(--sh-sm);
+}
+.hdr-back {
+  width: 34px; height: 34px; border-radius: 50%;
+  background: var(--surf); border: 1.5px solid var(--border-md);
+  color: var(--text3); display: flex; align-items: center; justify-content: center;
+  cursor: pointer; text-decoration: none; transition: all .22s; flex-shrink: 0;
+}
+.hdr-back:hover { background: var(--blue-05); border-color: var(--blue-20); color: var(--blue); transform: translateX(-1px); }
+.hdr-logo-wrap { flex: 1; display: flex; align-items: center; gap: 9px; }
+.hdr-logo {
+  font-family: var(--fh); font-size: 1.05rem; font-weight: 800;
+  color: var(--text); text-decoration: none; letter-spacing: -.03em;
+}
+.hdr-logo span { color: var(--blue); }
+.hdr-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: var(--blue-05); border: 1px solid var(--blue-12);
+  color: var(--blue); padding: 4px 11px; border-radius: 50px;
+  font-size: .6rem; font-weight: 700; font-family: var(--fh); letter-spacing: .5px;
+}
+.hdr-actions { display: flex; gap: 6px; }
+.hdr-btn {
+  width: 34px; height: 34px; border-radius: 50%;
+  background: var(--surf); border: 1.5px solid var(--border-md);
+  color: var(--muted); display: flex; align-items: center; justify-content: center;
+  font-size: .82rem; cursor: pointer; transition: all .22s;
+}
+.hdr-btn:hover { background: var(--blue-05); border-color: var(--blue-20); color: var(--blue); }
+
+/* ══════════════════════════════════════
+   MAIN
+══════════════════════════════════════ */
+main { padding-top: var(--hdr-h); position: relative; z-index: 1; }
+
+/* ══════════════════════════════════════
+   DYNAMIC BANNER
+══════════════════════════════════════ */
+.banner-section { padding: 12px 16px 0; }
+.banner-loading {
+  height: 148px; border-radius: var(--rl);
+  background: linear-gradient(90deg,#e8eaf0 25%,#f0f2f5 50%,#e8eaf0 75%);
+  background-size: 200% 100%; animation: shimmer 1.5s infinite;
+}
+@keyframes shimmer { to { background-position: -200% 0; } }
+
+.banner-track {
+  display: flex; gap: 10px; overflow-x: auto;
+  scroll-snap-type: x mandatory; scrollbar-width: none; padding-bottom: 2px;
+}
+.banner-track::-webkit-scrollbar { display: none; }
+
+.banner-slide {
+  flex-shrink: 0; width: 100%; scroll-snap-align: start;
+  border-radius: var(--rl); overflow: hidden; position: relative;
+  height: 152px; background: linear-gradient(135deg, var(--blue), #0D47A1);
+  box-shadow: var(--sh-md);
+}
+.banner-slide-img {
+  width: 100%; height: 100%; object-fit: cover; display: block; position: absolute; inset: 0;
+}
+.banner-slide-inner {
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(26,115,232,.82), rgba(14,165,233,.68));
+  display: flex; flex-direction: column; justify-content: flex-end; padding: 14px 16px;
+}
+
+/* Halftone dots overlay on banner */
+.banner-slide-inner::before {
+  content: '';
+  position: absolute; inset: 0; pointer-events: none;
+  background-image: radial-gradient(circle, rgba(255,255,255,.18) 1px, transparent 1px),
+                    radial-gradient(circle, rgba(255,255,255,.08) 1px, transparent 1px);
+  background-size: 18px 18px, 18px 18px;
+  background-position: 0 0, 9px 9px;
+  -webkit-mask-image: radial-gradient(ellipse 80% 100% at 70% 50%, black 20%, transparent 80%);
+  mask-image: radial-gradient(ellipse 80% 100% at 70% 50%, black 20%, transparent 80%);
+}
+.banner-label {
+  font-family: var(--fh); font-size: .6rem; font-weight: 700;
+  letter-spacing: .7px; text-transform: uppercase; color: rgba(255,255,255,.7); margin-bottom: 3px;
+  position: relative; z-index: 1;
+}
+.banner-title {
+  font-family: var(--fh); font-size: 1.05rem; font-weight: 800;
+  color: #fff; line-height: 1.2; margin-bottom: 6px; position: relative; z-index: 1;
+}
+.banner-cta {
+  display: inline-flex; align-items: center; gap: 5px; padding: 5px 13px;
+  background: rgba(255,255,255,.2); border: 1px solid rgba(255,255,255,.35);
+  border-radius: 50px; color: #fff; font-size: .68rem; font-weight: 700;
+  font-family: var(--fh); cursor: pointer; transition: all .2s;
+  width: fit-content; position: relative; z-index: 1;
+}
+.banner-cta:hover { background: rgba(255,255,255,.35); }
+.banner-dots { display: flex; gap: 5px; justify-content: center; margin-top: 9px; }
+.banner-dot {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--border-str); transition: all .3s; cursor: pointer;
+}
+.banner-dot.active { background: var(--blue); width: 16px; border-radius: 3px; }
+
+/* ══════════════════════════════════════
+   STICKY SEARCH + FILTER
+══════════════════════════════════════ */
+.search-filter-wrap {
+  position: sticky; top: var(--hdr-h); z-index: 600;
+  background: rgba(242,244,247,.97); backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  padding: 10px 16px 0;
+}
+.search-inner {
+  display: flex; align-items: center; gap: 9px;
+  background: var(--white); border: 1.5px solid var(--border-md);
+  border-radius: 12px; padding: 0 14px; height: 44px;
+  transition: all .22s; box-shadow: var(--sh-xs); margin-bottom: 10px;
+}
+.search-inner:focus-within { border-color: var(--blue); box-shadow: var(--sh-sm), 0 0 0 4px var(--blue-08); }
+.search-inner svg { flex-shrink: 0; }
+.search-inner input {
+  flex: 1; background: none; border: none; outline: none;
+  font-family: var(--fb); font-size: .9rem; color: var(--text);
+}
+.search-inner input::placeholder { color: var(--subtle); }
+.search-clr {
+  background: none; border: none; color: var(--subtle);
+  cursor: pointer; display: none; width: 20px; height: 20px;
+  border-radius: 50%; background: var(--surf);
+  align-items: center; justify-content: center; transition: all .2s;
+}
+.search-clr:hover { background: var(--border-md); color: var(--text3); }
+.search-inner input:not(:placeholder-shown) ~ .search-clr { display: flex; }
+
+.filter-chips {
+  display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none;
+  padding-bottom: 10px; border-bottom: 1px solid var(--border);
+}
+.filter-chips::-webkit-scrollbar { display: none; }
+.fchip {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 6px 13px; border-radius: 50px; font-size: .7rem;
+  font-weight: 700; font-family: var(--fh); white-space: nowrap;
+  cursor: pointer; flex-shrink: 0; border: 1.5px solid var(--border);
+  color: var(--muted); background: var(--white); transition: all .22s;
+}
+ .fchip:hover { border-color: var(--blue-20); color: var(--blue); background: var(--blue-05); }
+.fchip.active { background: var(--blue); border-color: var(--blue); color: #fff; box-shadow: 0 2px 8px rgba(26,115,232,.25); }
+
+/* ══════════════════════════════════════
+   SECTION HEADERS
+══════════════════════════════════════ */
+.sec { padding: 22px 16px 8px; }
+.sec-hdr { display: flex; align-items: center; justify-content: space-between; }
+.sec-title {
+  font-family: var(--fh); font-size: .92rem; font-weight: 800;
+  display: flex; align-items: center; gap: 8px; letter-spacing: -.02em;
+}
+.sec-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.sec-title span { color: var(--blue); }
+.sec-count {
+  font-size: .67rem; color: var(--muted); font-family: var(--fh); font-weight: 600;
+  background: var(--surf); border: 1px solid var(--border); padding: 3px 9px; border-radius: 99px;
+}
+.sec-divider { height: 1px; background: var(--border); margin: 8px 16px 0; }
+
+/* ══════════════════════════════════════
+   ICON GRID (4 cols — like image)
+══════════════════════════════════════ */
+.icon-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  padding: 0 16px 8px;
+  row-gap: 24px; column-gap: 8px;
+  justify-items: center;
+}
+.svc-item {
+  display: flex; flex-direction: column; align-items: center;
+  cursor: pointer; transition: transform .22s; width: 100%;
+}
+.svc-item:hover { transform: translateY(-2px); }
+.svc-item:active { transform: scale(.95); }
+.icon-wrap {
+  width: 66px; height: 66px; border-radius: 17px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--white); border: 1.5px solid var(--border);
+  box-shadow: var(--sh-sm); position: relative; overflow: hidden;
+  transition: all .25s;
+}
+.icon-wrap::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(circle at 28% 28%, rgba(255,255,255,.55), transparent 70%);
+  pointer-events: none;
+}
+.svc-item:hover .icon-wrap {
+  box-shadow: var(--sh-md); border-color: var(--blue-20); transform: scale(1.04);
+}
+.icon-wrap svg, .icon-wrap img { width: 34px; height: 34px; object-fit: contain; position: relative; z-index: 1; }
+.svc-label {
+  font-size: .63rem; font-weight: 600; color: var(--muted);
+  text-align: center; line-height: 1.3; margin-top: 7px;
+  word-break: break-word; max-width: 70px; font-family: var(--fh);
+}
+
+.iw-blue   { background: rgba(26,115,232,.07);  border-color: rgba(26,115,232,.15);  }
+.iw-green  { background: rgba(16,185,129,.07);  border-color: rgba(16,185,129,.15);  }
+.iw-gold   { background: rgba(244,161,0,.08);   border-color: rgba(244,161,0,.18);   }
+.iw-violet { background: rgba(139,92,246,.07);  border-color: rgba(139,92,246,.15);  }
+.iw-orange { background: rgba(249,115,22,.07);  border-color: rgba(249,115,22,.15);  }
+.iw-rose   { background: rgba(244,63,94,.07);   border-color: rgba(244,63,94,.15);   }
+.iw-teal   { background: rgba(14,165,233,.07);  border-color: rgba(14,165,233,.15);  }
+.iw-amber  { background: rgba(245,158,11,.07);  border-color: rgba(245,158,11,.15);  }
+
+/* ══════════════════════════════════════
+   MINISTERIOS — horizontal list
+══════════════════════════════════════ */
+.min-list { display: flex; flex-direction: column; gap: 9px; padding: 0 16px 8px; }
+.min-card {
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: var(--rl); display: flex; overflow: hidden; cursor: pointer;
+  transition: all .28s; box-shadow: var(--sh-xs);
+  opacity: 0; transform: translateX(-8px);
+}
+.min-card.vis { opacity: 1; transform: none; }
+.min-card:hover { border-color: var(--blue-20); transform: translateX(3px); box-shadow: var(--sh-md); }
+.min-logo-col {
+  width: 78px; flex-shrink: 0; background: var(--surf);
+  display: flex; align-items: center; justify-content: center;
+  border-right: 1px solid var(--border); padding: 12px;
+}
+.min-logo-col svg { width: 42px; height: 42px; }
+.min-info-col { flex: 1; padding: 12px 13px 10px; min-width: 0; }
+.min-name { font-family: var(--fh); font-size: .82rem; font-weight: 700; margin-bottom: 4px; color: var(--text); }
+.min-chips { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 7px; }
+.min-chip {
+  font-size: .59rem; padding: 2px 7px; border-radius: 99px;
+  font-weight: 700; font-family: var(--fh);
+  background: var(--blue-05); border: 1px solid var(--blue-12); color: var(--blue);
+}
+.min-row { display: flex; gap: 6px; align-items: center; }
+.min-btn {
+  padding: 5px 12px; border: none; border-radius: 8px; font-family: var(--fh);
+  font-size: .65rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 4px; transition: all .2s;
+}
+.min-btn-p { background: var(--blue); color: #fff; }
+.min-btn-p:hover { background: var(--blue-d); box-shadow: 0 3px 10px rgba(26,115,232,.25); transform: translateY(-1px); }
+.min-btn-s { background: var(--surf); border: 1px solid var(--border-md); color: var(--muted); padding: 5px 9px; }
+.min-btn-s:hover { border-color: var(--blue-20); color: var(--blue); }
+.status-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; margin-left: auto; }
+.status-open  { background: #10B981; box-shadow: 0 0 6px rgba(16,185,129,.5); }
+.status-closed { background: var(--rose); box-shadow: 0 0 6px rgba(244,63,94,.4); }
+
+/* ══════════════════════════════════════
+   REMESAS GRID
+══════════════════════════════════════ */
+.remesas-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 0 16px 8px; }
+.remesa-card {
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: var(--rl); padding: 16px; cursor: pointer;
+  transition: all .28s; box-shadow: var(--sh-xs);
+  opacity: 0; transform: translateY(8px);
+}
+.remesa-card.vis { opacity: 1; transform: none; }
+.remesa-card:hover { border-color: var(--blue-20); transform: translateY(-3px); box-shadow: var(--sh-md); }
+.remesa-icon { width: 48px; height: 48px; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; }
+.remesa-icon svg { width: 48px; height: 48px; }
+.remesa-name { font-family: var(--fh); font-size: .8rem; font-weight: 700; margin-bottom: 3px; color: var(--text); }
+.remesa-desc { font-size: .68rem; color: var(--muted); line-height: 1.4; }
+.remesa-banks { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 8px; }
+.remesa-chip {
+  font-size: .59rem; padding: 2px 7px; border-radius: 99px; font-weight: 600;
+  background: rgba(245,158,11,.07); border: 1px solid rgba(245,158,11,.2); color: #B45309;
+}
+
+/* ══════════════════════════════════════
+   BASICOS LIST (Aerolíneas, servicios)
+══════════════════════════════════════ */
+.basicos-list { display: flex; flex-direction: column; gap: 8px; padding: 0 16px 8px; }
+.basico-card {
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: 14px; padding: 13px; display: flex; gap: 12px;
+  align-items: flex-start; cursor: pointer; transition: all .28s; box-shadow: var(--sh-xs);
+  opacity: 0; transform: translateY(6px);
+}
+.basico-card.vis { opacity: 1; transform: none; }
+.basico-card:hover { border-color: var(--blue-20); transform: translateY(-2px); box-shadow: var(--sh-md); }
+.basico-ico { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.basico-ico svg { width: 26px; height: 26px; }
+.basico-info { flex: 1; min-width: 0; }
+.basico-name { font-family: var(--fh); font-size: .84rem; font-weight: 700; margin-bottom: 3px; color: var(--text); }
+.basico-desc { font-size: .72rem; color: var(--muted); line-height: 1.45; margin-bottom: 7px; }
+.basico-tags { display: flex; flex-wrap: wrap; gap: 4px; }
+.btag { font-size: .6rem; padding: 2px 8px; border-radius: 99px; font-weight: 600; font-family: var(--fh); }
+
+/* ══════════════════════════════════════
+   EMERGENCIAS
+══════════════════════════════════════ */
+.emergency-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 10px; padding: 0 16px 8px;
+}
+.emg-btn {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 6px; padding: 16px 10px; border-radius: 14px; text-decoration: none;
+  text-align: center; transition: transform .15s, box-shadow .15s; cursor: pointer; border: none;
+}
+.emg-btn:active { transform: scale(.96); }
+.emg-police  { background: #EEF2FF; border: 1.5px solid rgba(99,102,241,.25); }
+.emg-fire    { background: #FEF2F2; border: 1.5px solid rgba(244,63,94,.25); }
+.emg-hosp    { background: #F0FDF4; border: 1.5px solid rgba(16,185,129,.25); }
+.emg-icon-wrap { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; }
+.emg-label { font-size: .68rem; color: var(--text3); font-weight: 600; line-height: 1.3; font-family: var(--fh); }
+.emg-num   { font-size: .85rem; color: var(--text); font-weight: 800; font-family: var(--fh); letter-spacing: .02em; }
+
+/* ══════════════════════════════════════
+   MODAL OVERLAY
+══════════════════════════════════════ */
+.modal-ov {
+  position: fixed; inset: 0;
+  background: rgba(11,16,32,.52);
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  z-index: 800; opacity: 0; pointer-events: none;
+  transition: opacity .3s; display: flex; align-items: flex-end; justify-content: center;
+}
+.modal-ov.open { opacity: 1; pointer-events: all; }
+.modal-box {
+  background: var(--white); border: 1px solid var(--border-md);
+  border-radius: 22px 22px 0 0; width: 100%; max-width: 600px;
+  max-height: 91vh; overflow: hidden; display: flex; flex-direction: column;
+  transform: translateY(40px);
+  transition: transform .4s cubic-bezier(.34,1.56,.64,1);
+  box-shadow: 0 -8px 40px rgba(15,23,42,.13);
+}
+.modal-ov.open .modal-box { transform: none; }
+.modal-drag { width: 34px; height: 4px; background: var(--border-md); border-radius: 2px; margin: 11px auto 0; flex-shrink: 0; }
+.modal-close-btn {
+  position: absolute; top: 12px; right: 14px; width: 28px; height: 28px;
+  background: var(--surf); border: 1px solid var(--border); border-radius: 50%;
+  color: var(--muted); cursor: pointer; display: flex; align-items: center; justify-content: center;
+  z-index: 5; transition: all .2s;
+}
+.modal-close-btn:hover { background: rgba(244,63,94,.08); border-color: var(--rose); color: var(--rose); }
+.modal-scroll { overflow-y: auto; flex: 1; -webkit-overflow-scrolling: touch; }
+.modal-hero {
+  min-height: 160px; position: relative; overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--surf); border-bottom: 1px solid var(--border);
+}
+.modal-hero-svg {
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  opacity: .07; z-index: 0;
+}
+.modal-hero-svg svg { width: 100%; height: 100%; }
+.modal-hero-content { position: relative; z-index: 1; padding: 20px; text-align: center; }
+.modal-hero-img { max-height: 130px; max-width: 85%; object-fit: contain; filter: drop-shadow(0 8px 20px rgba(26,115,232,.18)); }
+.modal-hero-emoji { font-size: 3.5rem; }
+.modal-body { padding: 16px 18px 8px; }
+.modal-eyebrow {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 3px 11px; border-radius: 50px; font-size: .61rem;
+  font-weight: 700; font-family: var(--fh); letter-spacing: .4px; margin-bottom: 8px;
+}
+.modal-title { font-family: var(--fh); font-size: 1.18rem; font-weight: 800; margin-bottom: 5px; line-height: 1.2; color: var(--text); letter-spacing: -.03em; }
+.modal-tagline { font-size: .82rem; color: var(--muted); line-height: 1.65; margin-bottom: 14px; }
+.info-cards { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+.info-card { background: var(--surf); border: 1px solid var(--border); border-radius: 11px; padding: 10px 13px; }
+.info-card-label { font-size: .59rem; color: var(--blue); font-family: var(--fh); text-transform: uppercase; letter-spacing: .9px; margin-bottom: 3px; font-weight: 700; }
+.info-card-val { font-size: .82rem; color: var(--text2); line-height: 1.5; white-space: pre-line; }
+.modal-actions { display: flex; flex-direction: column; gap: 7px; padding: 0 18px 20px; }
+.mbn {
+  display: flex; align-items: center; justify-content: center; gap: 7px;
+  height: 46px; border: none; border-radius: 13px; font-family: var(--fh);
+  font-weight: 700; font-size: .88rem; cursor: pointer; transition: all .25s; width: 100%;
+}
+.mbn-blue { background: var(--blue); color: #fff; box-shadow: var(--sh-blue); }
+.mbn-blue:hover { background: var(--blue-d); transform: translateY(-2px); }
+.mbn-wa { background: #25D366; color: #fff; }
+.mbn-wa:hover { background: #1DAA54; transform: translateY(-2px); }
+.mbn-sec { background: var(--surf); border: 1.5px solid var(--border-md); color: var(--muted); }
+.mbn-sec:hover { border-color: var(--blue-20); color: var(--blue); background: var(--blue-05); }
+
+@media (min-width: 480px) {
+  .modal-ov { align-items: center; }
+  .modal-box { border-radius: 22px; margin: auto; max-width: 480px; }
+}
+
+/* ══════════════════════════════════════
+   PREMIUM GATE
+══════════════════════════════════════ */
+.premium-gate {
+  background: linear-gradient(135deg, rgba(245,158,11,.05), rgba(99,102,241,.04));
+  border: 1.5px solid rgba(245,158,11,.2); border-radius: 20px;
+  margin: 10px 16px 16px; padding: 20px; text-align: center; position: relative; overflow: hidden;
+}
+.premium-gate::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, #F59E0B, #8B5CF6, #F59E0B);
+}
+.pg-icon { margin-bottom: 8px; display: flex; justify-content: center; }
+.pg-title { font-family: var(--fh); font-size: 1rem; font-weight: 800; background: linear-gradient(135deg,#F59E0B,#F97316); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 5px; }
+.pg-desc { font-size: .78rem; color: var(--muted); line-height: 1.55; margin-bottom: 14px; }
+.pg-btn {
+  display: inline-flex; align-items: center; gap: 6px; padding: 10px 22px;
+  background: linear-gradient(135deg,#F59E0B,#F97316); color: #fff; border: none;
+  border-radius: 50px; font-family: var(--fh); font-weight: 800; font-size: .82rem;
+  cursor: pointer; transition: all .25s; box-shadow: 0 4px 14px rgba(245,158,11,.3);
+}
+.pg-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 22px rgba(245,158,11,.35); }
+
+/* ══════════════════════════════════════
+   TOAST
+══════════════════════════════════════ */
+#toast {
+  position: fixed; bottom: calc(var(--nav-h) + 12px); left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: var(--text); color: #fff; border-radius: 12px;
+  padding: 11px 20px; font-size: .82rem; font-weight: 600; font-family: var(--fh);
+  box-shadow: var(--sh-xl); z-index: 900; opacity: 0; pointer-events: none;
+  transition: all .35s cubic-bezier(.34,1.56,.64,1); max-width: 300px; text-align: center;
+}
+#toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+#toast.info { background: var(--blue-d); }
+#toast.ok   { background: #065F46; }
+#toast.bad  { background: #9B1C1C; }
+
+/* ══════════════════════════════════════
+   BOTTOM NAV
+══════════════════════════════════════ */
+.bot-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 700;
+  height: var(--nav-h); background: rgba(255,255,255,.97);
+  backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+  border-top: 1px solid var(--border);
+  display: grid; grid-template-columns: repeat(4, 1fr);
+}
+.nav-tab {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 4px; cursor: pointer; font-family: var(--fh); font-size: .57rem; font-weight: 700;
+  color: var(--subtle); border: none; background: none; letter-spacing: .4px;
+  text-transform: uppercase; transition: color .2s; padding: 8px 0; position: relative;
+}
+.nav-tab svg { width: 21px; height: 21px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; transition: transform .2s; }
+.nav-tab.active { color: var(--blue); }
+.nav-tab.active svg { transform: translateY(-2px); }
+.nav-indicator { position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 26px; height: 2.5px; border-radius: 0 0 4px 4px; background: var(--blue); opacity: 0; transition: opacity .2s; }
+.nav-tab.active .nav-indicator { opacity: 1; }
+
+/* ══ ANIMATE ══ */
+.anim { opacity: 0; transform: translateY(12px); transition: opacity .4s ease, transform .4s ease; }
+.anim.vis { opacity: 1; transform: none; }
+
+/* scrollbar none */
+.no-bar::-webkit-scrollbar { display: none; }
+.no-bar { scrollbar-width: none; }
+.logo-wrap {
+  width: 66px; height: 66px; border-radius: 17px;
+  background: #fff; border: 1.5px solid var(--border);
+  box-shadow: var(--sh-sm);
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden; position: relative; transition: all .25s;
+  flex-shrink: 0;
+}
+.logo-wrap::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(circle at 28% 28%, rgba(255,255,255,.6), transparent 70%);
+  pointer-events: none; z-index: 2;
+}
+.svc-item:hover .logo-wrap {
+  box-shadow: var(--sh-md); border-color: var(--blue-20); transform: scale(1.05);
+}
+.logo-img {
+  width: 52px; height: 52px; object-fit: contain;
+  display: block; position: relative; z-index: 1;
+}
+/* Fallback inicial cuando la imagen no carga */
+.logo-fallback {
+  display: none;
+  width: 100%; height: 100%;
+  align-items: center; justify-content: center;
+  font-family: var(--fh); font-size: 1.3rem; font-weight: 900;
+  position: relative; z-index: 1;
+} 
+
+/* ── Logo en .min-logo-col (Ministerios) ── */
+.min-logo-col {
+  width: 78px; flex-shrink: 0;
+  background: var(--surf);
+  display: flex; align-items: center; justify-content: center;
+  border-right: 1px solid var(--border);
+  padding: 12px;
+}
+.min-logo-img {
+  width: 46px; height: 46px;
+  object-fit: contain; display: block;
+  border-radius: 8px;
+}
+/* Fallback de inicial cuando no carga la imagen */
+.min-logo-fb {
+  display: none;
+  width: 46px; height: 46px; border-radius: 10px;
+  align-items: center; justify-content: center;
+  font-family: var(--fh); font-size: .62rem;
+  font-weight: 900; text-align: center;
+  line-height: 1.25; padding: 4px;
+}
+
+/* ── Logo en .remesa-card (Remesas) ── */
+.remesa-logo-wrap {
+  width: 56px; height: 56px;
+  border-radius: 14px;
+  background: #fff;
+  border: 1.5px solid var(--border);
+  box-shadow: var(--sh-xs);
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden; margin-bottom: 10px; flex-shrink: 0;
+}
+.remesa-logo-img {
+  width: 46px; height: 46px;
+  object-fit: contain; display: block;
+}
+.remesa-logo-fb {
+  display: none;
+  width: 46px; height: 46px; border-radius: 10px;
+  align-items: center; justify-content: center;
+  font-family: var(--fh); font-size: .75rem;
+  font-weight: 900; text-align: center;
+  line-height: 1.25; padding: 4px;
+}
+ 
+</style>
+</head>
+<body>
+ <!-- ═══ HEADER ═══ -->
+<header class="hdr">
+  <a href="index-comprador.html" class="hdr-back">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+  </a>
+  <div class="hdr-logo-wrap">
+    <a href="index-comprador.html" class="hdr-logo">Compra<span>Ya</span></a>
+    <span class="hdr-badge">
+      <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      Servicios GE
+    </span>
+  </div>
+  <div class="hdr-actions">
+    <button class="hdr-btn" onclick="toggleSearch()">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    </button>
+  </div>
+</header>
+
+<main>
+
+<!-- ═══ DYNAMIC BANNER ═══ -->
+<div class="banner-section">
+  <div id="bannerLoading" class="banner-loading"></div>
+  <div id="bannerTrack" class="banner-track no-bar" style="display:none"></div>
+  <div id="bannerDots" class="banner-dots"></div>
+</div>
+
+<!-- ═══ SEARCH + FILTER ═══ -->
+<div class="search-filter-wrap">
+  <div class="search-inner" id="searchWrap">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <input type="text" id="searchInput" placeholder="Buscar servicio, ministerio, beca…" oninput="onSearch()">
+    <button class="search-clr" onclick="clearSearch()">
+      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="filter-chips no-bar">
+    <div class="fchip active" onclick="setFilter('todos',this)">Todos</div>
+    <div class="fchip" onclick="setFilter('servicios',this)">Servicios</div>
+    <div class="fchip" onclick="setFilter('becas',this)">Becas</div>
+    <div class="fchip" onclick="setFilter('ministerios',this)">Ministerios</div>
+    <div class="fchip" onclick="setFilter('supermercados',this)">Supermercados</div>
+    <div class="fchip" onclick="setFilter('vuelos',this)">Vuelos</div>
+    <div class="fchip" onclick="setFilter('remesas',this)">Remesas</div>
+    <div class="fchip" onclick="setFilter('hoteles',this)">Hotel & Rest.</div>
+    <div class="fchip" onclick="setFilter('delivery',this)">Delivery</div>
+    <div class="fchip" onclick="setFilter('emergencias',this)">Emergencias</div>
+      <div class="fchip" onclick="setFilter('gasolineras',this)">Gasolineras</div>
+
+  </div>
+</div>
+
+<!-- ════════════════════════════
+     BLOQUE 1: SERVICIOS COMPRA YA
+════════════════════════════ -->
+<div data-bloque="servicios">
+  <div class="sec">
+    <div class="sec-hdr">
+      <span class="sec-title"><span class="sec-dot" style="background:var(--blue)"></span>Servicios <span>Compra Ya</span></span>
+      <span class="sec-count">4 servicios</span>
+    </div>
+  </div>
+  <div class="icon-grid">
+    <div class="svc-item" onclick="openModal('publicidad')">
+      <div class="icon-wrap iw-blue">
+        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="6" y="14" width="36" height="24" rx="3" fill="#1A73E8" opacity=".12" stroke="#1A73E8" stroke-width="2"/>
+          <path d="M11 26h16M11 30h10" stroke="#1A73E8" stroke-width="2" stroke-linecap="round"/>
+          <circle cx="35" cy="20" r="5" fill="#1A73E8" opacity=".2" stroke="#1A73E8" stroke-width="2"/>
+          <path d="M33 20l1.5 1.5L37 18" stroke="#1A73E8" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <span class="svc-label">Publicidad</span>
+    </div>
+    <div class="svc-item" onclick="openModal('atencion')">
+      <div class="icon-wrap iw-green">
+        <svg viewBox="0 0 48 48" fill="none">
+          <path d="M10 24c0-7.73 6.27-14 14-14s14 6.27 14 14v6a4 4 0 01-4 4h-2" stroke="#10B981" stroke-width="2" fill="none"/>
+          <path d="M10 30v-6" stroke="#10B981" stroke-width="3" stroke-linecap="round"/>
+          <circle cx="24" cy="34" r="4" fill="#10B981" opacity=".18" stroke="#10B981" stroke-width="2"/>
+        </svg>
+      </div>
+      <span class="svc-label">Atención al Cliente</span>
+    </div>
+    <div class="svc-item" onclick="openModal('asistente')">
+      <div class="icon-wrap iw-violet">
+        <svg viewBox="0 0 48 48" fill="none">
+          <rect x="10" y="14" width="28" height="20" rx="4" fill="#8B5CF6" opacity=".1" stroke="#8B5CF6" stroke-width="2"/>
+          <circle cx="18" cy="24" r="2.5" fill="#8B5CF6"/>
+          <circle cx="24" cy="24" r="2.5" fill="#8B5CF6"/>
+          <circle cx="30" cy="24" r="2.5" fill="#8B5CF6"/>
+          <path d="M24 34v4M20 38h8" stroke="#8B5CF6" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <span class="svc-label">CY Asistente</span>
+    </div>
+    <div class="svc-item" onclick="openModal('premium')">
+      <div class="icon-wrap iw-amber">
+        <svg viewBox="0 0 48 48" fill="none">
+          <path d="M24 8l4 8 9 1.3-6.5 6.3 1.5 9L24 28l-8 4.6 1.5-9L11 17.3l9-1.3z" fill="#F59E0B" opacity=".18" stroke="#F59E0B" stroke-width="2" stroke-linejoin="round"/>
+          <path d="M14 38h20" stroke="#F59E0B" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <span class="svc-label">Premium</span>
+    </div>
+  </div>
+</div>
+
+<div class="sec-divider"></div>
+
+<!-- ════════════════════════════
+     BLOQUE 2: BECAS & FORMACIÓN
+════════════════════════════ -->
+<div data-bloque="becas">
+  <div class="sec">
+    <div class="sec-hdr">
+      <span class="sec-title"><span class="sec-dot" style="background:#10B981"></span>Becas &amp; <span>Formación</span></span>
+      <span class="sec-count">6 programas</span>
+    </div>
+  </div>
+  <div class="icon-grid">
+    <div class="svc-item" onclick="openModal('stipendium')">
+      <div class="icon-wrap iw-teal">
+        <svg viewBox="0 0 48 48" fill="none">
+          <path d="M24 10l14 7v8c0 7-6 13-14 16C16 38 10 32 10 25v-8z" fill="#0EA5E9" opacity=".1" stroke="#0EA5E9" stroke-width="2" stroke-linejoin="round"/>
+          <path d="M19 24l3 3 7-7" stroke="#0EA5E9" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <span class="svc-label">Stipendium Hungaricum</span>
+    </div>
+    <div class="svc-item" onclick="openModal('csc')">
+      <div class="icon-wrap iw-rose">
+        <svg viewBox="0 0 48 48" fill="none">
+          <circle cx="24" cy="24" r="14" fill="#F43F5E" opacity=".08" stroke="#F43F5E" stroke-width="2"/>
+          <path d="M18 20h4v-4l7 8-7 8v-4h-4v-8z" fill="#F43F5E"/>
+        </svg>
+      </div>
+      <span class="svc-label">Beca CSC China</span>
+    </div>
+    <div class="svc-item" onclick="openModal('gks')">
+      <div class="icon-wrap iw-violet">
+        <svg viewBox="0 0 48 48" fill="none">
+          <circle cx="24" cy="24" r="14" fill="#8B5CF6" opacity=".08" stroke="#8B5CF6" stroke-width="2"/>
+          <rect x="19" y="18" width="4" height="4" rx="1" fill="#8B5CF6"/>
+          <rect x="25" y="18" width="4" height="4" rx="1" fill="#8B5CF6"/>
+          <path d="M19 22v8M25 22v8M19 30h10" stroke="#8B5CF6" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <span class="svc-label">GKS Korea</span>
+    </div>
+    <div class="svc-item" onclick="openModal('aecid')">
+      <div class="icon-wrap iw-amber">
+        <svg viewBox="0 0 48 48" fill="none">
+          <path d="M24 10l4 8 9 1.3-6.5 6.3 1.5 9L24 30l-8 4.6 1.5-9L11 19.3l9-1.3z" fill="#F59E0B" opacity=".15" stroke="#F59E0B" stroke-width="2" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <span class="svc-label">Beca AECID</span>
+    </div>
+    <div class="svc-item" onclick="openModal('carolina')">
+      <div class="icon-wrap iw-gold">
+        <svg viewBox="0 0 48 48" fill="none">
+          <path d="M10 18l14-8 14 8v20H10z" fill="#F4A100" opacity=".1" stroke="#F4A100" stroke-width="2" stroke-linejoin="round"/>
+          <rect x="19" y="26" width="10" height="12" rx="1" fill="#F4A100" opacity=".25"/>
+          <path d="M24 14v4" stroke="#F4A100" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <span class="svc-label">Fund. Carolina</span>
+    </div>
+    <div class="svc-item" onclick="openModal('bls')">
+      <div class="icon-wrap iw-teal">
+        <svg viewBox="0 0 48 48" fill="none">
+          <rect x="10" y="12" width="28" height="20" rx="3" fill="#0EA5E9" opacity=".08" stroke="#0EA5E9" stroke-width="2"/>
+          <path d="M18 22h12M24 18v8" stroke="#0EA5E9" stroke-width="2" stroke-linecap="round"/>
+          <path d="M16 32l-4 4M32 32l4 4" stroke="#0EA5E9" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <span class="svc-label">BLS Visados</span>
+    </div>
+  </div>
+</div>
+
+ 
+ 
+
+<div class="sec-divider"></div>
+
+ 
+
+
+<!-- ════════════════════════════════════════════════════════
+     BLOQUE: SUPERMERCADOS — Reemplaza tu data-bloque="supermercados"
+════════════════════════════════════════════════════════ -->
+<div data-bloque="supermercados">
+  <div class="sec">
+    <div class="sec-hdr">
+      <span class="sec-title">
+        <span class="sec-dot" style="background:var(--orange)"></span>
+        <span>Supermercados</span>
+      </span>
+      <span class="sec-count">14 establecimientos</span>
+    </div>
+  </div>
+  <div class="icon-grid">
+
+    <!-- Martínez Hnos — Muankaban -->
+    <div class="svc-item" onclick="openModal('martinez-muankaban')">
+      <div class="logo-wrap">
+        <img class="logo-img" src="https://martinezhnos.com/wp-content/uploads/2021/01/logo-martinez.png"
+          alt="Martínez" onerror="logoError(this)">
+        <div class="logo-fallback" style="background:#CC0000;color:#fff">M</div>
+      </div>
+      <span class="svc-label">Martínez Muankaban</span>
+    </div>
+
+    <!-- Martínez Central Malabo -->
+    <div class="svc-item" onclick="openModal('martinez-malabo')">
+      <div class="logo-wrap">
+        <img class="logo-img" src="https://martinezhnos.com/wp-content/uploads/2021/01/logo-martinez.png"
+          alt="Martínez" onerror="logoError(this)">
+        <div class="logo-fallback" style="background:#CC0000;color:#fff">M</div>
+      </div>
+      <span class="svc-label">Martínez Central Malabo</span>
+    </div>
+
+    <!-- Martínez Central Bata -->
+    <div class="svc-item" onclick="openModal('martinez-bata')">
+      <div class="logo-wrap">
+        <img class="logo-img" src="https://martinezhnos.com/wp-content/uploads/2021/01/logo-martinez.png"
+          alt="Martínez" onerror="logoError(this)">
+        <div class="logo-fallback" style="background:#CC0000;color:#fff">M</div>
+      </div>
+      <span class="svc-label">Martínez Central Bata</span>
+    </div>
+
+    <!-- EGTC Supermercado -->
+    <div class="svc-item" onclick="openModal('egtc-supermercado')">
+      <div class="logo-wrap">
+        <img class="logo-img" src="https://egtcge.com/wp-content/uploads/2022/03/logo-egtc.png"
+          alt="EGTC" onerror="logoError(this)">
+        <div class="logo-fallback" style="background:#003087;color:#fff">E</div>
+      </div>
+      <span class="svc-label">EGTC Supermercado</span>
+    </div>
+
+    <!-- EGTC Bata -->
+    <div class="svc-item" onclick="openModal('egtc-bata')">
+      <div class="logo-wrap">
+        <img class="logo-img" src="https://egtcge.com/wp-content/uploads/2022/03/logo-egtc.png"
+          alt="EGTC" onerror="logoError(this)">
+        <div class="logo-fallback" style="background:#003087;color:#fff">E</div>
+      </div>
+      <span class="svc-label">EGTC Bata</span>
+    </div>
+
+    <!-- Guinaco Malabo Ciudad -->
+    <div class="svc-item" onclick="openModal('guinaco-ciudad')">
+      <div class="logo-wrap">
+        <img class="logo-img" src="https://guinaco.gq/assets/img/logo-guinaco.png"
+          alt="Guinaco" onerror="logoError(this)">
+        <div class="logo-fallback" style="background:#8B0000;color:#FFD700">G</div>
+      </div>
+      <span class="svc-label">Guinaco Malabo Ciudad</span>
+    </div>
+
+    <!-- Guinaco Ela Nguema -->
+    <div class="svc-item" onclick="openModal('guinaco-ela')">
+      <div class="logo-wrap">
+        <img class="logo-img" src="https://guinaco.gq/assets/img/logo-guinaco.png"
+          alt="Guinaco" onerror="logoError(this)">
+        <div class="logo-fallback" style="background:#8B0000;color:#FFD700">G</div>
+      </div>
+      <span class="svc-label">Guinaco Ela Nguema</span>
+    </div>
+
+    <!-- Ventage Sala K5 -->
+    <div class="svc-item" onclick="openModal('ventage-k5')">
+      <div class="logo-wrap">
+        <img class="logo-img" src="https://ventagegroup.com/wp-content/uploads/2020/09/ventage-logo.png"
+          alt="Ventage" onerror="logoError(this)">
+        <div class="logo-fallback" style="background:#1A3A8F;color:#E8B800">V</div>
+      </div>
+      <span class="svc-label">Ventage Sala K5</span>
+    </div>
+
+    <!-- Ventage Mall -->
+    <div class="svc-item" onclick="openModal('ventage-mall')">
+      <div class="logo-wrap">
+        <img class="logo-img" src="https://ventagegroup.com/wp-content/uploads/2020/09/ventage-logo.png"
+          alt="Ventage" onerror="logoError(this)">
+        <div class="logo-fallback" style="background:#1A3A8F;color:#E8B800">V</div>
+      </div>
+      <span class="svc-label">Ventage Mall</span>
+    </div>
+
+    <!-- Ventage Casa -->
+    <div class="svc-item" onclick="openModal('ventage-casa')">
+      <div class="logo-wrap">
+        <img class="logo-img" src="https://ventagegroup.com/wp-content/uploads/2020/09/ventage-logo.png"
+          alt="Ventage" onerror="logoError(this)">
+        <div class="logo-fallback" style="background:#1A3A8F;color:#E8B800">V</div>
+      </div>
+      <span class="svc-label">Ventage Casa</span>
+    </div>
+
+    <!-- Ventage Office Store -->
+    <div class="svc-item" onclick="openModal('ventage-office')">
+      <div class="logo-wrap">
+        <img class="logo-img" src="https://ventagegroup.com/wp-content/uploads/2020/09/ventage-logo.png"
+          alt="Ventage" onerror="logoError(this)">
+        <div class="logo-fallback" style="background:#1A3A8F;color:#E8B800">V</div>
+      </div>
+      <span class="svc-label">Ventage Office Store</span>
+    </div>
+
+    <!-- Black Spoon Mini Mercado Candy -->
+    <div class="svc-item" onclick="openModal('blackspoon-candy')">
+      <div class="logo-wrap" style="background:#1a1a1a">
+        <img class="logo-img" src="https://blackspoon.gq/logo.png"
+          alt="Black Spoon" onerror="logoError(this)">
+        <div class="logo-fallback" style="background:#1a1a1a;color:#fff">BS</div>
+      </div>
+      <span class="svc-label">Mini Mercado Candy</span>
+    </div>
+
+    <!-- Black Spoon Sipopo -->
+    <div class="svc-item" onclick="openModal('blackspoon-sipopo')">
+      <div class="logo-wrap" style="background:#1a1a1a">
+        <img class="logo-img" src="https://blackspoon.gq/logo.png"
+          alt="Black Spoon" onerror="logoError(this)">
+        <div class="logo-fallback" style="background:#1a1a1a;color:#fff">BS</div>
+      </div>
+      <span class="svc-label">Black Spoon Sipopo</span>
+    </div>
+
+    <!-- Kim Mall -->
+    <div class="svc-item" onclick="openModal('kim-mall')">
+      <div class="logo-wrap">
+        <img class="logo-img" src="https://kimmall.gq/assets/logo-kim.png"
+          alt="Kim Mall" onerror="logoError(this)">
+        <div class="logo-fallback" style="background:#2c2c2c;color:#fff;font-size:1rem">KM</div>
+      </div>
+      <span class="svc-label">Kim Mall</span>
+    </div>
+
+  </div>
+</div>
+
+<div class="sec-divider"></div>
+
+
+<!-- ════════════════════════════════════════════════════════
+     BLOQUE: HOTEL & RESTAURANTES — Reemplaza tu data-bloque="hoteles"
+════════════════════════════════════════════════════════ -->
+<div data-bloque="hoteles">
+  <div class="sec">
+    <div class="sec-hdr">
+      <span class="sec-title">
+        <span class="sec-dot" style="background:var(--amber)"></span>
+        Hotel &amp; <span>Restaurantes</span>
+      </span>
+      <span class="sec-count">13 locales</span>
+    </div>
+  </div>
+  <div class="icon-grid">
+
+    <!-- Anda China -->
+    <div class="svc-item" onclick="openModal('andachina')">
+      <div class="logo-wrap">
+        <img class="logo-img" src="https://andachina.gq/logo.png" alt="Anda China" onerror="logoError(this)">
+        <div class="logo-fallback" style="background:#C8102E;color:#FFD700;font-size:1rem;font-weight:900">AC</div>
+      </div>
+      <span class="svc-label">Anda China</span>
+    </div>
+
+    <!-- Café Malabo -->
+    <div class="svc-item" onclick="openModal('cafemalabo')">
+      <div class="logo-wrap">
+        <img class="logo-img" src="https://cafemalabo.com/wp-content/uploads/logo-cafe-malabo.png"
+          alt="Café Malabo" onerror="logoError(this)">
+        <div class="logo-fallback" style="background:#2C1810;color:#D4A054">CM</div>
+      </div>
+      <span class="svc-label">Cafe Malabo</span>
+    </div>
+
+    <!-- IBIS Bata -->
+    <div class="svc-item" onclick="openModal('ibisbata')">
+      <div class="logo-wrap">
+        <img class="logo-img"
+          src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/74/Ibis_hotels_logo.svg/200px-Ibis_hotels_logo.svg.png"
+          alt="IBIS" onerror="logoError(this)">
+        <div class="logo-fallback" style="background:#E2001A;color:#fff">ibis</div>
+      </div>
+      <span class="svc-label">IBIS Bata</span>
+    </div>
+
+    <!-- Restaurant QG -->
+    <div class="svc-item" onclick="openModal('restaurantqg')">
+      <div class="logo-wrap" style="background:#000">
+        <img class="logo-img" src="https://restaurantqg.com/logo.png" alt="QG" onerror="logoError(this)">
+        <div class="logo-fallback" style="background:#000;color:#C9A84C;font-size:1.1rem">QG</div>
+      </div>
+      <span class="svc-label">Restaurant QG</span>
+    </div>
+
+    <!-- Rest. Bidji Binia -->
+    <div class="svc-item" onclick="openModal('bidjibinia')">
+      <div class="logo-wrap">
+        <img class="logo-img" src="https://bidjibinia.gq/logo.png" alt="Bidji Binia" onerror="logoError(this)">
+        <div class="logo-fallback" style="background:#1B4332;color:#fff;font-size:.75rem;text-align:center;line-height:1.2">REST<br>BB</div>
+      </div>
+      <span class="svc-label">Rest. Bidji Binia</span>
+    </div>
+
+    <!-- Le Atelier -->
+    <div class="svc-item" onclick="openModal('leatelier')">
+      <div class="logo-wrap">
+        <img class="logo-img" src="https://leatelier.gq/logo.png" alt="Le Atelier" onerror="logoError(this)">
+        <div class="logo-fallback" style="background:#1a1a2e;color:#E0B97A;font-size:.85rem">LA</div>
+      </div>
+      <span class="svc-label">Le Atelier</span>
+    </div>
+
+    <!-- Complejo La Luna -->
+    <div class="svc-item" onclick="openModal('complejolaluna')">
+      <div class="logo-wrap">
+        <img class="logo-img" src="https://complejolaluna.gq/logo.png" alt="La Luna" onerror="logoError(this)">
+        <div class="logo-fallback" style="background:#0D2137;color:#7EC8E3;font-size:.8rem;text-align:center;line-height:1.2">LA<br>LUNA</div>
+      </div>
+      <span class="svc-label">Complejo La Luna</span>
+    </div>
+
+    <!-- L'Oriental -->
+    <div class="svc-item" onclick="openModal('loriental')">
+      <div class="logo-wrap">
+        <img class="logo-img" src="https://loriental.gq/logo.png" alt="L'Oriental" onerror="logoError(this)">
+        <div class="logo-fallback" style="background:#6B0F1A;color:#F5CBA7;font-size:.8rem">L'Or</div>
+      </div>
+      <span class="svc-label">L'Oriental</span>
+    </div>
+
+    <!-- Hotel MAGNO Suites -->
+    <div class="svc-item" onclick="openModal('magnosuites')">
+      <div class="logo-wrap">
+        <img class="logo-img" src="https://magnosuites.com/wp-content/uploads/logo-magno.png"
+          alt="MAGNO" onerror="logoError(this)">
+        <div class="logo-fallback" style="background:#1C1C1C;color:#C9A84C;font-size:.75rem;font-weight:900;letter-spacing:1px">MAGNO</div>
+      </div>
+      <span class="svc-label">Hotel MAGNO Suites</span>
+    </div>
+
+    <!-- Rest. Imagine -->
+    <div class="svc-item" onclick="openModal('restauranteimagine')">
+      <div class="logo-wrap">
+        <img class="logo-img" src="https://restauranteimagine.gq/logo.png" alt="Imagine" onerror="logoError(this)">
+        <div class="logo-fallback" style="background:#F5F5F5;color:#444;font-size:.85rem;font-style:italic">IMAGÍNE</div>
+      </div>
+      <span class="svc-label">Rest. Imagine</span>
+    </div>
+
+    <!-- Hotel Panafrica -->
+    <div class="svc-item" onclick="openModal('panafrica')">
+      <div class="logo-wrap">
+        <img class="logo-img" src="https://hotelpanafrica.com/wp-content/uploads/logo-panafrica.png"
+          alt="Panafrica" onerror="logoError(this)">
+        <div class="logo-fallback" style="background:#1B3A2D;color:#fff;font-size:.8rem;text-align:center;line-height:1.2">PAN<br>AFRICA</div>
+      </div>
+      <span class="svc-label">Hotel Panafrica</span>
+    </div>
+
+    <!-- Rest. Emma Rose -->
+    <div class="svc-item" onclick="openModal('emmarose')">
+      <div class="logo-wrap">
+        <img class="logo-img" src="https://emmarose.gq/logo.png" alt="Emma Rose" onerror="logoError(this)">
+        <div class="logo-fallback" style="background:#F9E0E8;color:#C0394A;font-size:.8rem">ER</div>
+      </div>
+      <span class="svc-label">Rest. Emma Rose</span>
+    </div>
+
+    <!-- Dulce Encanto Heladería -->
+    <div class="svc-item" onclick="openModal('dulceencanto')">
+      <div class="logo-wrap">
+        <img class="logo-img" src="https://dulceencanto.gq/logo.png" alt="Dulce Encanto" onerror="logoError(this)">
+        <div class="logo-fallback" style="background:#C2185B;color:#fff;font-size:.75rem;text-align:center;line-height:1.2">DULCE<br>ENCANTO</div>
+      </div>
+      <span class="svc-label">Dulce Encanto</span>
+    </div>
+
+  </div>
+</div>
+
+<div class="sec-divider"></div>
+
+
+<!-- ════════════════════════════════════════════════════════
+     BLOQUE: VUELOS & AGENCIAS — Reemplaza tu data-bloque="vuelos"
+════════════════════════════════════════════════════════ -->
+<div data-bloque="vuelos">
+  <div class="sec">
+    <div class="sec-hdr">
+      <span class="sec-title">
+        <span class="sec-dot" style="background:var(--teal)"></span>
+        Vuelos &amp; <span>Agencias de Viaje</span>
+      </span>
+      <span class="sec-count">13 operadores</span>
+    </div>
+  </div>
+  <div class="icon-grid">
+
+    <!-- Cronos Airline -->
+    <div class="svc-item" onclick="openModal('cronos')">
+      <div class="logo-wrap">
+        <img class="logo-img" src="https://cronosairline.com/wp-content/uploads/logo-cronos.png"
+          alt="Cronos" onerror="logoError(this)">
+        <div class="logo-fallback" style="background:#003366;color:#FFD700;font-size:.8rem">CRONOS</div>
+      </div>
+      <span class="svc-label">Cronos Airline</span>
+    </div>
+
+    <!-- Satguru Travel -->
+    <div class="svc-item" onclick="openModal('satguru')">
+      <div class="logo-wrap">
+        <img class="logo-img" src="https://satgurutravel.com/wp-content/uploads/2019/09/satguru-logo.png"
+          alt="Satguru" onerror="logoError(this)">
+        <div class="logo-fallback" style="background:#006400;color:#fff;font-size:.75rem">SAT<br>GURU</div>
+      </div>
+      <span class="svc-label">Satguru Travel</span>
+    </div>
+
+    <!-- Miles Travel -->
+    <div class="svc-item" onclick="openModal('milestravel')">
+      <div class="logo-wrap">
+        <img class="logo-img" src="https://milestravel.gq/logo.png" alt="Miles Travel" onerror="logoError(this)">
+        <div class="logo-fallback" style="background:#0a2744;color:#fff;font-size:.75rem">MILES</div>
+      </div>
+      <span class="svc-label">Miles Travel</span>
+    </div>
+
+    <!-- Lufthansa -->
+    <div class="svc-item" onclick="openModal('lufthansa')">
+      <div class="logo-wrap">
+        <img class="logo-img"
+          src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Lufthansa_Logo_2018.svg/200px-Lufthansa_Logo_2018.svg.png"
+          alt="Lufthansa" onerror="logoError(this)">
+        <div class="logo-fallback" style="background:#05164D;color:#FFAD00;font-size:.75rem">LH</div>
+      </div>
+      <span class="svc-label">Lufthansa</span>
+    </div>
+
+    <!-- Ethiopian Airlines -->
+    <div class="svc-item" onclick="openModal('ethiopian')">
+      <div class="logo-wrap">
+        <img class="logo-img"
+          src="https://upload.wikimedia.org/wikipedia/en/thumb/5/5e/Ethiopian_Airlines_Logo.svg/200px-Ethiopian_Airlines_Logo.svg.png"
+          alt="Ethiopian" onerror="logoError(this)">
+        <div class="logo-fallback" style="background:#006633;color:#FFD700;font-size:.75rem">ET</div>
+      </div>
+      <span class="svc-label">Ethiopian Airlines</span>
+    </div>
+
+    <!-- Turkish Airlines -->
+    <div class="svc-item" onclick="openModal('turkish')">
+      <div class="logo-wrap">
+        <img class="logo-img"
+          src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Turkish_Airlines_logo_2019_compact.svg/200px-Turkish_Airlines_logo_2019_compact.svg.png"
+          alt="Turkish" onerror="logoError(this)">
+        <div class="logo-fallback" style="background:#C70A0C;color:#fff;font-size:.75rem">TK</div>
+      </div>
+      <span class="svc-label">Turkish Airlines</span>
+    </div>
+
+    <!-- Air France -->
+    <div class="svc-item" onclick="openModal('airfrance')">
+      <div class="logo-wrap">
+        <img class="logo-img"
+          src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/Air_France_Logo.svg/200px-Air_France_Logo.svg.png"
+          alt="Air France" onerror="logoError(this)">
+        <div class="logo-fallback" style="background:#002157;color:#fff;font-size:.75rem">AF</div>
+      </div>
+      <span class="svc-label">Air France</span>
+    </div>
+
+    <!-- Emirates -->
+    <div class="svc-item" onclick="openModal('emirates')">
+      <div class="logo-wrap">
+        <img class="logo-img"
+          src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Emirates_logo.svg/200px-Emirates_logo.svg.png"
+          alt="Emirates" onerror="logoError(this)">
+        <div class="logo-fallback" style="background:#D4151C;color:#fff;font-size:.75rem">EK</div>
+      </div>
+      <span class="svc-label">Emirates</span>
+    </div>
+
+    <!-- Qatar Airways -->
+    <div class="svc-item" onclick="openModal('qatar')">
+      <div class="logo-wrap">
+        <img class="logo-img"
+          src="https://upload.wikimedia.org/wikipedia/en/thumb/3/3c/Qatar_Airways_Logo.svg/200px-Qatar_Airways_Logo.svg.png"
+          alt="Qatar" onerror="logoError(this)">
+        <div class="logo-fallback" style="background:#5C0632;color:#fff;font-size:.75rem">QR</div>
+      </div>
+      <span class="svc-label">Qatar Airways</span>
+    </div>
+
+    <!-- Etihad -->
+    <div class="svc-item" onclick="openModal('etihad')">
+      <div class="logo-wrap">
+        <img class="logo-img"
+          src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/Etihad_Airways_logo.svg/200px-Etihad_Airways_logo.svg.png"
+          alt="Etihad" onerror="logoError(this)">
+        <div class="logo-fallback" style="background:#BD8B13;color:#fff;font-size:.75rem">EY</div>
+      </div>
+      <span class="svc-label">Etihad Airways</span>
+    </div>
+
+    <!-- ASKY Airlines -->
+    <div class="svc-item" onclick="openModal('asky')">
+      <div class="logo-wrap">
+        <img class="logo-img"
+          src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/ASKY_Airlines_logo.svg/200px-ASKY_Airlines_logo.svg.png"
+          alt="ASKY" onerror="logoError(this)">
+        <div class="logo-fallback" style="background:#0047AB;color:#fff;font-size:.75rem">ASKY</div>
+      </div>
+      <span class="svc-label">ASKY Airlines</span>
+    </div>
+
+    <!-- South African Airways -->
+    <div class="svc-item" onclick="openModal('saa')">
+      <div class="logo-wrap">
+        <img class="logo-img"
+          src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/South_African_Airways_logo.svg/200px-South_African_Airways_logo.svg.png"
+          alt="SAA" onerror="logoError(this)">
+        <div class="logo-fallback" style="background:#002395;color:#FFB81C;font-size:.75rem">SAA</div>
+      </div>
+      <span class="svc-label">South African</span>
+    </div>
+
+    <!-- Ceiba Intercontinental -->
+    <div class="svc-item" onclick="openModal('ceiba')">
+      <div class="logo-wrap">
+        <img class="logo-img"
+          src="https://ceibaintercon.com/wp-content/uploads/logo-ceiba.png"
+          alt="Ceiba" onerror="logoError(this)">
+        <div class="logo-fallback" style="background:#006400;color:#fff;font-size:.75rem">CEIBA</div>
+      </div>
+      <span class="svc-label">Ceiba Intercontinental</span>
+    </div>
+
+  </div>
+</div>
+
+<div class="sec-divider"></div>
+
+
+ 
+<!-- ════════════════════════════════════════════════════════
+     BLOQUE MINISTERIOS — reemplaza tu data-bloque="ministerios"
+════════════════════════════════════════════════════════ -->
+<div data-bloque="ministerios">
+  <div class="sec">
+    <div class="sec-hdr">
+      <span class="sec-title">
+        <span class="sec-dot" style="background:var(--orange)"></span>
+        Ministerios <span>&amp; Entidades</span>
+      </span>
+      <span class="sec-count">5 entidades</span>
+    </div>
+  </div>
+
+  <div class="min-list">
+
+    <!-- Ministerio de Educación -->
+    <div class="min-card anim" onclick="openModal('min-educacion')">
+      <div class="min-logo-col">
+        <img class="min-logo-img"
+          src="https://www.educacion.gob.gq/wp-content/uploads/logo-mined.png"
+          alt="Min. Educación"
+          onerror="logoError(this)">
+        <div class="min-logo-fb" style="background:#1558C0;color:#fff">MIN<br>EDUC</div>
+      </div>
+      <div class="min-info-col">
+        <div class="min-name">Ministerio de Educación</div>
+        <div class="min-chips">
+          <span class="min-chip">Homologación</span>
+          <span class="min-chip">Certificados</span>
+          <span class="min-chip">Becas nac.</span>
+        </div>
+        <div class="min-row">
+          <button class="min-btn min-btn-p"
+            onclick="event.stopPropagation();openModal('min-educacion')">Ver trámites</button>
+          <div class="status-dot status-open"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ministerio de Hacienda -->
+    <div class="min-card anim" onclick="openModal('min-hacienda')">
+      <div class="min-logo-col">
+        <img class="min-logo-img"
+          src="https://www.hacienda.gob.gq/wp-content/uploads/logo-hacienda.png"
+          alt="Min. Hacienda"
+          onerror="logoError(this)">
+        <div class="min-logo-fb" style="background:#B45309;color:#fff">MIN<br>HACIEN.</div>
+      </div>
+      <div class="min-info-col">
+        <div class="min-name">Ministerio de Hacienda</div>
+        <div class="min-chips">
+          <span class="min-chip">NIF Fiscal</span>
+          <span class="min-chip">VUEGE</span>
+          <span class="min-chip">Impuestos</span>
+        </div>
+        <div class="min-row">
+          <button class="min-btn min-btn-p"
+            onclick="event.stopPropagation();openModal('min-hacienda')">Ver trámites</button>
+          <button class="min-btn min-btn-s"
+            onclick="event.stopPropagation();openExt('https://vuege.org')">VUEGE</button>
+          <div class="status-dot status-open"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ministerio de Salud -->
+    <div class="min-card anim" onclick="openModal('min-salud')">
+      <div class="min-logo-col">
+        <img class="min-logo-img"
+          src="https://www.msps.gob.gq/wp-content/uploads/logo-salud.png"
+          alt="Min. Salud"
+          onerror="logoError(this)">
+        <div class="min-logo-fb" style="background:#9B1C1C;color:#fff">MIN<br>SALUD</div>
+      </div>
+      <div class="min-info-col">
+        <div class="min-name">Ministerio de Salud</div>
+        <div class="min-chips">
+          <span class="min-chip">Carnés sanitarios</span>
+          <span class="min-chip">Vacunación</span>
+          <span class="min-chip">Certificados</span>
+        </div>
+        <div class="min-row">
+          <button class="min-btn min-btn-p"
+            onclick="event.stopPropagation();openModal('min-salud')">Ver trámites</button>
+          <div class="status-dot status-open"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Min. Asuntos Exteriores -->
+    <div class="min-card anim" onclick="openModal('min-asuntos')">
+      <div class="min-logo-col">
+        <img class="min-logo-img"
+          src="https://www.mae.gob.gq/wp-content/uploads/logo-mae.png"
+          alt="Min. Exteriores"
+          onerror="logoError(this)">
+        <div class="min-logo-fb" style="background:#4C1D95;color:#fff">MIN<br>EXT.</div>
+      </div>
+      <div class="min-info-col">
+        <div class="min-name">Min. Asuntos Exteriores</div>
+        <div class="min-chips">
+          <span class="min-chip">Pasaportes</span>
+          <span class="min-chip">Visados entrada</span>
+          <span class="min-chip">Apostilla</span>
+        </div>
+        <div class="min-row">
+          <button class="min-btn min-btn-p"
+            onclick="event.stopPropagation();openModal('min-asuntos')">Ver trámites</button>
+          <div class="status-dot status-open"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Consulados y Embajadas -->
+    <div class="min-card anim" onclick="openModal('ambassade')">
+      <div class="min-logo-col">
+        <img class="min-logo-img"
+          src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/Coat_of_arms_of_Equatorial_Guinea.svg/100px-Coat_of_arms_of_Equatorial_Guinea.svg.png"
+          alt="Consulados"
+          onerror="logoError(this)">
+        <div class="min-logo-fb" style="background:#006400;color:#fff">EMBAJ<br>&amp;CONS.</div>
+      </div>
+      <div class="min-info-col">
+        <div class="min-name">Consulados y Embajadas</div>
+        <div class="min-chips">
+          <span class="min-chip">Schengen</span>
+          <span class="min-chip">VFS Global</span>
+          <span class="min-chip">Apostilla</span>
+        </div>
+        <div class="min-row">
+          <button class="min-btn min-btn-p"
+            onclick="event.stopPropagation();openModal('ambassade')">Ver info</button>
+          <div class="status-dot status-closed"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="sec-divider"></div>
+
+
+
+
+ 
+
+
+<!-- ════════════════════════════════════════════════════════
+     BLOQUE NUEVO: GASOLINERAS
+     (añade después de supermercados si quieres)
+════════════════════════════════════════════════════════ -->
+<div data-bloque="gasolineras">
+  <div class="sec">
+    <div class="sec-hdr">
+      <span class="sec-title">
+        <span class="sec-dot" style="background:#EF4444"></span>
+        Gasolineras <span>&amp; Estaciones</span>
+      </span>
+      <span class="sec-count">9 estaciones</span>
+    </div>
+  </div>
+  <div class="icon-grid">
+
+    <!-- TotalEnergies × 5 ubicaciones -->
+    <div class="svc-item" onclick="openModal('total-caracolas')">
+      <div class="logo-wrap">
+        <img class="logo-img"
+          src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/58/TotalEnergies_logo.svg/200px-TotalEnergies_logo.svg.png"
+          alt="TotalEnergies" onerror="logoError(this)">
+        <div class="logo-fallback" style="background:#ED1C24;color:#fff;font-size:.65rem;font-weight:900">TOTAL</div>
+      </div>
+      <span class="svc-label">TotalEnergies Caracolas</span>
+    </div>
+
+    <div class="svc-item" onclick="openModal('total-elanguema')">
+      <div class="logo-wrap">
+        <img class="logo-img"
+          src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/58/TotalEnergies_logo.svg/200px-TotalEnergies_logo.svg.png"
+          alt="TotalEnergies" onerror="logoError(this)">
+        <div class="logo-fallback" style="background:#ED1C24;color:#fff;font-size:.65rem;font-weight:900">TOTAL</div>
+      </div>
+      <span class="svc-label">TotalEnergies Ela-Nguema</span>
+    </div>
+
+    <div class="svc-item" onclick="openModal('total-mbogo')">
+      <div class="logo-wrap">
+        <img class="logo-img"
+          src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/58/TotalEnergies_logo.svg/200px-TotalEnergies_logo.svg.png"
+          alt="TotalEnergies" onerror="logoError(this)">
+        <div class="logo-fallback" style="background:#ED1C24;color:#fff;font-size:.65rem;font-weight:900">TOTAL</div>
+      </div>
+      <span class="svc-label">TotalEnergies Mbogo Nsogo</span>
+    </div>
+
+    <div class="svc-item" onclick="openModal('total-ngolo')">
+      <div class="logo-wrap">
+        <img class="logo-img"
+          src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/58/TotalEnergies_logo.svg/200px-TotalEnergies_logo.svg.png"
+          alt="TotalEnergies" onerror="logoError(this)">
+        <div class="logo-fallback" style="background:#ED1C24;color:#fff;font-size:.65rem;font-weight:900">TOTAL</div>
+      </div>
+      <span class="svc-label">TotalEnergies Ngolo</span>
+    </div>
+
+    <div class="svc-item" onclick="openModal('total-ntobo')">
+      <div class="logo-wrap">
+        <img class="logo-img"
+          src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/58/TotalEnergies_logo.svg/200px-TotalEnergies_logo.svg.png"
+          alt="TotalEnergies" onerror="logoError(this)">
+        <div class="logo-fallback" style="background:#ED1C24;color:#fff;font-size:.65rem;font-weight:900">TOTAL</div>
+      </div>
+      <span class="svc-label">TotalEnergies Ntobo</span>
+    </div>
+
+    <!-- Tradex × 4 ubicaciones -->
+    <div class="svc-item" onclick="openModal('tradex-sampaka')">
+      <div class="logo-wrap">
+        <img class="logo-img"
+          src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Tradex_logo.png/200px-Tradex_logo.png"
+          alt="Tradex" onerror="logoError(this)">
+        <div class="logo-fallback" style="background:#8B0000;color:#fff;font-size:.75rem;font-weight:800">TRADEX</div>
+      </div>
+      <span class="svc-label">Tradex Sampaka</span>
+    </div>
+
+    <div class="svc-item" onclick="openModal('tradex-malabo2')">
+      <div class="logo-wrap">
+        <img class="logo-img"
+          src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Tradex_logo.png/200px-Tradex_logo.png"
+          alt="Tradex" onerror="logoError(this)">
+        <div class="logo-fallback" style="background:#8B0000;color:#fff;font-size:.75rem;font-weight:800">TRADEX</div>
+      </div>
+      <span class="svc-label">Tradex Malabo 2</span>
+    </div>
+
+    <div class="svc-item" onclick="openModal('tradex-nkoantoma1')">
+      <div class="logo-wrap">
+        <img class="logo-img"
+          src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Tradex_logo.png/200px-Tradex_logo.png"
+          alt="Tradex" onerror="logoError(this)">
+        <div class="logo-fallback" style="background:#8B0000;color:#fff;font-size:.75rem;font-weight:800">TRADEX</div>
+      </div>
+      <span class="svc-label">Tradex Nkoantoma 1</span>
+    </div>
+
+    <div class="svc-item" onclick="openModal('tradex-nkoantoma2')">
+      <div class="logo-wrap">
+        <img class="logo-img"
+          src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Tradex_logo.png/200px-Tradex_logo.png"
+          alt="Tradex" onerror="logoError(this)">
+        <div class="logo-fallback" style="background:#8B0000;color:#fff;font-size:.75rem;font-weight:800">TRADEX</div>
+      </div>
+      <span class="svc-label">Tradex Nkoantoma 2</span>
+    </div>
+
+  </div>
+</div>
+
+ 
+ 
+<div class="sec-divider"></div>
+
+<!-- ════════════════════════════════════════════════════════
+     BLOQUE REMESAS — reemplaza tu data-bloque="remesas"
+════════════════════════════════════════════════════════ -->
+<div data-bloque="remesas">
+  <div class="sec">
+    <div class="sec-hdr">
+      <span class="sec-title">
+        <span class="sec-dot" style="background:var(--gold)"></span>
+        Remesas &amp; <span>Transferencias</span>
+      </span>
+      <span class="sec-count">2 operadores</span>
+    </div>
+  </div>
+
+  <div class="remesas-grid">
+
+    <!-- Western Union -->
+    <div class="remesa-card anim" onclick="openModal('western')">
+      <div class="remesa-logo-wrap">
+        <img class="remesa-logo-img"
+          src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/Western_Union_Logo.svg/200px-Western_Union_Logo.svg.png"
+          alt="Western Union"
+          onerror="logoError(this)">
+        <div class="remesa-logo-fb" style="background:#FFCC00;color:#000;font-size:.65rem;font-weight:900">WU</div>
+      </div>
+      <div class="remesa-name">Western Union</div>
+      <div class="remesa-desc">Envía y recibe dinero desde cualquier parte del mundo.</div>
+      <div class="remesa-banks">
+        <span class="remesa-chip">Ecobank</span>
+        <span class="remesa-chip">BGFI</span>
+        <span class="remesa-chip">CCEI</span>
+      </div>
+    </div>
+
+    <!-- MoneyGram -->
+    <div class="remesa-card anim" onclick="openModal('moneygram')">
+      <div class="remesa-logo-wrap">
+        <img class="remesa-logo-img"
+          src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/MoneyGram_logo.svg/200px-MoneyGram_logo.svg.png"
+          alt="MoneyGram"
+          onerror="logoError(this)">
+        <div class="remesa-logo-fb" style="background:#E2001A;color:#fff;font-size:.65rem;font-weight:900">MG</div>
+      </div>
+      <div class="remesa-name">MoneyGram</div>
+      <div class="remesa-desc">Cobro disponible en puntos autorizados en GE.</div>
+      <div class="remesa-banks">
+        <span class="remesa-chip">CCEI Bank</span>
+        <span class="remesa-chip">Agencias</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+<div class="sec-divider"></div>
+
+<!-- ════════════════════════════
+     BLOQUE 8: SERVICIOS BÁSICOS & DHL
+════════════════════════════ -->
+<div data-bloque="servicios">
+  <div class="sec">
+    <div class="sec-hdr">
+      <span class="sec-title"><span class="sec-dot" style="background:var(--teal)"></span>Servicios <span>Básicos</span></span>
+    </div>
+  </div>
+  <div class="basicos-list">
+    <!-- SEGESA -->
+    <div class="basico-card anim" onclick="openModal('segesa')">
+      <div class="basico-ico" style="background:rgba(249,115,22,.08)">
+        <svg viewBox="0 0 48 48" fill="none">
+          <path d="M24 8v6M8 24h6M34 24h6M24 34v6" stroke="#F97316" stroke-width="2.5" stroke-linecap="round"/>
+          <circle cx="24" cy="24" r="8" fill="#F97316" opacity=".1" stroke="#F97316" stroke-width="2"/>
+          <path d="M24 20v5l3 2" stroke="#F97316" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="basico-info">
+        <div class="basico-name">SEGESA</div>
+        <div class="basico-desc">Electricidad de Guinea Ecuatorial. Tarifas, conexiones y averías.</div>
+        <div class="basico-tags">
+          <span class="btag" style="background:rgba(249,115,22,.08);border:1px solid rgba(249,115,22,.2);color:#C2410C">Electricidad</span>
+          <span class="btag" style="background:rgba(26,115,232,.06);border:1px solid rgba(26,115,232,.15);color:var(--blue)">Tarifas</span>
+        </div>
+      </div>
+    </div>
+    <!-- Getesa -->
+    <div class="basico-card anim" onclick="openModal('getesa')">
+      <div class="basico-ico" style="background:rgba(14,165,233,.07)">
+        <svg viewBox="0 0 48 48" fill="none">
+          <path d="M8 16l16 8 16-8M8 24l16 8 16-8" stroke="#0EA5E9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M8 32l16 8 16-8" stroke="#0EA5E9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="basico-info">
+        <div class="basico-name">Getesa</div>
+        <div class="basico-desc">Telecomunicaciones de Guinea Ecuatorial. Internet y telefonía fija.</div>
+        <div class="basico-tags">
+          <span class="btag" style="background:rgba(14,165,233,.07);border:1px solid rgba(14,165,233,.2);color:#0284C7">Internet</span>
+          <span class="btag" style="background:rgba(16,185,129,.07);border:1px solid rgba(16,185,129,.2);color:#059669">Telefonía</span>
+        </div>
+      </div>
+    </div>
+    <!-- DHL -->
+    <div class="basico-card anim" onclick="openModal('dhl')">
+      <div class="basico-ico" style="background:rgba(245,158,11,.08)">
+        <svg viewBox="0 0 48 48" fill="none">
+          <rect x="6" y="20" width="24" height="18" rx="2" fill="#F59E0B" opacity=".1" stroke="#F59E0B" stroke-width="2"/>
+          <path d="M30 26h4l4 4v4h-8v-8z" fill="#F59E0B" opacity=".15" stroke="#F59E0B" stroke-width="2" stroke-linejoin="round"/>
+          <circle cx="12" cy="38" r="3" fill="#F59E0B" opacity=".2" stroke="#F59E0B" stroke-width="2"/>
+          <circle cx="34" cy="38" r="3" fill="#F59E0B" opacity=".2" stroke="#F59E0B" stroke-width="2"/>
+          <path d="M14 20V12l10-6 10 6v8" stroke="#F59E0B" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="basico-info">
+        <div class="basico-name">DHL Express</div>
+        <div class="basico-desc">Mensajería urgente internacional. Envíos y rastreo en tiempo real.</div>
+        <div class="basico-tags">
+          <span class="btag" style="background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.2);color:#B45309">Paquetería</span>
+          <span class="btag" style="background:rgba(26,115,232,.06);border:1px solid rgba(26,115,232,.15);color:var(--blue)">Internacional</span>
+        </div>
+      </div>
+    </div>
+    <!-- TVGE -->
+    <div class="basico-card anim" onclick="openModal('tvge')">
+      <div class="basico-ico" style="background:rgba(139,92,246,.07)">
+        <svg viewBox="0 0 48 48" fill="none">
+          <rect x="4" y="10" width="40" height="26" rx="3" fill="#8B5CF6" opacity=".08" stroke="#8B5CF6" stroke-width="2"/>
+          <path d="M16 36h16M24 36v6" stroke="#8B5CF6" stroke-width="2" stroke-linecap="round"/>
+          <circle cx="24" cy="23" r="7" fill="#8B5CF6" opacity=".1" stroke="#8B5CF6" stroke-width="2"/>
+          <path d="M21 20l6 3-6 3V20z" fill="#8B5CF6"/>
+        </svg>
+      </div>
+      <div class="basico-info">
+        <div class="basico-name">TVGE</div>
+        <div class="basico-desc">Televisión nacional de Guinea Ecuatorial. Noticias y entretenimiento.</div>
+        <div class="basico-tags">
+          <span class="btag" style="background:rgba(139,92,246,.07);border:1px solid rgba(139,92,246,.2);color:#7C3AED">TV Nacional</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="sec-divider"></div>
+
+<!-- ════════════════════════════
+     BLOQUE 9: DELIVERY
+════════════════════════════ -->
+<div data-bloque="delivery">
+  <div class="sec">
+    <div class="sec-hdr">
+      <span class="sec-title"><span class="sec-dot" style="background:var(--rose)"></span>Comida a <span>Domicilio</span></span>
+      <span class="sec-count">2 servicios</span>
+    </div>
+  </div>
+  <div class="icon-grid">
+    <div class="svc-item" onclick="openModal('situka')">
+      <div class="icon-wrap iw-rose">
+        <svg viewBox="0 0 48 48" fill="none">
+          <circle cx="18" cy="38" r="4" fill="#F43F5E" opacity=".2" stroke="#F43F5E" stroke-width="2"/>
+          <circle cx="34" cy="38" r="4" fill="#F43F5E" opacity=".2" stroke="#F43F5E" stroke-width="2"/>
+          <path d="M4 24h28V32H4z" fill="#F43F5E" opacity=".08" stroke="#F43F5E" stroke-width="2" stroke-linejoin="round"/>
+          <path d="M32 26h4l6 4v4h-10V26z" fill="#F43F5E" opacity=".1" stroke="#F43F5E" stroke-width="2" stroke-linejoin="round"/>
+          <path d="M12 10h16l4 14H8L12 10z" fill="#F43F5E" opacity=".1" stroke="#F43F5E" stroke-width="2" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <span class="svc-label">SITUKA Delivery</span>
+    </div>
+    <div class="svc-item" onclick="openModal('ena-delivery')">
+      <div class="icon-wrap iw-green">
+        <svg viewBox="0 0 48 48" fill="none">
+          <circle cx="14" cy="36" r="4" fill="#10B981" opacity=".2" stroke="#10B981" stroke-width="2"/>
+          <circle cx="36" cy="36" r="4" fill="#10B981" opacity=".2" stroke="#10B981" stroke-width="2"/>
+          <path d="M4 28h28v8H4z" fill="#10B981" opacity=".07" stroke="#10B981" stroke-width="2" stroke-linejoin="round"/>
+          <path d="M32 30h4l6 4v4H32v-8z" fill="#10B981" opacity=".1" stroke="#10B981" stroke-width="2" stroke-linejoin="round"/>
+          <circle cx="24" cy="18" r="8" fill="#10B981" opacity=".1" stroke="#10B981" stroke-width="2"/>
+          <path d="M21 15l6 3-6 3V15z" fill="#10B981"/>
+        </svg>
+      </div>
+      <span class="svc-label">ENA Delivery</span>
+    </div>
+  </div>
+</div>
+
+<div class="sec-divider"></div>
+
+<!-- ════════════════════════════
+     BLOQUE 10: EMERGENCIAS
+════════════════════════════ -->
+<div data-bloque="emergencias">
+  <div class="sec">
+    <div class="sec-hdr">
+      <span class="sec-title"><span class="sec-dot" style="background:#EF4444"></span><span>Emergencias</span></span>
+    </div>
+  </div>
+  <div class="emergency-grid">
+    <a class="emg-btn emg-police" href="tel:113">
+      <div class="emg-icon-wrap" style="background:rgba(99,102,241,.1)">
+        <svg viewBox="0 0 32 32" fill="none" width="28" height="28">
+          <path d="M16 6l-8 4v8c0 5.25 3.43 10.16 8 11.38C20.57 28.16 24 23.25 24 18v-8z" fill="#6366F1" opacity=".15" stroke="#6366F1" stroke-width="1.5" stroke-linejoin="round"/>
+          <path d="M13 16.5l2 2 5-5" stroke="#6366F1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="emg-label">Policía Nacional</div>
+      <div class="emg-num">113</div>
+    </a>
+    <a class="emg-btn emg-police" href="tel:114">
+      <div class="emg-icon-wrap" style="background:rgba(99,102,241,.1)">
+        <svg viewBox="0 0 32 32" fill="none" width="28" height="28">
+          <path d="M6 10h20v16H6z" fill="#6366F1" opacity=".1" stroke="#6366F1" stroke-width="1.5"/>
+          <path d="M11 10V7a5 5 0 0110 0v3" stroke="#6366F1" stroke-width="1.5" stroke-linecap="round"/>
+          <path d="M11 18l2 2 5-5" stroke="#6366F1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="emg-label">Gendarmería</div>
+      <div class="emg-num">114</div>
+    </a>
+    <a class="emg-btn emg-fire" href="tel:115">
+      <div class="emg-icon-wrap" style="background:rgba(244,63,94,.1)">
+        <svg viewBox="0 0 32 32" fill="none" width="28" height="28">
+          <path d="M16 4s-8 8-8 14a8 8 0 0016 0C24 12 16 4 16 4z" fill="#F43F5E" opacity=".15" stroke="#F43F5E" stroke-width="1.5"/>
+          <path d="M16 14s-4 4-4 7a4 4 0 008 0c0-3-4-7-4-7z" fill="#F43F5E" opacity=".3"/>
+        </svg>
+      </div>
+      <div class="emg-label">Bomberos</div>
+      <div class="emg-num">115</div>
+    </a>
+    <a class="emg-btn emg-hosp" href="tel:222256486">
+      <div class="emg-icon-wrap" style="background:rgba(16,185,129,.1)">
+        <svg viewBox="0 0 32 32" fill="none" width="28" height="28">
+          <rect x="4" y="8" width="24" height="20" rx="2" fill="#10B981" opacity=".1" stroke="#10B981" stroke-width="1.5"/>
+          <path d="M16 12v8M12 16h8" stroke="#10B981" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="emg-label">Hospital Regional Malabo</div>
+      <div class="emg-num">222 256 486</div>
+    </a>
+    <a class="emg-btn emg-hosp" href="tel:222667314">
+      <div class="emg-icon-wrap" style="background:rgba(16,185,129,.1)">
+        <svg viewBox="0 0 32 32" fill="none" width="28" height="28">
+          <path d="M16 4C9.37 4 4 9.37 4 16s5.37 12 12 12 12-5.37 12-12S22.63 4 16 4z" fill="#10B981" opacity=".1" stroke="#10B981" stroke-width="1.5"/>
+          <path d="M16 10v8l5 3" stroke="#10B981" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="emg-label">Policlínico Dr. Loeri</div>
+      <div class="emg-num">222 667 314</div>
+    </a>
+    <a class="emg-btn emg-hosp" href="tel:555570333">
+      <div class="emg-icon-wrap" style="background:rgba(16,185,129,.1)">
+        <svg viewBox="0 0 32 32" fill="none" width="28" height="28">
+          <rect x="4" y="8" width="24" height="20" rx="2" fill="#10B981" opacity=".1" stroke="#10B981" stroke-width="1.5"/>
+          <path d="M4 14h24" stroke="#10B981" stroke-width="1.5"/>
+          <path d="M16 14v14M10 14v14M22 14v14" stroke="#10B981" stroke-width="1" stroke-linecap="round"/>
+          <path d="M4 8L16 2l12 6" stroke="#10B981" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="emg-label">Hospital La Paz</div>
+      <div class="emg-num">555 570 333</div>
+    </a>
+  </div>
+</div>
+
+<div class="sec-divider"></div>
+
+<!-- ════════════════════════════
+     PREMIUM GATE
+════════════════════════════ -->
+<div class="premium-gate" id="premiumGate">
+  <div class="pg-icon">
+    <svg width="36" height="36" viewBox="0 0 48 48" fill="none">
+      <path d="M24 8l4 8 9 1.3-6.5 6.3 1.5 9L24 28l-8 4.6 1.5-9L11 17.3l9-1.3z" fill="#F59E0B" opacity=".25" stroke="#F59E0B" stroke-width="2" stroke-linejoin="round"/>
+    </svg>
+  </div>
+  <div class="pg-title">¿Tienes un negocio o servicio?</div>
+  <div class="pg-desc">Registra tu tienda, agencia o servicio de delivery y aparecerá en el directorio.</div>
+  <button class="pg-btn" onclick="window.location.href='crear-entidades.html'">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    Registrar mi servicio
+  </button>
+</div>
+
+</main>
+
+<!-- ═══ MODAL ═══ -->
+<div class="modal-ov" id="modal" onclick="closeModalBg(event)">
+  <div class="modal-box" id="modalBox">
+    <div class="modal-drag"></div>
+    <button class="modal-close-btn" onclick="closeModal()">
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <div class="modal-scroll">
+      <div class="modal-hero" id="modalHero">
+        <div class="modal-hero-svg" id="modalHeroBg"></div>
+        <div class="modal-hero-content" id="modalHeroContent"></div>
+      </div>
+      <div class="modal-body" id="modalBody"></div>
+    </div>
+    <div class="modal-actions" id="modalActions"></div>
+  </div>
+</div>
+
+<!-- ═══ BOTTOM NAV ═══ -->
+<nav class="bot-nav">
+  <button class="nav-tab" onclick="window.location.href='index-comprador.html'">
+    <div class="nav-indicator"></div>
+    <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    Inicio
+  </button>
+  <button class="nav-tab active">
+    <div class="nav-indicator"></div>
+    <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+    Servicios
+  </button>
+  <button class="nav-tab" onclick="window.location.href='index-comprador.html'">
+    <div class="nav-indicator"></div>
+    <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+    Soporte
+  </button>
+  <button class="nav-tab" onclick="window.location.href='index-comprador.html'">
+    <div class="nav-indicator"></div>
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
+    Navegar
+  </button>
+</nav>
+
+<div id="toast"></div>
+ 
+<script type="module">
+import { initializeApp }          from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+import { getFirestore, collection, query, where,
+         getDocs, getDoc, doc, orderBy, limit }
+                                   from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+import { getAuth, onAuthStateChanged }
+                                   from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+import { firebaseConfig }          from './js/config.js';
+
+const app  = initializeApp(firebaseConfig);
+const db   = getFirestore(app);
+const auth = getAuth(app);
+
+/* ═══════════════════════════════════════
+   BANNERS DINÁMICOS
+═══════════════════════════════════════ */
+async function loadBanners() {
+  const loading = document.getElementById('bannerLoading');
+  const track   = document.getElementById('bannerTrack');
+  const dots    = document.getElementById('bannerDots');
+  try {
+    const q    = query(
+      collection(db, 'banners'),
+      where('pagina',  '==', 'servicios'),
+      where('activo',  '==', true),
+      orderBy('orden', 'asc'),
+      limit(6)
+    );
+    const snap = await getDocs(q);
+    loading.style.display = 'none';
+    if (snap.empty) { addDefaultBanners(track, dots); return; }
+    track.style.display = 'flex';
+    let i = 0;
+    snap.forEach(d => { addBannerSlide(track, dots, d.data(), i); i++; });
+    startBannerAuto(track, snap.size, dots);
+  } catch(e) {
+    loading.style.display = 'none';
+    addDefaultBanners(track, dots);
+  }
+}
+
+function addDefaultBanners(track, dots) {
+  track.style.display = 'flex';
+  const defaults = [
+    { tag:'Formación Internacional', titulo:'Becas 2025 disponibles. ¿Estás listo para aplicar?',   btnTexto:'Ver becas',       btnAccion:"setFilter('becas',document.querySelector('.fchip'))",       bgGradient:'linear-gradient(135deg,#1A73E8,#0D47A1)' },
+    { tag:'Trámites Oficiales',       titulo:'Gestiona tu pasaporte y certificados sin colas',       btnTexto:'Ver ministerios', btnAccion:"setFilter('ministerios',document.querySelector('.fchip'))", bgGradient:'linear-gradient(135deg,#F59E0B,#D97706)' },
+    { tag:'Vuelos desde Malabo',      titulo:'Compara aerolíneas y encuentra tu ruta ideal',         btnTexto:'Ver vuelos',      btnAccion:"setFilter('vuelos',document.querySelector('.fchip'))",      bgGradient:'linear-gradient(135deg,#0EA5E9,#0369A1)' },
+  ];
+  defaults.forEach((d, i) => addBannerSlide(track, dots, d, i));
+  startBannerAuto(track, defaults.length, dots);
+}
+
+function addBannerSlide(track, dots, d, i) {
+  const slide = document.createElement('div');
+  slide.className = 'banner-slide';
+  slide.style.background = d.bgGradient || 'linear-gradient(135deg,#1A73E8,#0D47A1)';
+
+  if (d.imagen) {
+    const img = document.createElement('img');
+    img.src = d.imagen;
+    img.className = 'banner-slide-img';
+    img.onerror = () => img.remove();
+    slide.appendChild(img);
+  }
+
+  const inner = document.createElement('div');
+  inner.className = 'banner-slide-inner';
+  inner.innerHTML = `
+    ${d.tag       ? `<div class="banner-label">${d.tag}</div>` : ''}
+    <div class="banner-title">${d.titulo || 'Compra Ya GE'}</div>
+    ${d.subtitulo ? `<div style="font-size:.72rem;color:rgba(255,255,255,.8);margin-bottom:6px;position:relative;z-index:1">${d.subtitulo}</div>` : ''}
+    ${d.btnTexto  ? `<button class="banner-cta" onclick="${d.btnAccion || ''}">${d.btnTexto}
+      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>` : ''}`;
+  slide.appendChild(inner);
+  track.appendChild(slide);
+
+  const dot = document.createElement('div');
+  dot.className = 'banner-dot' + (i === 0 ? ' active' : '');
+  dot.onclick = () => window.scrollToBanner(i, track, dots);
+  dots.appendChild(dot);
+}
+
+let _bannerTimer;
+function startBannerAuto(track, total, dots) {
+  let cur = 0;
+  clearInterval(_bannerTimer);
+  _bannerTimer = setInterval(() => {
+    cur = (cur + 1) % total;
+    window.scrollToBanner(cur, track, dots);
+  }, 4200);
+}
+
+window.scrollToBanner = function(idx, track, dots) {
+  const t = track || document.getElementById('bannerTrack');
+  const d = dots  || document.getElementById('bannerDots');
+  const slides = t.querySelectorAll('.banner-slide');
+  if (slides[idx]) {
+    t.scrollTo({ left: slides[idx].offsetLeft, behavior: 'smooth' });
+  }
+  d.querySelectorAll('.banner-dot').forEach((dot, j) => dot.classList.toggle('active', j === idx));
+};
+
+/* ═══════════════════════════════════════
+   PREMIUM CHECK
+═══════════════════════════════════════ */
+onAuthStateChanged(auth, async user => {
+  if (!user) return;
+  try {
+    const snap = await getDoc(doc(db, 'usuarios', user.uid));
+    const data = snap.data() || {};
+    const isPremium = data.isPremium || ['premium','store','entity','ministry'].includes(data.role);
+    if (isPremium) {
+      const gate = document.getElementById('premiumGate');
+      if (gate) gate.style.display = 'none';
+    }
+  } catch(e) {}
+});
+
+/* ═══════════════════════════════════════
+   MODAL DATA
+═══════════════════════════════════════ */
+const MODALS = {
+  publicidad: {
+    eyebrow:'Compra Ya GE', eyeColor:'#1A73E8',
+    title:'Publicidad & Anuncios',
+    tagline:'Publica tu negocio en el marketplace más grande de Guinea Ecuatorial.',
+    info:[
+      {label:'Formatos disponibles', val:'Banners en portada · Posts patrocinados · Cards destacadas'},
+      {label:'Ventajas',             val:'Visibilidad máxima · Estadísticas en tiempo real · Segmentación por ciudad'},
+      {label:'Contacto ventas',      val:'Escríbenos por WhatsApp para cotización y publicación inmediata'},
+    ],
+    btnExt:null, btnWa:{text:'Solicitar publicidad', msg:'Hola, quiero publicitar mi negocio en Compra Ya GE'}, svgKey:'ads'
+  },
+  atencion: {
+    eyebrow:'Soporte 24/7', eyeColor:'#10B981',
+    title:'Atención al Cliente',
+    tagline:'Nuestro equipo está disponible para resolver cualquier duda, incidencia o reclamación.',
+    info:[
+      {label:'Canales de soporte',   val:'WhatsApp · Chat en app · Email'},
+      {label:'Tiempo de respuesta',  val:'Menos de 2 horas en horario laboral'},
+      {label:'Idiomas',              val:'Español · Francés · Fang'},
+    ],
+    btnExt:null, btnWa:{text:'Contactar soporte', msg:'Hola, necesito ayuda con Compra Ya GE'}, svgKey:'support'
+  },
+  asistente: {
+    eyebrow:'IA Generativa', eyeColor:'#8B5CF6',
+    title:'CY Asistente IA',
+    tagline:'Tu asistente inteligente integrado. Haz preguntas, busca productos y recibe recomendaciones.',
+    info:[
+      {label:'Capacidades',    val:'Búsqueda de productos · Comparación de precios · Respuestas en tiempo real'},
+      {label:'Idiomas',        val:'Español · Inglés · Francés · Fang'},
+      {label:'Disponibilidad', val:'24 horas · 7 días a la semana · Sin esperas'},
+    ],
+    btnExt:null, btnWa:{text:'Probar asistente', msg:'Hola, quiero probar el CY Asistente'}, svgKey:'ai'
+  },
+  premium: {
+    eyebrow:'Plan Premium', eyeColor:'#F59E0B',
+    title:'Compra Ya Premium',
+    tagline:'Accede a funciones exclusivas y mejora tu experiencia de compra en Guinea Ecuatorial.',
+    info:[
+      {label:'Beneficios incluidos', val:'Sin anuncios · Soporte prioritario · Descuentos especiales · Acceso anticipado'},
+      {label:'Para negocios',        val:'Panel de estadísticas · Productos ilimitados · Badge verificado'},
+      {label:'Precio',               val:'Consultar planes disponibles por WhatsApp'},
+    ],
+    btnExt:null, btnWa:{text:'Ver planes Premium', msg:'Hola, me interesa suscribirme a Compra Ya Premium'}, svgKey:'premium'
+  },
+  // BECAS
+  stipendium: {
+    eyebrow:'Beca Internacional', eyeColor:'#0EA5E9', title:'Stipendium Hungaricum',
+    tagline:'Programa de becas del Gobierno húngaro para estudiantes de Guinea Ecuatorial.',
+    info:[
+      {label:'Qué ofrece',     val:'Matrícula completa · Alojamiento · Seguro médico · Estipendio mensual'},
+      {label:'Requisitos',     val:'Ciudadano de GE · Buen expediente · Inglés o húngaro · Menores de 35'},
+      {label:'Convocatoria',   val:'Noviembre–enero. Portal: DreamApply'},
+    ],
+    btnExt:{text:'Ver convocatoria oficial', url:'https://stipendiumhungaricum.hu'}, btnWa:null, svgKey:'scholarship'
+  },
+  csc: {
+    eyebrow:'Beca China', eyeColor:'#F43F5E', title:'Beca Gobierno Chino (CSC)',
+    tagline:'El Chinese Scholarship Council ofrece plazas para Grado, Máster y Doctorado en China.',
+    info:[
+      {label:'Qué ofrece', val:'Matrícula · Alojamiento · Seguro médico · ~2.500 CNY/mes'},
+      {label:'Idioma',     val:'Mandarín (año preparatorio gratuito) o inglés'},
+      {label:'Plazo',      val:'Enero–abril. Embajada de China en Malabo'},
+    ],
+    btnExt:{text:'Campus China Portal', url:'https://www.campuschina.org'}, btnWa:null, svgKey:'scholarship'
+  },
+  gks: {
+    eyebrow:'Beca Corea', eyeColor:'#8B5CF6', title:'Global Korea Scholarship',
+    tagline:'El Gobierno coreano ofrece becas completas para estudiar en Corea del Sur.',
+    info:[
+      {label:'Qué ofrece',     val:'Matrícula + 1 año de coreano · Alojamiento · Vuelo · Seguro · Mensualidad'},
+      {label:'Perfil buscado', val:'Media académica superior a 80% · Salud apta'},
+      {label:'Convocatoria',   val:'Septiembre–diciembre del año anterior'},
+    ],
+    btnExt:{text:'NIIED — Web oficial', url:'https://www.niied.go.kr'}, btnWa:null, svgKey:'scholarship'
+  },
+  aecid: {
+    eyebrow:'Cooperación Española', eyeColor:'#F59E0B', title:'Becas AECID',
+    tagline:'La Agencia Española de Cooperación ofrece becas de posgrado y doctorado para GE.',
+    info:[
+      {label:'Tipos',        val:'Másters y especializaciones · Doctorados · Formación técnica en España'},
+      {label:'Requisito',    val:'Título universitario en GE · Solicitud online · Carta de motivación'},
+      {label:'Convocatoria', val:'Enero–marzo. Resultados en julio'},
+    ],
+    btnExt:{text:'Web AECID', url:'https://www.aecid.es/becas'}, btnWa:null, svgKey:'scholarship'
+  },
+  carolina: {
+    eyebrow:'Fundación', eyeColor:'#F4A100', title:'Fundación Carolina',
+    tagline:'Posgrados y doctorados en universidades españolas para ciudadanos africanos.',
+    info:[
+      {label:'Qué ofrece', val:'Másters · Doctorados · Estancias cortas de investigación'},
+      {label:'Perfil',     val:'Profesionales y académicos con título universitario y experiencia'},
+      {label:'Plazo',      val:'Noviembre–enero. Ver convocatorias por programa'},
+    ],
+    btnExt:{text:'Fundación Carolina', url:'https://www.fundacioncarolina.es'}, btnWa:null, svgKey:'scholarship'
+  },
+  bls: {
+    eyebrow:'Centro de Visados', eyeColor:'#0EA5E9', title:'BLS International',
+    tagline:'Centro de visados certificado para múltiples embajadas. Gestión completa y segura.',
+    info:[
+      {label:'Destinos', val:'España · Portugal · Italia · Canadá · India · y más'},
+      {label:'Qué hacen', val:'Recepción de documentos · Cita consular · Seguimiento · Devolución del pasaporte'},
+      {label:'Dónde',    val:'Centro en Malabo. Consultar horarios en su web'},
+    ],
+    btnExt:{text:'BLS International', url:'https://www.blsinternational.com'}, btnWa:null, svgKey:'visa'
+  },
+  // MINISTERIOS
+  'min-educacion': {
+    eyebrow:'Ministerio', eyeColor:'#1A73E8', title:'Ministerio de Educación',
+    tagline:'Trámites educativos, homologaciones y becas nacionales. Malabo, Av. de la Independencia.',
+    info:[
+      {label:'Trámites disponibles', val:'① Homologación de títulos extranjeros\n② Certificados escolares y académicos\n③ Solicitud de becas nacionales\n④ Matrícula en centros públicos'},
+      {label:'Horario',   val:'Lunes a Viernes · 8:00 – 14:00h'},
+      {label:'Kit básico', val:'DIP original · Fotos carnet · Títulos a homologar · Solicitud'},
+    ],
+    btnExt:{text:'Web del Ministerio', url:'#'}, btnWa:{text:'Consultar por WhatsApp', msg:'Hola Ministerio de Educación, tengo una consulta sobre un trámite'}, svgKey:'ministry'
+  },
+  'min-hacienda': {
+    eyebrow:'Ministerio', eyeColor:'#F4A100', title:'Ministerio de Hacienda',
+    tagline:'Ventanilla Única (VUEGE), NIF y pagos de impuestos.',
+    info:[
+      {label:'Trámites disponibles', val:'① NIF — Número de Identificación Fiscal\n② VUEGE — Registro de empresas\n③ Pago de tasas e impuestos\n④ Certificados de estar al corriente'},
+      {label:'Horario', val:'Lunes a Viernes · 8:00 – 14:30h'},
+      {label:'Consejo',  val:'Lleva siempre 5 fotocopias del DIP. No hay fotocopiadora en el edificio'},
+    ],
+    btnExt:{text:'Portal VUEGE', url:'https://vuege.org'}, btnWa:{text:'Consultar por WhatsApp', msg:'Hola Ministerio de Hacienda, necesito info sobre un trámite'}, svgKey:'ministry'
+  },
+  'min-salud': {
+    eyebrow:'Ministerio', eyeColor:'#F43F5E', title:'Ministerio de Salud',
+    tagline:'Carnés sanitarios, certificados médicos y campañas de vacunación.',
+    info:[
+      {label:'Trámites', val:'① Carné de manipulador de alimentos\n② Certificado médico oficial\n③ Vacunación infantil y adultos\n④ Registro sanitario de productos'},
+      {label:'Horario',  val:'Lunes a Viernes · 7:30 – 14:00h'},
+    ],
+    btnExt:null, btnWa:{text:'Consultar por WhatsApp', msg:'Hola Ministerio de Salud, tengo una consulta'}, svgKey:'ministry'
+  },
+  'min-asuntos': {
+    eyebrow:'Ministerio', eyeColor:'#8B5CF6', title:'Min. de Asuntos Exteriores',
+    tagline:'Pasaportes, visados de entrada y legalizaciones. Malabo.',
+    info:[
+      {label:'Trámites', val:'① Pasaporte ordinario y urgente\n② Visado de entrada a GE\n③ Legalización y apostilla\n④ Renovación DIP'},
+      {label:'Tasas',    val:'Pasaporte ordinario: 30.000 FCFA · Urgente 48h: 60.000 FCFA'},
+      {label:'Horario',  val:'Lunes a Viernes · 8:00 – 14:00h · Martes menos cola'},
+    ],
+    btnExt:null, btnWa:{text:'Consultar por WhatsApp', msg:'Hola, necesito información sobre pasaportes en GE'}, svgKey:'ministry'
+  },
+  ambassade: {
+    eyebrow:'Consulados', eyeColor:'#0EA5E9', title:'Consulados y Embajadas',
+    tagline:'Visados Schengen, apostilla de documentos y certificados para el exterior.',
+    info:[
+      {label:'Visado Schengen', val:'Citas a través de VFS Global y BLS International. Requieren reserva previa'},
+      {label:'Apostilla',       val:'Legalización de documentos para uso en el extranjero. Tramitar en Min. de Justicia'},
+    ],
+    btnExt:{text:'VFS Global', url:'https://www.vfsglobal.com'}, btnWa:null, svgKey:'embassy'
+  },
+  // HOTELES & RESTAURANTES
+  andachina:          { eyebrow:'Restaurante',  eyeColor:'#F43F5E', title:'Anda China',               tagline:'Restaurante de cocina china y asiática en Malabo.',           info:[{label:'Especialidad', val:'Cocina china · Wok · Mariscos · Arroces especiales'},{label:'Ubicación', val:'Malabo, Guinea Ecuatorial'}], btnExt:null, btnWa:{text:'Reservar mesa',       msg:'Hola Anda China, quisiera hacer una reserva'},      svgKey:'restaurant' },
+  cafemalabo:         { eyebrow:'Cafetería',    eyeColor:'#F59E0B', title:'Cafe Malabo',               tagline:'Cafetería y restaurante en el corazón de Malabo.',            info:[{label:'Carta',       val:'Café · Zumos · Bocadillos · Platos del día'},{label:'Horario', val:'7:00 – 22:00h · Todos los días'}],                    btnExt:null, btnWa:{text:'Contactar',           msg:'Hola Cafe Malabo, quiero información'},             svgKey:'restaurant' },
+  ibisbata:           { eyebrow:'Hotel',        eyeColor:'#F43F5E', title:'IBIS Bata',                 tagline:'Hotel de la cadena IBIS en Bata, Guinea Ecuatorial.',         info:[{label:'Servicios',  val:'Habitaciones · Restaurante · WiFi · Recepción 24h'},{label:'Ubicación', val:'Bata, Región Continental, Guinea Ecuatorial'}], btnExt:{text:'Reservar en IBIS', url:'https://www.accorhotels.com'}, btnWa:null, svgKey:'hotel' },
+  restaurantqg:       { eyebrow:'Restaurante',  eyeColor:'#F4A100', title:'Restaurant QG',             tagline:'Restaurante de referencia en Malabo con cocina internacional.', info:[{label:'Cocina',     val:'Mediterránea · Internacional · Mariscos · Carnes'},{label:'Horario', val:'12:00 – 23:00h · Cerrado lunes'}],                  btnExt:null, btnWa:{text:'Reservar mesa',       msg:'Hola Restaurant QG, quiero una reserva'},          svgKey:'restaurant' },
+  bidjibinia:         { eyebrow:'Restaurante',  eyeColor:'#F97316', title:'Rest. Bidji Binia',         tagline:'Auténtica cocina ecuatoguineana.',                             info:[{label:'Especialidad', val:'Cocina tradicional de GE · Pescado fresco · Ndolé'}],                                                                     btnExt:null, btnWa:{text:'Contactar',           msg:'Hola Restaurante Bidji Binia, quiero información'}, svgKey:'restaurant' },
+  leatelier:          { eyebrow:'Restaurante',  eyeColor:'#8B5CF6', title:'Le Atelier',                tagline:'Cocina francesa e internacional con ambiente refinado.',        info:[{label:'Cocina',     val:'Francesa · Mediterránea · Fusion'},{label:'Horario', val:'12:00 – 23:30h'}],                                                 btnExt:null, btnWa:{text:'Reservar mesa',       msg:'Hola Le Atelier, quisiera hacer una reserva'},     svgKey:'restaurant' },
+  complejolaluna:     { eyebrow:'Complejo',     eyeColor:'#0EA5E9', title:'Complejo La Luna',          tagline:'Complejo de ocio con restaurante, piscina y entretenimiento.', info:[{label:'Servicios',  val:'Restaurante · Piscina · Bar · Zonas de descanso'}],                                                                          btnExt:null, btnWa:{text:'Contactar',           msg:'Hola Complejo La Luna, quiero información'},       svgKey:'hotel'      },
+  loriental:          { eyebrow:'Restaurante',  eyeColor:'#F59E0B', title:"L'Oriental",               tagline:'Cocina oriental en Malabo. Ambientación auténtica.',           info:[{label:'Cocina',     val:'China · Japonesa · Tailandesa'},{label:'Horario', val:'12:00 – 22:30h'}],                                                   btnExt:null, btnWa:{text:'Reservar mesa',       msg:"Hola L'Oriental, quiero una reserva"},             svgKey:'restaurant' },
+  magnosuites:        { eyebrow:'Hotel',        eyeColor:'#1A73E8', title:'Hotel MAGNO Suites',        tagline:'Hotel de referencia en Malabo con suites de lujo.',            info:[{label:'Servicios',  val:'Suites · Restaurante · Sala de conferencias · Piscina · Spa'},{label:'Ubicación', val:'Malabo, Guinea Ecuatorial'}],        btnExt:null, btnWa:{text:'Reservar habitación', msg:'Hola Hotel MAGNO Suites, quiero una reserva'},     svgKey:'hotel'      },
+  restauranteimagine: { eyebrow:'Restaurante',  eyeColor:'#F97316', title:'Restaurante Imagine',       tagline:'Cocina de autor con ingredientes locales e internacionales.',   info:[{label:'Cocina',     val:'Fusion · Internacional · Cocina de autor'},{label:'Horario', val:'13:00 – 23:00h · Martes a domingo'}],                   btnExt:null, btnWa:{text:'Reservar mesa',       msg:'Hola Restaurante Imagine, quiero una reserva'},    svgKey:'restaurant' },
+  panafrica:          { eyebrow:'Hotel',        eyeColor:'#10B981', title:'Hotel Panafrica',           tagline:'Hotel boutique & spa en Malabo.',                              info:[{label:'Servicios',  val:'Habitaciones premium · Spa · Restaurante · Jardines'},{label:'Ubicación', val:'Malabo, Guinea Ecuatorial'}],               btnExt:null, btnWa:{text:'Reservar habitación', msg:'Hola Hotel Panafrica, quiero hacer una reserva'},  svgKey:'hotel'      },
+  emmarose:           { eyebrow:'Restaurante',  eyeColor:'#F43F5E', title:'Restaurante Emma Rose',     tagline:'Restaurante íntimo con cocina mediterránea y africana.',        info:[{label:'Cocina',     val:'Mediterránea · Africana · Pescados y mariscos'},{label:'Horario', val:'12:00 – 22:00h · Lunes cerrado'}],                  btnExt:null, btnWa:{text:'Reservar mesa',       msg:'Hola Restaurante Emma Rose, quiero una reserva'},  svgKey:'restaurant' },
+  dulceencanto:       { eyebrow:'Heladería',    eyeColor:'#C2185B', title:'Dulce Encanto Heladería',   tagline:'Heladería y chucherías en Malabo. Helados artesanales.',         info:[{label:'Productos',  val:'Helados artesanales · Chucherías · Batidos · Postres'}],                                                                   btnExt:null, btnWa:{text:'Contactar',           msg:'Hola Dulce Encanto, quiero información'},          svgKey:'restaurant' },
+  // SUPERMERCADOS
+  'martinez-muankaban': { eyebrow:'Supermercado', eyeColor:'#CC0000', title:'Martínez Muankaban',      tagline:'Supermercado Martínez Hermanos, sucursal Muankaban.',           info:[{label:'Productos',   val:'Alimentación · Hogar · Electrónica · Importación'}], btnExt:null, btnWa:{text:'Contactar', msg:'Hola Martínez Hnos, necesito información'}, svgKey:'market' },
+  'martinez-malabo':    { eyebrow:'Supermercado', eyeColor:'#CC0000', title:'Martínez Central Malabo', tagline:'Sede central de Martínez Hermanos en Malabo.',                  info:[{label:'Productos',   val:'Alimentación · Hogar · Electrónica · Importación'}], btnExt:null, btnWa:{text:'Contactar', msg:'Hola Martínez Hnos, necesito información'}, svgKey:'market' },
+  'martinez-bata':      { eyebrow:'Supermercado', eyeColor:'#CC0000', title:'Martínez Central Bata',   tagline:'Sede central de Martínez Hermanos en Bata.',                    info:[{label:'Productos',   val:'Alimentación · Hogar · Electrónica · Importación'}], btnExt:null, btnWa:{text:'Contactar', msg:'Hola Martínez Hnos, necesito información'}, svgKey:'market' },
+  'egtc-supermercado':  { eyebrow:'Supermercado', eyeColor:'#003087', title:'EGTC Supermercado',       tagline:'Supermercado EGTC en Malabo.',                                  info:[{label:'Productos',   val:'Alimentación · Bebidas · Electrónica · Hogar'}],      btnExt:null, btnWa:{text:'Contactar', msg:'Hola EGTC, necesito información'},          svgKey:'market' },
+  'egtc-bata':          { eyebrow:'Supermercado', eyeColor:'#003087', title:'EGTC Bata',               tagline:'Supermercado EGTC en Bata.',                                    info:[{label:'Productos',   val:'Alimentación · Bebidas · Electrónica · Hogar'}],      btnExt:null, btnWa:{text:'Contactar', msg:'Hola EGTC, necesito información'},          svgKey:'market' },
+  'guinaco-ciudad':     { eyebrow:'Supermercado', eyeColor:'#8B0000', title:'Guinaco Malabo Ciudad',   tagline:'Supermercado Guinaco, sucursal Malabo Ciudad.',                  info:[{label:'Especialidad', val:'Productos básicos · Bebidas · Conservas · Al por mayor'}], btnExt:null, btnWa:{text:'Contactar', msg:'Hola Guinaco, necesito información'}, svgKey:'market' },
+  'guinaco-ela':        { eyebrow:'Supermercado', eyeColor:'#8B0000', title:'Guinaco Ela Nguema',      tagline:'Supermercado Guinaco, sucursal Ela Nguema.',                     info:[{label:'Especialidad', val:'Productos básicos · Bebidas · Conservas · Al por mayor'}], btnExt:null, btnWa:{text:'Contactar', msg:'Hola Guinaco, necesito información'}, svgKey:'market' },
+  'ventage-k5':         { eyebrow:'Gourmet',      eyeColor:'#1A3A8F', title:'Ventage Sala K5',         tagline:'Tienda gourmet Ventage, sucursal Sala K5.',                      info:[{label:'Especialidad', val:'Quesos importados · Vinos · Conservas premium'}],          btnExt:{text:'ventagegroup.com', url:'https://ventagegroup.com/ventage/'}, btnWa:null, svgKey:'market' },
+  'ventage-mall':       { eyebrow:'Gourmet',      eyeColor:'#1A3A8F', title:'Ventage Mall',            tagline:'Tienda gourmet Ventage en el Mall.',                             info:[{label:'Especialidad', val:'Quesos importados · Vinos · Conservas premium'}],          btnExt:{text:'ventagegroup.com', url:'https://ventagegroup.com/ventage/'}, btnWa:null, svgKey:'market' },
+  'ventage-casa':       { eyebrow:'Gourmet',      eyeColor:'#1A3A8F', title:'Ventage Casa',            tagline:'Ventage especialistas en artículos para el hogar y gourmet.',    info:[{label:'Especialidad', val:'Artículos de hogar · Decoración · Gourmet'}],             btnExt:{text:'ventagegroup.com', url:'https://ventagegroup.com/ventage/'}, btnWa:null, svgKey:'market' },
+  'ventage-office':     { eyebrow:'Gourmet',      eyeColor:'#1A3A8F', title:'Ventage Office Store',    tagline:'Ventage especialistas en artículos de oficina e importación.',   info:[{label:'Especialidad', val:'Artículos de oficina · Tecnología · Importación'}],       btnExt:{text:'ventagegroup.com', url:'https://ventagegroup.com/ventage/'}, btnWa:null, svgKey:'market' },
+  'blackspoon-candy':   { eyebrow:'Mini Mercado', eyeColor:'#1a1a1a', title:'Mini Mercado Candy',      tagline:'Mini mercado Black Spoon, sucursal Candy.',                      info:[{label:'Productos',    val:'Alimentación · Bebidas · Artículos básicos'}],              btnExt:null, btnWa:{text:'Contactar', msg:'Hola Black Spoon, necesito información'}, svgKey:'market' },
+  'blackspoon-sipopo':  { eyebrow:'Mini Mercado', eyeColor:'#1a1a1a', title:'Black Spoon Sipopo',      tagline:'Mini mercado Black Spoon, sucursal Sipopo.',                     info:[{label:'Productos',    val:'Alimentación · Bebidas · Artículos básicos'}],              btnExt:null, btnWa:{text:'Contactar', msg:'Hola Black Spoon, necesito información'}, svgKey:'market' },
+  'kim-mall':           { eyebrow:'Centro Comercial', eyeColor:'#2c2c2c', title:'Kim Mall',            tagline:'Centro comercial Kim Mall en Malabo.',                           info:[{label:'Tiendas',      val:'Moda · Electrónica · Alimentación · Servicios'}],             btnExt:null, btnWa:{text:'Contactar', msg:'Hola Kim Mall, necesito información'},    svgKey:'market' },
+  // VUELOS & AGENCIAS
+  cronos:    { eyebrow:'Aerolínea GE',      eyeColor:'#1A73E8', title:'Cronos Airlines',          tagline:'Aerolínea de GE. Vuelos domésticos e insulares entre Malabo y Bata.', info:[{label:'Rutas', val:'Malabo ↔ Bata · Malabo ↔ Annobon · Vuelos chárter'}],            btnExt:{text:'Sitio Cronos',       url:'https://www.cronosairlines.com'},    btnWa:null, svgKey:'airline' },
+  satguru:   { eyebrow:'Agencia de Viajes', eyeColor:'#10B981', title:'Satguru Travel & Tours',   tagline:'Agencia internacional. Vuelos, hoteles y paquetes turísticos desde GE.',  info:[{label:'Servicios', val:'Vuelos internacionales · Hoteles · Paquetes · Visados'}],  btnExt:null, btnWa:{text:'Contactar Satguru',    msg:'Hola Satguru Travel, quiero cotizar un viaje'},    svgKey:'agency'  },
+  milestravel:{ eyebrow:'Agencia de Viajes',eyeColor:'#0EA5E9', title:'Miles Travel',             tagline:'Tu agencia de viajes de confianza en Guinea Ecuatorial.',                 info:[{label:'Servicios', val:'Vuelos · Hoteles · Transfers · Visados · Paquetes'}],       btnExt:null, btnWa:{text:'Contactar Miles',      msg:'Hola Miles Travel, quiero información sobre vuelos'}, svgKey:'agency'},
+  lufthansa: { eyebrow:'Aerolínea',         eyeColor:'#1A73E8', title:'Lufthansa',                tagline:'Principal aerolínea para volar de Malabo a Europa vía Frankfurt.',         info:[{label:'Rutas', val:'Malabo → Frankfurt → Europa / USA / Asia'},{label:'Check-in', val:'24h antes en la app de Lufthansa'}], btnExt:{text:'lufthansa.com', url:'https://www.lufthansa.com'}, btnWa:null, svgKey:'airline' },
+  ethiopian: { eyebrow:'Aerolínea',         eyeColor:'#10B981', title:'Ethiopian Airlines',       tagline:'Mayor aerolínea de África. Conexiones a más de 120 destinos mundiales.',   info:[{label:'Hub', val:'Addis Abeba, Etiopía'},{label:'Rutas', val:'África · Europa · Asia · América'}], btnExt:{text:'ethiopianairlines.com', url:'https://www.ethiopianairlines.com'}, btnWa:null, svgKey:'airline' },
+  turkish:   { eyebrow:'Aerolínea',         eyeColor:'#F43F5E', title:'Turkish Airlines',         tagline:'Vuela a más destinos que cualquier otra aerolínea del mundo.',              info:[{label:'Hub', val:'Aeropuerto de Estambul'},{label:'Conexiones', val:'300+ destinos en 122 países'}], btnExt:{text:'turkishairlines.com', url:'https://www.turkishairlines.com'}, btnWa:null, svgKey:'airline' },
+  airfrance: { eyebrow:'Aerolínea',         eyeColor:'#1A73E8', title:'Air France',               tagline:'Aerolínea francesa con vuelos directos a París.',                           info:[{label:'Hub', val:'París Charles de Gaulle'},{label:'Red', val:'Europa · África · América · Asia'}], btnExt:{text:'airfrance.com', url:'https://www.airfrance.com'}, btnWa:null, svgKey:'airline' },
+  emirates:  { eyebrow:'Aerolínea',         eyeColor:'#F43F5E', title:'Emirates',                 tagline:'Aerolínea de Dubái. Una de las más grandes del mundo.',                     info:[{label:'Hub', val:'Aeropuerto Internacional de Dubái'},{label:'Destinos', val:'150+ países'}], btnExt:{text:'emirates.com', url:'https://www.emirates.com'}, btnWa:null, svgKey:'airline' },
+  qatar:     { eyebrow:'Aerolínea',         eyeColor:'#8B5CF6', title:'Qatar Airways',            tagline:'Elegida repetidamente mejor aerolínea del mundo. Hub en Doha.',             info:[{label:'Hub', val:'Aeropuerto Internacional Hamad, Doha'}], btnExt:{text:'qatarairways.com', url:'https://www.qatarairways.com'}, btnWa:null, svgKey:'airline' },
+  etihad:    { eyebrow:'Aerolínea',         eyeColor:'#F59E0B', title:'Etihad Airways',           tagline:'Aerolínea nacional de Abu Dabi. Vuelos internacionales de alta calidad.',   info:[{label:'Hub', val:'Aeropuerto Internacional de Abu Dabi'},{label:'Destinos', val:'100+ destinos en 6 continentes'}], btnExt:{text:'etihad.com', url:'https://www.etihad.com'}, btnWa:null, svgKey:'airline' },
+  asky:      { eyebrow:'Aerolínea',         eyeColor:'#F97316', title:'ASKY Airlines',            tagline:'The Pan African Airline. Conexiones en toda África Occidental y Central.',  info:[{label:'Hub', val:'Aeropuerto de Lomé, Togo'}], btnExt:{text:'flyasky.com', url:'https://www.flyasky.com'}, btnWa:null, svgKey:'airline' },
+  saa:       { eyebrow:'Aerolínea',         eyeColor:'#0EA5E9', title:'South African Airways',    tagline:'Aerolínea nacional de Sudáfrica. Conexiones en toda África.',               info:[{label:'Hub', val:'Johannesburgo OR Tambo'}], btnExt:{text:'flysaa.com', url:'https://www.flysaa.com'}, btnWa:null, svgKey:'airline' },
+  ceiba:     { eyebrow:'Aerolínea GE',      eyeColor:'#10B981', title:'Ceiba Intercontinental',   tagline:'Aerolínea de Guinea Ecuatorial. Vuelos regionales e intercontinentales.',   info:[{label:'Base', val:'Malabo, Guinea Ecuatorial'}], btnExt:{text:'flyceiba.com', url:'https://www.flyceiba.com'}, btnWa:null, svgKey:'airline' },
+  // REMESAS
+  western:   { eyebrow:'Remesas', eyeColor:'#F59E0B', title:'Western Union',  tagline:'Envía y recibe dinero desde cualquier parte del mundo.', info:[{label:'Puntos de cobro en GE', val:'Ecobank · BGFI Bank · CCEI Bank · Agencias autorizadas'},{label:'Requisitos', val:'DIP o Pasaporte vigente · Número de referencia'},{label:'Consejo', val:'Consulta las tasas de cambio antes de enviar'}], btnExt:{text:'Consultar tasas', url:'https://www.westernunion.com'}, btnWa:null, svgKey:'remesa' },
+  moneygram: { eyebrow:'Remesas', eyeColor:'#10B981', title:'MoneyGram',       tagline:'Servicio global de transferencia de dinero. Cobro en puntos autorizados en GE.', info:[{label:'Puntos de cobro', val:'CCEI Bank · Agencias autorizadas en Malabo y Bata'},{label:'Requisitos', val:'Documento de identidad válido · Número de referencia de la remesa'}], btnExt:{text:'moneygram.com', url:'https://www.moneygram.com'}, btnWa:null, svgKey:'remesa' },
+  // BÁSICOS
+  segesa: { eyebrow:'Electricidad',     eyeColor:'#F97316', title:'SEGESA',       tagline:'Sociedad de Electricidad de Guinea Ecuatorial.',     info:[{label:'Servicios', val:'Nuevas conexiones · Pago de facturas · Incidencias'},{label:'Oficinas', val:'Malabo (sede central) · Bata · Delegaciones provinciales'}], btnExt:null, btnWa:{text:'Notificar avería', msg:'Hola SEGESA, tengo una avería eléctrica'}, svgKey:'electric'  },
+  getesa: { eyebrow:'Telecomunicaciones',eyeColor:'#0EA5E9', title:'Getesa',       tagline:'Operador de telecomunicaciones de Guinea Ecuatorial.', info:[{label:'Servicios', val:'Internet fijo · ADSL · Fibra · Telefonía fija'},{label:'Cobertura', val:'Malabo · Bata · Principales ciudades'}], btnExt:null, btnWa:{text:'Contactar Getesa', msg:'Hola Getesa, necesito información sobre sus servicios'}, svgKey:'telecom'   },
+  dhl:    { eyebrow:'Paquetería',        eyeColor:'#F59E0B', title:'DHL Express',  tagline:'Mensajería urgente internacional. Envía y recibe documentos y paquetes.', info:[{label:'Servicios', val:'Envíos urgentes · Importación exportación · Rastreo en tiempo real'},{label:'Para estudiantes', val:'Envío de títulos universitarios al exterior con rastreo garantizado'}], btnExt:{text:'Rastrear paquete', url:'https://www.dhl.com'}, btnWa:null, svgKey:'logistics' },
+  tvge:   { eyebrow:'Televisión',        eyeColor:'#8B5CF6', title:'TVGE',         tagline:'Televisión de Guinea Ecuatorial.',                    info:[{label:'Canales', val:'TVGE 1 · TVGE Internacional · Transmisión en directo'},{label:'Cobertura', val:'Nacional e internacional via satélite'}], btnExt:null, btnWa:null, svgKey:'tv' },
+  // DELIVERY
+  situka:         { eyebrow:'Delivery', eyeColor:'#F43F5E', title:'SITUKA Delivery',        tagline:'Servicio de comida a domicilio en Malabo.',           info:[{label:'Qué ofrecen', val:'Comida africana · Pizza · Pollos · Comida rápida'},{label:'Pedidos', val:'Contactar por WhatsApp con tu pedido, dirección y nombre'}], btnExt:null, btnWa:{text:'Pedir ahora',    msg:'Hola SITUKA, quiero hacer un pedido a domicilio'}, svgKey:'delivery' },
+  'ena-delivery': { eyebrow:'Express',  eyeColor:'#10B981', title:'ENA Delivery Services',  tagline:'Entrega rápida en toda la ciudad.',                   info:[{label:'Servicios',   val:'Comida · Farmacia · Compras · Documentos · Mensajería local'},{label:'Horario', val:'8:00 – 22:00h todos los días'}], btnExt:null, btnWa:{text:'Hacer pedido', msg:'Hola ENA Delivery, necesito un pedido'}, svgKey:'delivery' },
+};
+
+/* ═══════════════════════════════════════
+   SVG HEROES
+═══════════════════════════════════════ */
+const HERO_SVG = {
+  ads:        `<svg viewBox="0 0 200 120" fill="none" style="width:100%;height:100%"><rect x="20" y="20" width="160" height="80" rx="8" fill="#1A73E8" opacity=".08" stroke="#1A73E8" stroke-width="1.5"/><rect x="30" y="30" width="100" height="12" rx="6" fill="#1A73E8" opacity=".15"/><rect x="30" y="48" width="70" height="8" rx="4" fill="#1A73E8" opacity=".1"/><circle cx="156" cy="50" r="20" fill="#1A73E8" opacity=".12" stroke="#1A73E8" stroke-width="1.5"/><path d="M149 50l5 5 9-9" stroke="#1A73E8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+  support:    `<svg viewBox="0 0 200 120" fill="none" style="width:100%;height:100%"><circle cx="100" cy="55" r="40" fill="#10B981" opacity=".07" stroke="#10B981" stroke-width="1.5"/><path d="M68 55c0-17.67 14.33-32 32-32s32 14.33 32 32v14a10 10 0 01-10 10h-4" stroke="#10B981" stroke-width="2" stroke-linecap="round"/><circle cx="100" cy="79" r="8" fill="#10B981" opacity=".2" stroke="#10B981" stroke-width="2"/></svg>`,
+  ai:         `<svg viewBox="0 0 200 120" fill="none" style="width:100%;height:100%"><rect x="40" y="30" width="120" height="60" rx="12" fill="#8B5CF6" opacity=".08" stroke="#8B5CF6" stroke-width="1.5"/><circle cx="70" cy="60" r="6" fill="#8B5CF6" opacity=".4"/><circle cx="100" cy="60" r="6" fill="#8B5CF6" opacity=".4"/><circle cx="130" cy="60" r="6" fill="#8B5CF6" opacity=".4"/><path d="M100 90v10M80 100h40" stroke="#8B5CF6" stroke-width="2" stroke-linecap="round"/></svg>`,
+  premium:    `<svg viewBox="0 0 200 120" fill="none" style="width:100%;height:100%"><path d="M100 20l12 24 26 3.8-18.8 18.3 4.4 26L100 80l-23.6 12.1 4.4-26L62 47.8l26-3.8z" fill="#F59E0B" opacity=".15" stroke="#F59E0B" stroke-width="1.5" stroke-linejoin="round"/><path d="M60 98h80" stroke="#F59E0B" stroke-width="2" stroke-linecap="round"/></svg>`,
+  scholarship:`<svg viewBox="0 0 200 120" fill="none" style="width:100%;height:100%"><path d="M100 25L40 55l60 30 60-30z" fill="#0EA5E9" opacity=".1" stroke="#0EA5E9" stroke-width="1.5" stroke-linejoin="round"/><path d="M40 55v30M160 55v20" stroke="#0EA5E9" stroke-width="2" stroke-linecap="round"/><path d="M65 80c0-19.33 15.67-35 35-35s35 15.67 35 35" stroke="#0EA5E9" stroke-width="2"/></svg>`,
+  visa:       `<svg viewBox="0 0 200 120" fill="none" style="width:100%;height:100%"><rect x="30" y="25" width="140" height="70" rx="8" fill="#0EA5E9" opacity=".07" stroke="#0EA5E9" stroke-width="1.5"/><rect x="40" y="40" width="50" height="30" rx="4" fill="#0EA5E9" opacity=".1" stroke="#0EA5E9" stroke-width="1"/><path d="M100 45h60M100 55h40M100 65h50" stroke="#0EA5E9" stroke-width="1.5" stroke-linecap="round"/></svg>`,
+  ministry:   `<svg viewBox="0 0 200 120" fill="none" style="width:100%;height:100%"><path d="M30 95h140M55 95V55M145 95V55M40 55h120L100 20z" fill="#1A73E8" opacity=".07" stroke="#1A73E8" stroke-width="1.5" stroke-linejoin="round"/><rect x="80" y="67" width="40" height="28" rx="2" fill="#1A73E8" opacity=".12"/></svg>`,
+  embassy:    `<svg viewBox="0 0 200 120" fill="none" style="width:100%;height:100%"><circle cx="100" cy="55" r="38" fill="#0EA5E9" opacity=".07" stroke="#0EA5E9" stroke-width="1.5"/><path d="M62 55h76M100 17v76" stroke="#0EA5E9" stroke-width="1.5" stroke-linecap="round"/><path d="M68 30c20 12 44 12 64 0M68 80c20-12 44-12 64 0" stroke="#0EA5E9" stroke-width="1.5" stroke-linecap="round"/></svg>`,
+  restaurant: `<svg viewBox="0 0 200 120" fill="none" style="width:100%;height:100%"><path d="M60 40h80v40a20 20 0 01-20 20H80a20 20 0 01-20-20V40z" fill="#F43F5E" opacity=".07" stroke="#F43F5E" stroke-width="1.5"/><path d="M120 42h16a14 14 0 010 28h-16" stroke="#F43F5E" stroke-width="2" stroke-linecap="round"/></svg>`,
+  hotel:      `<svg viewBox="0 0 200 120" fill="none" style="width:100%;height:100%"><rect x="30" y="30" width="140" height="70" rx="4" fill="#1A73E8" opacity=".06" stroke="#1A73E8" stroke-width="1.5"/><path d="M30 30L100 10l70 20" stroke="#1A73E8" stroke-width="1.5" stroke-linecap="round"/><rect x="50" y="50" width="30" height="22" rx="2" fill="#1A73E8" opacity=".1"/><rect x="120" y="50" width="30" height="22" rx="2" fill="#1A73E8" opacity=".1"/><rect x="80" y="60" width="40" height="40" rx="2" fill="#1A73E8" opacity=".12"/></svg>`,
+  market:     `<svg viewBox="0 0 200 120" fill="none" style="width:100%;height:100%"><path d="M30 60h140v40H30z" fill="#F97316" opacity=".07" stroke="#F97316" stroke-width="1.5"/><path d="M40 60V42l14-22h92l14 22v18" stroke="#F97316" stroke-width="1.5" stroke-linecap="round"/><rect x="72" y="72" width="56" height="28" rx="2" fill="#F97316" opacity=".12"/></svg>`,
+  airline:    `<svg viewBox="0 0 200 120" fill="none" style="width:100%;height:100%"><path d="M160 65L90 30l-16 16 40 44-50 8 10 18 28-3-4 28 18 12 8-50 44 36 16-16-46-56z" fill="#1A73E8" opacity=".12" stroke="#1A73E8" stroke-width="1.2" stroke-linejoin="round"/></svg>`,
+  agency:     `<svg viewBox="0 0 200 120" fill="none" style="width:100%;height:100%"><circle cx="100" cy="55" r="40" fill="#10B981" opacity=".07" stroke="#10B981" stroke-width="1.5"/><path d="M60 55h80M100 15v80" stroke="#10B981" stroke-width="1.5" stroke-linecap="round"/><path d="M68 30c20 14 44 14 64 0M68 80c20-14 44-14 64 0" stroke="#10B981" stroke-width="1.5" stroke-linecap="round"/></svg>`,
+  remesa:     `<svg viewBox="0 0 200 120" fill="none" style="width:100%;height:100%"><rect x="20" y="30" width="160" height="60" rx="8" fill="#F59E0B" opacity=".07" stroke="#F59E0B" stroke-width="1.5"/><path d="M100 45v30M100 45c0-8 16-8 16 0s-16 8-16 0zM100 75c0 8-16 8-16 0" stroke="#F59E0B" stroke-width="2" stroke-linecap="round"/></svg>`,
+  electric:   `<svg viewBox="0 0 200 120" fill="none" style="width:100%;height:100%"><path d="M100 15v30M40 55h30M130 55h30M60 95l20-20M120 95l20-20" stroke="#F97316" stroke-width="2" stroke-linecap="round"/><circle cx="100" cy="55" r="22" fill="#F97316" opacity=".1" stroke="#F97316" stroke-width="2"/></svg>`,
+  telecom:    `<svg viewBox="0 0 200 120" fill="none" style="width:100%;height:100%"><path d="M30 90L70 30l30 40 30-30 40 50" stroke="#0EA5E9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="100" cy="65" r="8" fill="#0EA5E9" opacity=".2" stroke="#0EA5E9" stroke-width="2"/></svg>`,
+  logistics:  `<svg viewBox="0 0 200 120" fill="none" style="width:100%;height:100%"><rect x="20" y="50" width="100" height="50" rx="4" fill="#F59E0B" opacity=".08" stroke="#F59E0B" stroke-width="1.5"/><path d="M120 60h24l26 22v18h-50V60z" fill="#F59E0B" opacity=".08" stroke="#F59E0B" stroke-width="1.5" stroke-linejoin="round"/><circle cx="45" cy="100" r="10" fill="#F59E0B" opacity=".15" stroke="#F59E0B" stroke-width="2"/><circle cx="140" cy="100" r="10" fill="#F59E0B" opacity=".15" stroke="#F59E0B" stroke-width="2"/></svg>`,
+  tv:         `<svg viewBox="0 0 200 120" fill="none" style="width:100%;height:100%"><rect x="20" y="20" width="160" height="72" rx="8" fill="#8B5CF6" opacity=".07" stroke="#8B5CF6" stroke-width="1.5"/><path d="M60 92h80M100 92v20" stroke="#8B5CF6" stroke-width="2" stroke-linecap="round"/><circle cx="100" cy="55" r="20" fill="#8B5CF6" opacity=".1" stroke="#8B5CF6" stroke-width="1.5"/><path d="M93 46l20 9-20 9V46z" fill="#8B5CF6" opacity=".5"/></svg>`,
+  delivery:   `<svg viewBox="0 0 200 120" fill="none" style="width:100%;height:100%"><circle cx="55" cy="92" r="14" fill="#F43F5E" opacity=".12" stroke="#F43F5E" stroke-width="1.5"/><circle cx="140" cy="92" r="14" fill="#F43F5E" opacity=".12" stroke="#F43F5E" stroke-width="1.5"/><path d="M20 78h110V88H20z" fill="#F43F5E" opacity=".07" stroke="#F43F5E" stroke-width="1.5"/><path d="M130 80V66h20l20 14v12h-40z" fill="#F43F5E" opacity=".07" stroke="#F43F5E" stroke-width="1.5" stroke-linejoin="round"/></svg>`,
+};
+
+/* ═══════════════════════════════════════
+   MODAL — openModal / closeModal
+═══════════════════════════════════════ */
+window.openModal = function(id) {
+  const d = MODALS[id];
+  if (!d) { 
+    window.showToast('Información próximamente'); 
+    return; 
+  }
+
+  // Guardamos el id actual para usarlo en closeModal
+  window.currentModalId = id;
+
+  document.getElementById('modalHeroBg').innerHTML      = HERO_SVG[d.svgKey] || HERO_SVG.ads;
+  document.getElementById('modalHeroContent').innerHTML = '';
+
+  document.getElementById('modalBody').innerHTML = `
+    <span class="modal-eyebrow" style="background:${d.eyeColor}18;border:1px solid ${d.eyeColor}30;color:${d.eyeColor}">${d.eyebrow}</span>
+    <div class="modal-title">${d.title}</div>
+    <div class="modal-tagline">${d.tagline}</div>
+    <div class="info-cards">
+      ${(d.info || []).map(i => `
+        <div class="info-card">
+          <div class="info-card-label">${i.label}</div>
+          <div class="info-card-val">${i.val}</div>
+        </div>`).join('')}
+    </div>`;
+
+  let acts = '';
+  if (d.btnExt) acts += `
+    <button class="mbn mbn-blue" onclick="window.openExt('${d.btnExt.url}')">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+      ${d.btnExt.text}
+    </button>`;
+
+  if (d.btnWa) acts += `
+    <button class="mbn mbn-wa" onclick="window.openWA('${d.btnWa.msg.replace(/'/g,"\\'")}')">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      ${d.btnWa.text}
+    </button>`;
+
+  // Botón "más detalles" → ahora pasa el id correcto
+  acts += `<button class="mbn mbn-sec" onclick="window.closeModal('${id}')">más detalles</button>`;
+
+  document.getElementById('modalActions').innerHTML = acts;
+  document.getElementById('modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+};
+window.closeModal = function(id) {
+    const modalId = id || window.currentModalId;
+
+    if (modalId) {
+        // Cerramos el modal antes de redirigir
+        const modalElement = document.getElementById('modal');
+        if (modalElement) modalElement.classList.remove('open');
+        document.body.style.overflow = '';
+
+        // Redirigimos usando la CLAVE del modal (publicidad, stipendium, min-educacion, etc.)
+        window.location.href = `servicio-detalle.html?id=${modalId}`;
+    } else {
+        console.warn('No se pudo obtener el ID del modal');
+        window.location.href = 'servicio-detalle.html';
+    }
+};
+
+window.closeModalBg = function(e) {
+  if (e.target === document.getElementById('modal')) window.closeModal();
+};
+
+window.openExt = function(url) {
+  if (!url || url === '#') return;
+  window.open(url, '_blank', 'noopener');
+};
+
+window.openWA = function(msg) {
+  window.open(`https://wa.me/?text=${encodeURIComponent(msg + '. ¿Me das más información?')}`, '_blank');
+};
+
+/* ═══════════════════════════════════════
+   LOGO FALLBACK
+═══════════════════════════════════════ */
+window.logoError = function(img) {
+  img.style.display = 'none';
+  const fb = img.nextElementSibling;
+  if (fb) fb.style.display = 'flex';
+};
+
+/* ═══════════════════════════════════════
+   SEARCH & FILTER
+═══════════════════════════════════════ */
+let currentFilter = 'todos';
+
+window.setFilter = function(f, el) {
+  currentFilter = f;
+  document.querySelectorAll('.fchip').forEach(c => c.classList.remove('active'));
+  if (el) el.classList.add('active');
+  applyVisibility();
+};
+
+window.onSearch = function() {
+  const q = (document.getElementById('searchInput').value || '').toLowerCase().trim();
+  document.querySelectorAll('.svc-item, .min-card, .remesa-card, .basico-card').forEach(card => {
+    card.style.opacity = (!q || card.innerText.toLowerCase().includes(q)) ? '1' : '0.2';
+  });
+};
+
+window.clearSearch  = function() { document.getElementById('searchInput').value = ''; window.onSearch(); };
+window.toggleSearch = function() { document.getElementById('searchInput').focus(); };
+
+function applyVisibility() {
+  document.querySelectorAll('[data-bloque]').forEach(el => {
+    el.style.display = (currentFilter === 'todos' || currentFilter === el.dataset.bloque) ? '' : 'none';
+  });
+  document.querySelectorAll('.sec-divider').forEach(d => {
+    d.style.opacity = currentFilter === 'todos' ? '1' : '0.2';
+  });
+}
+
+/* ═══════════════════════════════════════
+   TOAST
+═══════════════════════════════════════ */
+let _toastT;
+window.showToast = function(msg, type = 'info') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className   = 'show ' + type;
+  clearTimeout(_toastT);
+  _toastT = setTimeout(() => { t.className = ''; }, 3200);
+};
+
+/* ═══════════════════════════════════════
+   ESC KEY & ANIMATE ON SCROLL
+═══════════════════════════════════════ */
+document.addEventListener('keydown', e => { if (e.key === 'Escape') window.closeModal(); });
+
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.querySelectorAll('.svc-item, .min-card, .remesa-card, .basico-card')
+               .forEach((c, i) => setTimeout(() => c.classList.add('vis'), i * 35));
+      e.target.querySelectorAll('.anim')
+               .forEach((c, i) => setTimeout(() => c.classList.add('vis'), i * 40));
+      obs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.04, rootMargin: '80px' });
+
+document.querySelectorAll('.icon-grid, .min-list, .remesas-grid, .basicos-list, .emergency-grid')
+        .forEach(g => obs.observe(g));
+
+/* ═══════════════════════════════════════
+   INIT
+═══════════════════════════════════════ */
+loadBanners();
+
+console.log('%c[Compra Ya Servicios] Loaded ✓', 'color:#1A73E8;font-weight:bold');
+</script>
+
+</body>
+</html>

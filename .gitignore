@@ -1,0 +1,7 @@
+node_modules/
+.env
+.env.*
+public/js/config.secrets.js
+**/config.secrets.js
+firebase-debug.log
+.firebase/

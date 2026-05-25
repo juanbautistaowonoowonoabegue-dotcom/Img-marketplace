@@ -1,0 +1,3510 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Publicar – Compra Ya</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800;900&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+<style>
+/* ═══════════════════════════════════════════
+   COMPRA YA — CREAR ANUNCIO (Paso 1: Fotos)
+   Design System: Premium Fintech / Super App
+   Version: 2.0 — Aligned with full design system
+═══════════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Syne:wght@700;800&display=swap');
+
+/* ─────────────────────────────────────────
+   TOKENS
+───────────────────────────────────────── */
+:root {
+  --blue:         #2563FF;
+  --blue-mid:     #3B72FF;
+  --blue-deep:    #1A4FD8;
+  --blue-light:   #EEF3FF;
+  --blue-glow:    rgba(37,99,255,0.18);
+  --blue-glow-s:  rgba(37,99,255,0.08);
+
+  --cyan:         #22D3EE;
+  --cyan-light:   #ECFEFF;
+  --cyan-glow:    rgba(34,211,238,0.18);
+
+  --green:        #10B981;
+  --green-dark:   #059669;
+  --green-light:  #ECFDF5;
+
+  --red:          #EF4444;
+  --red-light:    #FEF2F2;
+  --amber:        #F59E0B;
+  --amber-light:  #FFFBEB;
+
+  --ink:          #0F172A;
+  --ink-2:        #1E293B;
+  --text-mid:     #475569;
+  --text-soft:    #94A3B8;
+  --border:       #E2E8F0;
+  --border-soft:  #F1F5F9;
+  --surface:      #F8FAFC;
+  --surface-2:    #EEF3FA;
+  --white:        #FFFFFF;
+
+  --r-xs:  8px;
+  --r-sm:  14px;
+  --r:     20px;
+  --r-lg:  24px;
+  --r-xl:  28px;
+
+  --shadow-sm:    0 2px 8px rgba(15,23,42,0.05);
+  --shadow:       0 8px 30px rgba(37,99,255,0.08);
+  --shadow-md:    0 12px 40px rgba(37,99,255,0.12);
+  --shadow-blue:  0 8px 28px rgba(37,99,255,0.24);
+  --shadow-card:  0 4px 20px rgba(15,23,42,0.06);
+
+  --font-d: 'Syne', sans-serif;
+  --font-b: 'Plus Jakarta Sans', sans-serif;
+
+  --ease:   cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-b: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --t:      250ms;
+}
+
+/* ─────────────────────────────────────────
+   RESET
+───────────────────────────────────────── */
+*, *::before, *::after {
+  margin: 0; padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+html { height: 100%; }
+body {
+  font-family: var(--font-b);
+  background: var(--white);
+  color: var(--ink);
+  min-height: 100vh;
+  overflow-x: hidden;
+  padding-bottom: 110px;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ─────────────────────────────────────────
+   HALFTONE WAVE (background, fixed)
+───────────────────────────────────────── */
+.bg-halftone {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+.bg-halftone svg {
+  width: 100%; height: 100%;
+  animation: waveFloat 8s ease-in-out infinite alternate;
+}
+@keyframes waveFloat {
+  from { transform: translateY(-6px); }
+  to   { transform: translateY(6px);  }
+}
+
+/* Ambient orbs */
+.bg-orb {
+  position: fixed;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+}
+.bg-orb-1 {
+  width: 420px; height: 420px;
+  background: radial-gradient(circle, rgba(37,99,255,0.06), transparent 70%);
+  top: -120px; right: -100px;
+  animation: orbFloat 11s ease-in-out infinite;
+}
+.bg-orb-2 {
+  width: 300px; height: 300px;
+  background: radial-gradient(circle, rgba(34,211,238,0.05), transparent 70%);
+  bottom: -80px; left: -80px;
+  animation: orbFloat 14s ease-in-out infinite reverse;
+}
+@keyframes orbFloat {
+  0%,100% { transform: scale(1) translateY(0);     }
+  50%      { transform: scale(1.1) translateY(-16px); }
+}
+
+/* ─────────────────────────────────────────
+   ROLE DETECTION SCREEN
+───────────────────────────────────────── */
+#roleDetectScreen {
+  position: fixed; inset: 0; z-index: 2000;
+  background: var(--white);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 0; padding: 24px;
+}
+#roleDetectScreen.hidden { display: none; }
+
+.rd-logo {
+  font-family: var(--font-d);
+  font-size: 2rem; font-weight: 800;
+  color: var(--ink); margin-bottom: 6px;
+  text-align: center; letter-spacing: -0.04em;
+}
+.rd-logo span { color: var(--blue); }
+.rd-sub {
+  color: var(--text-soft); font-size: 0.875rem;
+  margin-bottom: 36px; text-align: center;
+}
+.rd-spinner {
+  width: 44px; height: 44px;
+  border: 3px solid var(--border);
+  border-top-color: var(--blue);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  margin-bottom: 14px;
+}
+.rd-status {
+  font-size: 0.8rem; color: var(--text-soft);
+  font-family: var(--font-d); letter-spacing: 0.04em;
+  text-align: center;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ─────────────────────────────────────────
+   TOP NAVBAR
+───────────────────────────────────────── */
+.header {
+  position: sticky; top: 0; z-index: 1000;
+  background: rgba(255,255,255,0.9);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-bottom: 1px solid var(--border-soft);
+  height: 64px;
+  display: flex; align-items: center;
+  justify-content: space-between;
+  padding: 0 24px; gap: 10px;
+}
+
+.logo {
+  font-family: var(--font-d);
+  font-size: 1.2rem; font-weight: 800;
+  color: var(--ink); text-decoration: none;
+  letter-spacing: -0.03em;
+  position: absolute; left: 50%;
+  transform: translateX(-50%);
+}
+.logo span { color: var(--blue); }
+
+.hbtn {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  color: var(--ink-2); font-size: 1rem;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; text-decoration: none;
+  transition: all var(--t) var(--ease);
+  flex-shrink: 0; position: relative;
+}
+.hbtn:hover {
+  background: var(--blue-light);
+  border-color: var(--blue);
+  color: var(--blue);
+  transform: scale(1.06);
+}
+
+/* Pill badge "Sin límite" */
+.role-badge-hdr {
+  display: flex; align-items: center; gap: 5px;
+  padding: 5px 12px; border-radius: 99px;
+  font-size: 0.7rem; font-weight: 700;
+  font-family: var(--font-d);
+  border: 1.5px solid; white-space: nowrap;
+  transition: all var(--t);
+}
+.rb-normal   { background: var(--blue-light);  border-color: rgba(37,99,255,0.25);  color: var(--blue-deep); }
+.rb-premium  { background: var(--amber-light); border-color: rgba(245,158,11,0.3);  color: #92400E; }
+.rb-store    { background: var(--green-light); border-color: rgba(16,185,129,0.25); color: var(--green-dark); }
+.rb-entity   { background: #FFF7ED;            border-color: rgba(249,115,22,0.25); color: #9A3412; }
+.rb-ministry { background: #F5F3FF;            border-color: rgba(139,92,246,0.25); color: #5B21B6; }
+
+/* ─────────────────────────────────────────
+   PROGRESS / STEPPER
+───────────────────────────────────────── */
+.progress-wrap {
+  position: sticky; top: 64px; z-index: 999;
+  background: rgba(255,255,255,0.9);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border-soft);
+  padding: 14px 20px 10px;
+}
+
+.prog-steps {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0;
+  margin-bottom: 10px;
+}
+.prog-conn {
+  flex: 1; height: 2px;
+  background: var(--border);
+  transition: background 0.4s;
+  max-width: 32px;
+}
+.prog-conn.done { background: var(--blue); }
+
+.prog-step {
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.65rem; font-weight: 700;
+  font-family: var(--font-d);
+  color: var(--text-soft);
+  transition: all 0.4s var(--ease-b);
+  flex-shrink: 0; position: relative;
+  background: var(--white);
+  cursor: pointer;
+}
+.prog-step:hover:not(.active):not(.done) {
+  border-color: rgba(37,99,255,0.4);
+  color: var(--blue);
+}
+.prog-step.done {
+  background: var(--blue-light);
+  border-color: var(--blue);
+  color: var(--blue);
+}
+.prog-step.done span { display: none; }
+.prog-step.done::after { content: '✓'; font-size: 0.75rem; }
+
+.prog-step.active span { display: none; }
+.prog-step.active::after { content: attr(data-n); font-size: 0.72rem; }
+.prog-step.active {
+  background: var(--blue);
+  border-color: var(--blue);
+  color: var(--white);
+  transform: scale(1.2);
+  box-shadow: 0 0 0 4px rgba(37,99,255,0.15), var(--shadow-blue);
+}
+
+/* Stepper labels (below dots) */
+.prog-labels {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 0;
+  margin-top: 6px;
+}
+.prog-label-cell {
+  flex: 1; max-width: 52px;
+  text-align: center;
+  font-size: 0.6rem;
+  font-weight: 500;
+  color: var(--text-soft);
+  line-height: 1.2;
+  transition: color var(--t);
+}
+.prog-label-cell.active {
+  color: var(--blue);
+  font-weight: 700;
+}
+.prog-label-cell.done { color: var(--blue); }
+
+/* Progress bar */
+.prog-bar-outer {
+  height: 3px;
+  background: var(--border);
+  border-radius: 99px;
+  overflow: hidden;
+  margin-top: 10px;
+}
+.prog-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--blue), var(--cyan));
+  border-radius: 99px;
+  transition: width 0.5s var(--ease);
+  animation: shimmer 2.5s linear infinite;
+  background-size: 200% 100%;
+}
+@keyframes shimmer {
+  0%   { background-position: 0%   50%; }
+  100% { background-position: 200% 50%; }
+}
+
+/* ─────────────────────────────────────────
+   MAIN CONTENT
+───────────────────────────────────────── */
+main {
+  position: relative; z-index: 1;
+  padding-top: 0; padding-bottom: 32px;
+  min-height: 100vh;
+}
+.step-screen { display: none; padding: 20px 20px 32px; }
+.step-screen.active {
+  display: block;
+  animation: stepIn 0.35s var(--ease);
+}
+@keyframes stepIn {
+  from { opacity: 0; transform: translateX(16px); }
+  to   { opacity: 1; transform: translateX(0);    }
+}
+.step-content { max-width: 560px; margin: 0 auto; }
+
+/* ─────────────────────────────────────────
+   ROLE IDENTITY BANNER
+───────────────────────────────────────── */
+.role-identity-bar {
+  display: flex; align-items: center; gap: 12px;
+  padding: 13px 16px; border-radius: var(--r);
+  margin-bottom: 20px;
+  border: 1.5px solid;
+  position: relative; overflow: hidden;
+}
+.role-identity-bar::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.04), transparent);
+  animation: scanline 3s linear infinite;
+}
+@keyframes scanline {
+  from { transform: translateX(-100%); }
+  to   { transform: translateX(100%);  }
+}
+.rib-normal   { background: rgba(37,99,255,0.04);  border-color: rgba(37,99,255,0.18);  }
+.rib-premium  { background: rgba(245,158,11,0.04); border-color: rgba(245,158,11,0.2);  }
+.rib-store    { background: rgba(16,185,129,0.04); border-color: rgba(16,185,129,0.18); }
+.rib-entity   { background: rgba(249,115,22,0.04); border-color: rgba(249,115,22,0.18); }
+.rib-ministry { background: rgba(139,92,246,0.04); border-color: rgba(139,92,246,0.18); }
+
+.rib-icon {
+  width: 40px; height: 40px;
+  border-radius: var(--r-sm);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem; flex-shrink: 0;
+  background: var(--blue-light);
+  color: var(--blue);
+}
+.rib-info { flex: 1; min-width: 0; }
+.rib-title {
+  font-family: var(--font-d);
+  font-size: 0.875rem; font-weight: 700; color: var(--ink);
+}
+.rib-sub { font-size: 0.72rem; color: var(--text-soft); margin-top: 2px; }
+
+.rib-dots { display: flex; gap: 5px; margin-left: auto; flex-shrink: 0; }
+.rib-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--green);
+  animation: dotPulse 2s ease-in-out infinite;
+}
+.rib-dot:nth-child(2) { animation-delay: 0.3s; }
+.rib-dot:nth-child(3) { animation-delay: 0.6s; }
+@keyframes dotPulse {
+  0%,100% { opacity: 0.35; }
+  50%      { opacity: 1;    }
+}
+
+/* ─────────────────────────────────────────
+   STEP HEADER (icon + title)
+───────────────────────────────────────── */
+.step-header { text-align: center; margin-bottom: 24px; }
+
+.step-icon-wrap {
+  display: inline-flex;
+  align-items: center; justify-content: center;
+  width: 68px; height: 68px;
+  border-radius: var(--r);
+  background: var(--blue-light);
+  border: 1.5px solid rgba(37,99,255,0.2);
+  margin-bottom: 14px;
+  animation: float 3s ease-in-out infinite;
+}
+.step-icon-wrap i {
+  font-size: 1.8rem;
+  color: var(--blue);
+}
+@keyframes float {
+  0%,100% { transform: translateY(0);   }
+  50%      { transform: translateY(-5px); }
+}
+
+.step-title {
+  font-family: var(--font-d);
+  font-size: 1.5rem; font-weight: 800;
+  color: var(--ink);
+  letter-spacing: -0.03em; margin-bottom: 6px;
+}
+.step-title .accent { color: var(--blue); }
+.step-sub {
+  font-size: 0.875rem; color: var(--text-soft);
+  line-height: 1.55; font-weight: 400;
+}
+.step-sub-note {
+  font-size: 0.8rem;
+  color: var(--text-soft);
+  margin-top: 4px;
+  font-style: italic;
+}
+
+/* ─────────────────────────────────────────
+   UPLOAD AREA  (hero element)
+───────────────────────────────────────── */
+.upload-area {
+  border: 2px dashed rgba(37,99,255,0.3);
+  border-radius: var(--r-xl);
+  min-height: 180px;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  background: var(--surface);
+  cursor: pointer;
+  transition: all var(--t) var(--ease);
+  padding: 28px 20px;
+  text-align: center;
+  position: relative; overflow: hidden;
+}
+.upload-area::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 50% 0%, rgba(37,99,255,0.06), transparent 70%);
+  opacity: 0; transition: opacity var(--t);
+}
+.upload-area:hover::before,
+.upload-area.drag-over::before { opacity: 1; }
+.upload-area:hover {
+  border-color: var(--blue);
+  background: var(--blue-light);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+}
+.upload-area.drag-over {
+  border-color: var(--blue);
+  background: var(--blue-light);
+  transform: scale(1.01);
+  box-shadow: var(--shadow-md);
+}
+
+.upload-icon-wrap {
+  width: 60px; height: 60px;
+  border-radius: var(--r);
+  background: var(--blue);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.5rem; color: var(--white);
+  margin-bottom: 14px;
+  box-shadow: 0 8px 24px var(--blue-glow);
+  animation: uploadPulse 3s ease-in-out infinite;
+}
+@keyframes uploadPulse {
+  0%,100% { box-shadow: 0 8px 24px rgba(37,99,255,0.24); }
+  50%      { box-shadow: 0 12px 36px rgba(37,99,255,0.38); }
+}
+.upload-area:hover .upload-icon-wrap {
+  animation: none;
+  box-shadow: 0 12px 36px rgba(37,99,255,0.42);
+}
+
+.upload-main-text {
+  font-family: var(--font-d);
+  font-size: 1rem; font-weight: 800;
+  color: var(--ink); margin-bottom: 4px;
+}
+.upload-sub-text {
+  font-size: 0.82rem; color: var(--text-soft);
+  margin-bottom: 10px;
+}
+.upload-meta {
+  font-size: 0.72rem; color: var(--text-soft);
+  display: flex; align-items: center; gap: 6px;
+  flex-wrap: wrap; justify-content: center;
+}
+.upload-meta span {
+  background: var(--white);
+  border: 1px solid var(--border);
+  padding: 2px 8px; border-radius: 99px;
+}
+
+/* Photo counter pill */
+.photo-count-pill {
+  display: inline-flex; align-items: center; gap: 5px;
+  margin-top: 12px;
+  padding: 5px 14px; border-radius: 99px;
+  font-size: 0.72rem; font-weight: 700;
+  font-family: var(--font-d);
+  background: var(--blue-light);
+  border: 1.5px solid rgba(37,99,255,0.25);
+  color: var(--blue);
+  transition: all var(--t);
+}
+.photo-count-pill.full {
+  background: var(--green-light);
+  border-color: rgba(16,185,129,0.3);
+  color: var(--green-dark);
+}
+
+/* Preview placeholders row */
+.upload-placeholders {
+  display: flex; gap: 8px;
+  margin-top: 16px;
+  justify-content: center;
+}
+.upload-placeholder {
+  width: 48px; height: 48px;
+  border-radius: var(--r-sm);
+  border: 1.5px dashed var(--border);
+  background: var(--white);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text-soft); font-size: 1rem;
+  transition: all var(--t) var(--ease);
+  flex-shrink: 0;
+}
+.upload-placeholder.filled {
+  border-color: var(--blue);
+  background: var(--blue-light);
+  color: var(--blue);
+}
+.upload-placeholder.cover {
+  border-color: var(--blue);
+  background: var(--blue);
+  color: var(--white);
+  box-shadow: 0 4px 12px var(--blue-glow);
+}
+
+/* Compress progress */
+.compress-prog { margin-top: 12px; display: none; }
+.compress-prog.show { display: block; }
+.compress-bar-outer {
+  height: 4px; background: var(--border);
+  border-radius: 99px; overflow: hidden; margin-bottom: 5px;
+}
+.compress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--blue), var(--cyan));
+  border-radius: 99px; transition: width 0.4s;
+  width: 0%;
+}
+.compress-label {
+  font-size: 0.7rem; color: var(--text-soft);
+  font-family: var(--font-d); letter-spacing: 0.04em;
+}
+
+/* ─────────────────────────────────────────
+   IMAGE PREVIEW SECTION
+───────────────────────────────────────── */
+.imgs-container { margin-top: 16px; display: flex; flex-direction: column; gap: 10px; }
+
+.main-slot {
+  width: 100%; aspect-ratio: 4/3;
+  border-radius: var(--r);
+  overflow: hidden;
+  border: 2px solid var(--blue);
+  box-shadow: var(--shadow-md);
+  position: relative;
+  background: var(--surface);
+}
+.main-slot img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+.main-badge {
+  position: absolute; bottom: 10px; left: 10px;
+  background: rgba(255,255,255,0.9);
+  backdrop-filter: blur(8px);
+  color: var(--blue); border: 1.5px solid rgba(37,99,255,0.25);
+  font-size: 0.66rem; font-weight: 700;
+  font-family: var(--font-d); padding: 3px 10px;
+  border-radius: 99px; letter-spacing: 0.04em;
+}
+.webp-badge {
+  position: absolute; bottom: 10px; right: 10px;
+  background: var(--green); color: var(--white);
+  font-size: 0.62rem; font-weight: 700;
+  font-family: var(--font-d); padding: 3px 8px;
+  border-radius: 99px; display: none;
+}
+.webp-badge.show { display: block; }
+
+.thumb-row {
+  display: grid; grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+}
+.thumb-slot {
+  aspect-ratio: 1; border-radius: var(--r-sm);
+  overflow: visible; position: relative;
+}
+.thumb-slot img {
+  width: 100%; height: 100%; object-fit: cover;
+  border-radius: var(--r-sm);
+  border: 1.5px solid var(--border);
+  transition: all var(--t) var(--ease);
+}
+.thumb-slot img:hover { border-color: var(--blue); transform: scale(1.04); }
+.thumb-remove {
+  position: absolute; top: -6px; right: -6px;
+  width: 22px; height: 22px;
+  background: var(--red); color: var(--white);
+  border: none; border-radius: 50%;
+  font-size: 11px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 2px 8px rgba(239,68,68,0.35);
+  z-index: 5; transition: transform var(--t) var(--ease-b);
+}
+.thumb-remove:hover { transform: scale(1.15); }
+
+.add-thumb {
+  aspect-ratio: 1; border-radius: var(--r-sm);
+  border: 1.5px dashed var(--border);
+  background: var(--surface);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 3px; color: var(--text-soft);
+  font-size: 0.62rem; cursor: pointer;
+  transition: all var(--t) var(--ease);
+}
+.add-thumb:hover {
+  border-color: var(--blue);
+  color: var(--blue);
+  background: var(--blue-light);
+}
+
+/* ─────────────────────────────────────────
+   TIP CARD  (consejo UX)
+───────────────────────────────────────── */
+.tip-card {
+  background: var(--blue-light);
+  border-left: 4px solid var(--blue);
+  border-radius: var(--r);
+  padding: 16px 18px;
+  display: flex; gap: 12px;
+  align-items: flex-start;
+  margin-top: 16px;
+}
+.tip-icon {
+  width: 36px; height: 36px;
+  border-radius: var(--r-xs);
+  background: rgba(37,99,255,0.12);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--blue); font-size: 0.95rem;
+  flex-shrink: 0;
+}
+.tip-title {
+  font-family: var(--font-d);
+  font-size: 0.875rem; font-weight: 700;
+  color: var(--blue-deep); margin-bottom: 4px;
+}
+.tip-text {
+  font-size: 0.8rem; color: var(--text-mid);
+  line-height: 1.55;
+}
+
+/* Generic info tips (inline) */
+.info-tip {
+  background: var(--surface);
+  border-left: 3px solid var(--blue);
+  border-radius: 0 var(--r-sm) var(--r-sm) 0;
+  padding: 10px 14px;
+  font-size: 0.8rem; color: var(--text-mid);
+  margin: 12px 0;
+  display: flex; gap: 9px; align-items: flex-start;
+  line-height: 1.55;
+}
+.info-tip i { color: var(--blue); flex-shrink: 0; margin-top: 1px; }
+.tip-warn  { border-left-color: var(--amber); }
+.tip-warn i  { color: var(--amber); }
+.tip-success { border-left-color: var(--green); }
+.tip-success i { color: var(--green); }
+.tip-red   { border-left-color: var(--red); }
+.tip-red i   { color: var(--red); }
+
+/* ─────────────────────────────────────────
+   FORM ELEMENTS
+───────────────────────────────────────── */
+.form-group { margin-bottom: 18px; }
+
+label {
+  display: flex; align-items: center; gap: 6px;
+  margin-bottom: 7px; font-weight: 600;
+  font-size: 0.8rem; color: var(--text-mid);
+  letter-spacing: 0.02em;
+}
+label .req { color: var(--blue); }
+label .li  { color: var(--green); font-size: 0.78em; }
+
+input, textarea, select {
+  width: 100%;
+  padding: 13px 16px;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--r-sm);
+  font-size: 0.93rem;
+  font-family: var(--font-b);
+  color: var(--ink);
+  transition: all var(--t) var(--ease);
+  -webkit-appearance: none; appearance: none;
+  outline: none;
+}
+input::placeholder, textarea::placeholder { color: var(--text-soft); }
+input:focus, textarea:focus, select:focus {
+  border-color: var(--blue);
+  background: var(--white);
+  box-shadow: 0 0 0 4px rgba(37,99,255,0.09);
+}
+input.err, select.err, textarea.err {
+  border-color: var(--red) !important;
+  box-shadow: 0 0 0 3px rgba(239,68,68,0.09) !important;
+  animation: fieldShake 0.35s ease;
+}
+@keyframes fieldShake {
+  0%,100% { transform: translateX(0); }
+  25%     { transform: translateX(-5px); }
+  75%     { transform: translateX(5px); }
+}
+select option { background: var(--white); color: var(--ink); }
+textarea { resize: vertical; min-height: 120px; line-height: 1.65; }
+
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+
+.char-counter {
+  text-align: right; font-size: 0.7rem;
+  color: var(--text-soft); margin-top: 4px; transition: color var(--t);
+}
+.char-counter.warn   { color: var(--amber); }
+.char-counter.danger { color: var(--red); }
+
+.field-hint {
+  font-size: 0.73rem; color: var(--text-soft); margin-top: 4px;
+  padding-left: 2px; display: flex; align-items: center;
+  gap: 4px; line-height: 1.4;
+}
+.field-hint i { color: var(--green); font-size: 0.7rem; flex-shrink: 0; }
+
+.field-err {
+  font-size: 0.73rem; color: var(--red);
+  margin-top: 4px; display: none; align-items: center; gap: 4px;
+}
+.field-err.show { display: flex; }
+
+/* ─────────────────────────────────────────
+   STATE OPTIONS
+───────────────────────────────────────── */
+.state-opts { display: flex; gap: 7px; flex-wrap: wrap; }
+.state-opt {
+  flex: 1; min-width: 68px;
+  padding: 9px 6px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--r-sm);
+  background: var(--surface);
+  color: var(--text-soft);
+  font-size: 0.76rem;
+  font-family: var(--font-d);
+  text-align: center; cursor: pointer;
+  transition: all var(--t) var(--ease);
+}
+.state-opt:hover { border-color: rgba(37,99,255,0.3); color: var(--ink); }
+.state-opt.selected {
+  border-color: var(--blue);
+  background: var(--blue-light);
+  color: var(--blue);
+  font-weight: 700;
+}
+
+/* ─────────────────────────────────────────
+   CATEGORY GRID
+───────────────────────────────────────── */
+.cat-sector { margin-bottom: 20px; }
+.cat-sector-title {
+  font-family: var(--font-d);
+  font-size: 0.65rem; text-transform: uppercase;
+  letter-spacing: 0.14em; color: var(--text-soft);
+  margin-bottom: 10px;
+  display: flex; align-items: center; gap: 8px;
+}
+.cat-sector-title::after {
+  content: ''; flex: 1; height: 1px; background: var(--border);
+}
+
+.cat-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; }
+@media (min-width: 400px) { .cat-grid { grid-template-columns: repeat(4,1fr); } }
+
+.cat-card {
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: 14px 8px;
+  text-align: center; cursor: pointer;
+  transition: all var(--t) var(--ease);
+  position: relative;
+}
+.cat-card:hover {
+  border-color: rgba(37,99,255,0.35);
+  background: var(--blue-light);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+}
+.cat-card.selected {
+  border-color: var(--blue);
+  background: var(--blue-light);
+  box-shadow: 0 4px 16px rgba(37,99,255,0.12);
+}
+.cat-card-ico { font-size: 1.5rem; display: block; margin-bottom: 6px; }
+.cat-card-name {
+  font-family: var(--font-d);
+  font-size: 0.68rem; font-weight: 700; line-height: 1.2;
+  color: var(--ink);
+}
+.cat-card-sub { font-size: 0.58rem; color: var(--text-soft); margin-top: 2px; line-height: 1.2; }
+.cat-card-check {
+  position: absolute; top: 7px; right: 7px;
+  width: 16px; height: 16px;
+  background: var(--blue); color: var(--white);
+  border-radius: 50%;
+  display: none; align-items: center; justify-content: center;
+  font-size: 0.56rem;
+}
+.cat-card.selected .cat-card-check { display: flex; }
+
+/* ─────────────────────────────────────────
+   QUALITY TAGS
+───────────────────────────────────────── */
+.quality-tags-wrap { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 6px; }
+
+.q-tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 7px 13px; border-radius: var(--r-sm);
+  border: 1.5px solid; cursor: pointer;
+  font-size: 0.76rem; font-weight: 600;
+  font-family: var(--font-d);
+  transition: all var(--t) var(--ease);
+  user-select: none;
+}
+.q-tag:hover { transform: translateY(-1px); }
+.q-tag.selected { transform: translateY(-1px); }
+.q-tag i { font-size: 0.78rem; }
+
+/* Tag variants — light/clean palette */
+.qt-calidad    { border-color: rgba(16,185,129,0.3);  color: var(--green-dark); background: var(--green-light); }
+.qt-calidad.selected { border-color: var(--green); box-shadow: 0 4px 12px rgba(16,185,129,0.18); }
+
+.qt-verificado { border-color: rgba(37,99,255,0.3);   color: var(--blue-deep); background: var(--blue-light); }
+.qt-verificado.selected { border-color: var(--blue); box-shadow: 0 4px 12px rgba(37,99,255,0.18); }
+
+.qt-doc        { border-color: rgba(245,158,11,0.3);  color: #92400E; background: var(--amber-light); }
+.qt-doc.selected { border-color: var(--amber); box-shadow: 0 4px 12px rgba(245,158,11,0.18); }
+
+.qt-premium    { border-color: rgba(139,92,246,0.3);  color: #5B21B6; background: #F5F3FF; }
+.qt-premium.selected { border-color: #8B5CF6; box-shadow: 0 4px 12px rgba(139,92,246,0.18); }
+
+.qt-urgente    { border-color: rgba(239,68,68,0.3);   color: #991B1B; background: var(--red-light); }
+.qt-urgente.selected { border-color: var(--red); box-shadow: 0 4px 12px rgba(239,68,68,0.15); }
+
+.qt-importado  { border-color: rgba(34,211,238,0.3);  color: #0E7490; background: var(--cyan-light); }
+.qt-importado.selected { border-color: var(--cyan); box-shadow: 0 4px 12px rgba(34,211,238,0.18); }
+
+.qt-garantia   { border-color: rgba(16,185,129,0.3);  color: var(--green-dark); background: var(--green-light); }
+.qt-garantia.selected { border-color: var(--green); box-shadow: 0 4px 12px rgba(16,185,129,0.18); }
+
+.qt-exclusivo  { border-color: rgba(245,158,11,0.3);  color: #92400E; background: var(--amber-light); }
+.qt-exclusivo.selected { border-color: var(--amber); box-shadow: 0 4px 12px rgba(245,158,11,0.18); }
+
+.qt-nacional   { border-color: rgba(37,99,255,0.3);   color: var(--blue-deep); background: var(--blue-light); }
+.qt-nacional.selected { border-color: var(--blue); box-shadow: 0 4px 12px rgba(37,99,255,0.18); }
+
+.qt-servicio   { border-color: rgba(249,115,22,0.3);  color: #9A3412; background: #FFF7ED; }
+.qt-servicio.selected { border-color: #F97316; box-shadow: 0 4px 12px rgba(249,115,22,0.18); }
+
+.qt-oficial    { border-color: rgba(239,68,68,0.3);   color: #991B1B; background: var(--red-light); }
+.qt-oficial.selected { border-color: var(--red); box-shadow: 0 4px 12px rgba(239,68,68,0.15); }
+
+/* Service tags */
+.qt-gratuito   { border-color: rgba(16,185,129,0.3);  color: var(--green-dark); background: var(--green-light); }
+.qt-gratuito.selected { border-color: var(--green); }
+.qt-tramite    { border-color: rgba(249,115,22,0.3);  color: #9A3412; background: #FFF7ED; }
+.qt-tramite.selected { border-color: #F97316; }
+.qt-cita       { border-color: rgba(37,99,255,0.3);   color: var(--blue-deep); background: var(--blue-light); }
+.qt-cita.selected { border-color: var(--blue); }
+.qt-presencial { border-color: rgba(139,92,246,0.3);  color: #5B21B6; background: #F5F3FF; }
+.qt-presencial.selected { border-color: #8B5CF6; }
+.qt-online     { border-color: rgba(34,211,238,0.3);  color: #0E7490; background: var(--cyan-light); }
+.qt-online.selected { border-color: var(--cyan); }
+
+/* ─────────────────────────────────────────
+   AI SECTION
+───────────────────────────────────────── */
+.ai-section {
+  background: var(--blue-light);
+  border: 1.5px solid rgba(37,99,255,0.15);
+  border-radius: var(--r);
+  padding: 16px;
+  margin-top: 16px;
+}
+.ai-section-title {
+  font-family: var(--font-d);
+  font-size: 0.68rem; text-transform: uppercase;
+  letter-spacing: 0.12em; color: var(--blue);
+  margin-bottom: 12px;
+  display: flex; align-items: center; gap: 5px;
+}
+.ai-btns-col { display: flex; flex-direction: column; gap: 8px; }
+
+.ai-btn {
+  padding: 12px 16px; border: none;
+  border-radius: var(--r-sm);
+  font-weight: 700; font-family: var(--font-d);
+  font-size: 0.83rem;
+  display: flex; align-items: center; justify-content: center; gap: 7px;
+  cursor: pointer;
+  transition: all var(--t) var(--ease-b);
+  letter-spacing: 0.02em;
+}
+.ai-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: var(--shadow-card); }
+.ai-btn:active:not(:disabled) { transform: scale(0.97); }
+.ai-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+.ai-btn-blue   { background: var(--blue);  color: var(--white); box-shadow: var(--shadow-blue); }
+.ai-btn-green  { background: var(--green); color: var(--white); box-shadow: 0 6px 18px rgba(16,185,129,0.28); }
+.ai-btn-orange { background: #F97316;      color: var(--white); box-shadow: 0 6px 18px rgba(249,115,22,0.24); }
+.ai-btn-purple { background: #8B5CF6;      color: var(--white); box-shadow: 0 6px 18px rgba(139,92,246,0.24); }
+
+.ai-spin { display: inline-block; animation: spin 0.8s linear infinite; }
+
+.ai-result-box {
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: 14px; margin-top: 10px;
+  display: none; animation: fadeUp 0.3s var(--ease);
+}
+.ai-result-box.show { display: block; }
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0);   }
+}
+.ai-result-title {
+  font-size: 0.65rem; font-family: var(--font-d);
+  text-transform: uppercase; letter-spacing: 0.1em;
+  color: var(--text-soft); margin-bottom: 8px;
+}
+.ai-tip-list { display: flex; flex-direction: column; gap: 6px; }
+.ai-tip-item {
+  display: flex; align-items: flex-start; gap: 7px;
+  font-size: 0.8rem; color: var(--text-mid); line-height: 1.45;
+}
+.ai-tip-item::before { content: '💡'; flex-shrink: 0; font-size: 0.76rem; margin-top: 1px; }
+
+.price-rec-box {
+  background: var(--green-light);
+  border: 1.5px solid rgba(16,185,129,0.25);
+  border-radius: var(--r-sm);
+  padding: 14px 16px; margin-top: 12px;
+  display: none; animation: fadeUp 0.35s var(--ease);
+}
+.price-rec-box.show { display: block; }
+.rec-label { font-size: 0.68rem; font-family: var(--font-d); text-transform: uppercase; letter-spacing: 0.1em; color: var(--green-dark); margin-bottom: 4px; }
+.rec-price { font-family: var(--font-d); font-size: 1.5rem; font-weight: 800; color: var(--green-dark); margin-bottom: 4px; }
+.rec-reason { font-size: 0.8rem; color: var(--text-mid); line-height: 1.5; }
+
+/* ─────────────────────────────────────────
+   PREMIUM SECTION
+───────────────────────────────────────── */
+.premium-section {
+  background: linear-gradient(135deg, var(--amber-light), #FFF7ED);
+  border: 1.5px solid rgba(245,158,11,0.25);
+  border-radius: var(--r);
+  padding: 18px;
+  margin-top: 18px;
+}
+.prem-head { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+.prem-head-icon { font-size: 1.2rem; }
+.prem-head-title {
+  font-family: var(--font-d);
+  font-size: 0.93rem; font-weight: 800;
+  color: #92400E;
+}
+.prem-status {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 0.78rem; color: var(--text-mid); margin-bottom: 12px;
+}
+.prem-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border); flex-shrink: 0; }
+.prem-dot.active { background: var(--green); box-shadow: 0 0 8px rgba(16,185,129,0.4); }
+
+.prem-code-wrap { display: flex; gap: 8px; }
+.prem-code-input {
+  flex: 1; padding: 11px 14px;
+  background: var(--white);
+  border: 1.5px solid rgba(245,158,11,0.3);
+  border-radius: var(--r-sm);
+  color: var(--ink); font-family: var(--font-d);
+  font-size: 0.93rem; letter-spacing: 2px;
+  text-transform: uppercase; outline: none;
+  transition: all var(--t);
+}
+.prem-code-input:focus { border-color: var(--amber); box-shadow: 0 0 0 4px rgba(245,158,11,0.1); }
+.prem-code-input::placeholder { color: var(--text-soft); text-transform: none; letter-spacing: 0; }
+
+.prem-activate-btn {
+  padding: 11px 18px;
+  background: var(--amber); color: var(--white);
+  border: none; border-radius: var(--r-sm);
+  font-family: var(--font-d); font-weight: 700;
+  font-size: 0.83rem; cursor: pointer;
+  transition: all var(--t) var(--ease-b);
+  white-space: nowrap;
+}
+.prem-activate-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(245,158,11,0.28); }
+
+.prem-benefits { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; margin-top: 12px; }
+.prem-benefit {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 0.75rem; color: var(--text-mid);
+  background: var(--white);
+  border-radius: var(--r-xs);
+  padding: 7px 9px;
+  border: 1px solid rgba(245,158,11,0.15);
+}
+.prem-benefit i { color: var(--amber); font-size: 0.8rem; flex-shrink: 0; }
+
+.prem-active-banner {
+  background: var(--green-light);
+  border: 1.5px solid rgba(16,185,129,0.25);
+  border-radius: var(--r-sm);
+  padding: 12px 14px;
+  display: flex; align-items: center; gap: 10px;
+  font-size: 0.82rem;
+}
+.prem-active-banner i { color: var(--green); font-size: 1.1rem; flex-shrink: 0; }
+.prem-active-banner strong { color: var(--green-dark); display: block; }
+.prem-active-banner span  { color: var(--text-soft); font-size: 0.75rem; }
+
+/* Quota bar */
+.quota-bar {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 99px; padding: 5px 14px;
+  font-size: 0.73rem;
+}
+.quota-icon { font-size: 0.82rem; }
+.quota-text { color: var(--text-soft); }
+.quota-text strong { color: var(--blue); font-weight: 700; }
+.quota-bar.warn  .quota-text strong { color: var(--amber); }
+.quota-bar.danger .quota-text strong { color: var(--red); }
+.quota-bar.premium-mode .quota-text strong { color: var(--green-dark); }
+
+/* Storage badge */
+.storage-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 4px 12px; border-radius: 99px;
+  font-size: 0.68rem; font-weight: 700;
+  font-family: var(--font-d); margin-top: 8px;
+  background: #F5F3FF;
+  border: 1px solid rgba(139,92,246,0.25);
+  color: #7C3AED;
+}
+
+/* ─────────────────────────────────────────
+   FINAL PREVIEW CARD
+───────────────────────────────────────── */
+.final-card {
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+}
+.final-main-wrap {
+  position: relative; width: 100%; aspect-ratio: 4/3;
+  background: var(--surface); overflow: hidden;
+}
+.final-main-img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.final-img-no {
+  position: absolute; bottom: 10px; right: 10px;
+  background: rgba(15,23,42,0.65);
+  backdrop-filter: blur(8px); color: var(--white);
+  font-size: 0.68rem; padding: 3px 10px;
+  border-radius: 99px; font-family: var(--font-d);
+}
+.final-thumbs {
+  display: flex; gap: 6px;
+  padding: 8px 12px; background: var(--surface);
+  border-bottom: 1px solid var(--border-soft);
+  overflow-x: auto; scrollbar-width: none;
+}
+.final-thumbs::-webkit-scrollbar { display: none; }
+.final-thumb {
+  flex-shrink: 0; width: 50px; height: 50px;
+  border-radius: var(--r-xs);
+  border: 1.5px solid var(--border);
+  overflow: hidden; cursor: pointer;
+  transition: all var(--t) var(--ease);
+}
+.final-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.final-thumb.active { border-color: var(--blue); box-shadow: 0 0 10px var(--blue-glow); }
+
+.final-body { padding: 16px 18px; }
+.final-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  background: var(--blue-light); color: var(--blue-deep);
+  border: 1.5px solid rgba(37,99,255,0.2);
+  border-radius: 99px; padding: 3px 11px;
+  font-size: 0.66rem; font-weight: 700;
+  font-family: var(--font-d); margin-bottom: 9px; letter-spacing: 0.03em;
+}
+.fb-store    { background: var(--green-light);  color: var(--green-dark); border-color: rgba(16,185,129,0.2); }
+.fb-entity   { background: #FFF7ED;             color: #9A3412;           border-color: rgba(249,115,22,0.2); }
+.fb-ministry { background: #F5F3FF;             color: #5B21B6;           border-color: rgba(139,92,246,0.2); }
+.fb-premium  { background: var(--amber-light);  color: #92400E;           border-color: rgba(245,158,11,0.2); }
+
+.final-title {
+  font-family: var(--font-d);
+  font-size: 1.15rem; font-weight: 800;
+  color: var(--ink); margin-bottom: 5px; line-height: 1.3;
+}
+.final-price {
+  font-family: var(--font-d);
+  font-size: 1.6rem; font-weight: 800;
+  color: var(--blue); margin-bottom: 10px;
+  letter-spacing: -0.03em;
+}
+.final-desc {
+  font-size: 0.82rem; color: var(--text-mid);
+  line-height: 1.65; margin-bottom: 14px; white-space: pre-wrap;
+}
+.final-tags-row { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 12px; }
+.final-tag {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 3px 9px; border-radius: var(--r-xs);
+  font-size: 0.62rem; font-weight: 700;
+  font-family: var(--font-d); text-transform: uppercase; letter-spacing: 0.04em;
+}
+.ft-calidad   { background: var(--green-light);  color: var(--green-dark); }
+.ft-verificado{ background: var(--blue-light);   color: var(--blue-deep);  }
+.ft-doc       { background: var(--amber-light);  color: #92400E;           }
+.ft-premium   { background: #F5F3FF;             color: #5B21B6;           }
+.ft-urgente   { background: var(--red-light);    color: #991B1B;           }
+.ft-garantia  { background: var(--green-light);  color: var(--green-dark); }
+.ft-exclusivo { background: var(--amber-light);  color: #92400E;           }
+.ft-gratuito  { background: var(--green-light);  color: var(--green-dark); }
+.ft-tramite   { background: #FFF7ED;             color: #9A3412;           }
+.ft-cita      { background: var(--blue-light);   color: var(--blue-deep);  }
+.ft-presencial{ background: #F5F3FF;             color: #5B21B6;           }
+.ft-online    { background: var(--cyan-light);   color: #0E7490;           }
+.ft-servicio  { background: #FFF7ED;             color: #9A3412;           }
+.ft-oficial   { background: var(--red-light);    color: #991B1B;           }
+
+.final-meta {
+  display: flex; flex-wrap: wrap; gap: 10px;
+  padding-top: 12px; border-top: 1px solid var(--border-soft);
+}
+.final-meta-item {
+  display: flex; align-items: center; gap: 5px;
+  font-size: 0.78rem; color: var(--text-soft);
+}
+.final-meta-item i { color: var(--blue); font-size: 0.8em; }
+
+.verified-seal {
+  display: flex; align-items: center; gap: 6px;
+  margin-top: 10px; padding: 8px 12px;
+  background: var(--blue-light);
+  border: 1.5px solid rgba(37,99,255,0.2);
+  border-radius: var(--r-sm);
+  font-size: 0.78rem; color: var(--blue-deep);
+  font-weight: 600; font-family: var(--font-d);
+}
+.store-seal    { background: var(--green-light); border-color: rgba(16,185,129,0.2); color: var(--green-dark); }
+.entity-seal   { background: #FFF7ED;            border-color: rgba(249,115,22,0.2); color: #9A3412; }
+.ministry-seal { background: #F5F3FF;            border-color: rgba(139,92,246,0.2); color: #5B21B6; }
+
+/* ─────────────────────────────────────────
+   CTA PRIMARY  (Siguiente →)
+───────────────────────────────────────── */
+.btn-cta-primary {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  width: 100%; height: 62px;
+  background: linear-gradient(135deg, var(--blue), var(--blue-deep));
+  color: var(--white);
+  border: none; border-radius: var(--r);
+  font-family: var(--font-d); font-size: 1rem; font-weight: 800;
+  cursor: pointer; letter-spacing: 0.02em;
+  box-shadow: var(--shadow-blue);
+  transition: all var(--t) var(--ease);
+  position: relative; overflow: hidden;
+  margin-top: 24px;
+}
+.btn-cta-primary::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent);
+  opacity: 0; transition: opacity var(--t);
+}
+.btn-cta-primary:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 16px 48px rgba(37,99,255,0.38);
+}
+.btn-cta-primary:hover::before { opacity: 1; }
+.btn-cta-primary:active { transform: scale(0.97); }
+
+/* ─────────────────────────────────────────
+   BOTTOM NAV BUTTONS
+───────────────────────────────────────── */
+.bottom-nav {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-top: 1px solid var(--border-soft);
+  padding: 10px 20px;
+  padding-bottom: env(safe-area-inset-bottom, 10px);
+  display: flex; gap: 10px; z-index: 999;
+}
+.btn-nav {
+  flex: 1; padding: 13px;
+  border: none; border-radius: var(--r-sm);
+  font-size: 0.9rem; font-weight: 700;
+  font-family: var(--font-d); cursor: pointer;
+  transition: all var(--t) var(--ease-b);
+  letter-spacing: 0.02em;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+}
+.btn-nav:active { transform: scale(0.97); }
+.btn-prev {
+  background: var(--surface);
+  color: var(--text-mid);
+  border: 1.5px solid var(--border);
+}
+.btn-prev:hover { background: var(--border-soft); }
+.btn-next {
+  background: linear-gradient(135deg, var(--blue), var(--blue-deep));
+  color: var(--white);
+  box-shadow: var(--shadow-blue);
+}
+.btn-next:hover { transform: translateY(-2px); box-shadow: 0 12px 36px rgba(37,99,255,0.38); }
+
+/* Publish float button */
+.btn-publish-float {
+  position: fixed; bottom: 76px; left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: linear-gradient(135deg, var(--blue), var(--blue-deep));
+  color: var(--white); border: none;
+  padding: 16px 36px; border-radius: 99px;
+  font-weight: 800; font-family: var(--font-d);
+  font-size: 1rem; cursor: pointer;
+  display: none; align-items: center; gap: 9px;
+  box-shadow: var(--shadow-blue);
+  z-index: 998; letter-spacing: 0.03em;
+  transition: all 0.4s var(--ease-b);
+  white-space: nowrap;
+}
+.btn-publish-float.show {
+  display: flex;
+  transform: translateX(-50%) translateY(0);
+  animation: floatPop 0.5s var(--ease-b);
+}
+@keyframes floatPop {
+  0%   { opacity: 0; transform: translateX(-50%) translateY(20px) scale(0.9); }
+  100% { opacity: 1; transform: translateX(-50%) translateY(0)    scale(1);   }
+}
+.btn-publish-float:hover {
+  transform: translateX(-50%) translateY(-3px) scale(1.04);
+  box-shadow: 0 16px 48px rgba(37,99,255,0.42);
+}
+.pulse-ring {
+  position: absolute; inset: -4px;
+  border-radius: 54px;
+  border: 2px solid rgba(37,99,255,0.35);
+  animation: pulseRing 2s ease-out infinite;
+}
+@keyframes pulseRing {
+  0%   { opacity: 1; transform: scale(1);    }
+  100% { opacity: 0; transform: scale(1.15); }
+}
+
+/* ─────────────────────────────────────────
+   OVERLAYS: LOADING, SUCCESS, TOAST
+───────────────────────────────────────── */
+#loadingOverlay {
+  position: fixed; inset: 0;
+  background: rgba(255,255,255,0.88);
+  backdrop-filter: blur(14px);
+  z-index: 9999; display: none;
+  align-items: center; justify-content: center;
+  flex-direction: column; gap: 16px;
+}
+#loadingOverlay.active { display: flex; }
+
+.spinner {
+  width: 48px; height: 48px;
+  border: 3px solid var(--border);
+  border-top-color: var(--blue);
+  border-right-color: rgba(37,99,255,0.4);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+.loading-title {
+  font-family: var(--font-d);
+  font-size: 1rem; font-weight: 700; color: var(--ink);
+}
+.loading-sub { font-size: 0.82rem; color: var(--text-soft); text-align: center; max-width: 240px; }
+
+.upload-prog-wrap { width: 240px; margin-top: 4px; }
+.upload-prog-outer { height: 4px; background: var(--border); border-radius: 99px; overflow: hidden; }
+.upload-prog-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--blue), var(--cyan));
+  border-radius: 99px; transition: width 0.4s; width: 0%;
+}
+.upload-prog-label { font-size: 0.72rem; color: var(--text-soft); text-align: center; margin-top: 5px; }
+
+/* Success screen */
+#successScreen {
+  display: none; position: fixed; inset: 0;
+  background: var(--white); z-index: 9999;
+  align-items: center; justify-content: center;
+  flex-direction: column; gap: 16px;
+  padding: 32px; text-align: center;
+}
+#successScreen.active { display: flex; }
+
+.success-icon {
+  width: 80px; height: 80px; border-radius: var(--r-lg);
+  background: linear-gradient(135deg, var(--blue), var(--blue-deep));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 2.2rem;
+  animation: popIn 0.6s var(--ease-b);
+  box-shadow: var(--shadow-blue);
+}
+@keyframes popIn {
+  from { transform: scale(0) rotate(-20deg); }
+  to   { transform: scale(1) rotate(0);      }
+}
+.success-title {
+  font-family: var(--font-d);
+  font-size: 1.6rem; font-weight: 800;
+  color: var(--ink); letter-spacing: -0.03em;
+}
+.success-sub { color: var(--text-soft); font-size: 0.88rem; max-width: 280px; line-height: 1.55; }
+.btn-success-main {
+  background: var(--blue); color: var(--white); border: none;
+  padding: 14px 34px; border-radius: 99px;
+  font-weight: 800; font-family: var(--font-d);
+  font-size: 0.93rem; cursor: pointer; margin-top: 8px;
+  box-shadow: var(--shadow-blue); transition: all var(--t) var(--ease-b);
+}
+.btn-success-main:hover { transform: translateY(-2px); box-shadow: 0 14px 36px rgba(37,99,255,0.38); }
+.btn-success-sec {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  color: var(--text-mid);
+  padding: 11px 28px; border-radius: 99px;
+  cursor: pointer; font-size: 0.85rem; font-family: var(--font-d);
+  transition: all var(--t); margin-top: 4px;
+}
+.btn-success-sec:hover { background: var(--border-soft); color: var(--ink); }
+
+/* Login required */
+#loginRequired {
+  display: none; position: fixed; inset: 0;
+  background: var(--white); z-index: 9999;
+  align-items: center; justify-content: center;
+  flex-direction: column; gap: 14px;
+  padding: 32px; text-align: center;
+}
+#loginRequired.active { display: flex; }
+.login-icon { font-size: 3rem; margin-bottom: 4px; animation: float 2.5s ease-in-out infinite; }
+.login-title { font-family: var(--font-d); font-size: 1.45rem; font-weight: 800; color: var(--ink); }
+.login-sub   { color: var(--text-soft); font-size: 0.88rem; max-width: 270px; line-height: 1.5; }
+.btn-login {
+  background: var(--blue); color: var(--white); border: none;
+  padding: 13px 34px; border-radius: 99px;
+  font-weight: 800; font-family: var(--font-d);
+  font-size: 0.93rem; cursor: pointer; margin-top: 6px;
+  text-decoration: none; display: inline-block;
+  box-shadow: var(--shadow-blue);
+  transition: all var(--t) var(--ease-b);
+}
+.btn-login:hover { transform: translateY(-2px); }
+
+/* Toast */
+#toast {
+  position: fixed; bottom: 88px; left: 50%;
+  transform: translateX(-50%) translateY(16px);
+  background: var(--ink-2); color: var(--white);
+  border-radius: 99px; padding: 12px 22px;
+  font-size: 0.84rem; font-weight: 500;
+  font-family: var(--font-b);
+  box-shadow: 0 8px 32px rgba(15,23,42,0.18);
+  border: 1.5px solid rgba(255,255,255,0.06);
+  z-index: 9999; opacity: 0; pointer-events: none;
+  transition: all 0.4s var(--ease-b);
+  max-width: calc(100vw - 40px); text-align: center;
+  display: flex; align-items: center; gap: 8px;
+}
+#toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+#toast.success { border-color: rgba(16,185,129,0.4); }
+#toast.error   { border-color: rgba(239,68,68,0.4);  }
+#toast.info    { border-color: rgba(37,99,255,0.4);   }
+#toast.warn    { border-color: rgba(245,158,11,0.4);  }
+
+/* ─────────────────────────────────────────
+   SCHEDULE / PAYMENT ELEMENTS
+───────────────────────────────────────── */
+.schedule-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.schedule-item {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: 10px 12px;
+  display: flex; align-items: center; gap: 8px;
+  font-size: 0.78rem; cursor: pointer;
+  transition: all var(--t) var(--ease);
+  color: var(--text-mid);
+}
+.schedule-item.selected { border-color: var(--blue); background: var(--blue-light); color: var(--blue-deep); }
+.schedule-item i { font-size: 0.8rem; color: var(--text-soft); }
+.schedule-item.selected i { color: var(--blue); }
+
+.payment-methods { display: flex; flex-wrap: wrap; gap: 7px; }
+.pm-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 7px 13px; border-radius: var(--r-sm);
+  border: 1.5px solid var(--border); background: var(--surface);
+  color: var(--text-soft); font-size: 0.76rem; font-weight: 600;
+  cursor: pointer; transition: all var(--t) var(--ease);
+}
+.pm-chip.selected { border-color: var(--blue); background: var(--blue-light); color: var(--blue-deep); }
+.pm-chip i { font-size: 0.82rem; }
+
+/* Docs list */
+.docs-list { display: flex; flex-direction: column; gap: 8px; }
+.doc-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 11px 14px;
+  background: var(--surface);
+  border: 1.5px solid var(--border); border-radius: var(--r-sm);
+  font-size: 0.82rem; cursor: pointer;
+  transition: all var(--t) var(--ease);
+  color: var(--text-mid);
+}
+.doc-item.selected { border-color: #8B5CF6; background: #F5F3FF; color: var(--ink); }
+.doc-item i { color: var(--text-soft); font-size: 0.9rem; }
+.doc-item.selected i { color: #8B5CF6; }
+.doc-item-name { flex: 1; }
+.doc-item-tag {
+  font-size: 0.6rem; padding: 2px 7px;
+  border-radius: 99px; font-family: var(--font-d);
+  font-weight: 700; background: #F5F3FF; color: #7C3AED;
+}
+
+/* Unlimited store banner */
+.store-unlimited-banner {
+  background: var(--green-light);
+  border: 1.5px solid rgba(16,185,129,0.25);
+  border-radius: var(--r);
+  padding: 14px 16px;
+  display: flex; align-items: center; gap: 12px;
+}
+.store-unlimited-banner i { font-size: 1.4rem; color: var(--green); }
+.store-unlimited-banner strong { font-family: var(--font-d); font-size: 0.9rem; color: var(--green-dark); display: block; }
+.store-unlimited-banner span  { font-size: 0.75rem; color: var(--text-soft); }
+
+/* ─────────────────────────────────────────
+   RESPONSIVE
+───────────────────────────────────────── */
+@media (max-width: 380px) {
+  .header { padding: 0 16px; }
+  .step-screen { padding: 16px 16px 28px; }
+  .upload-area { min-height: 160px; padding: 22px 16px; }
+  .btn-cta-primary { height: 56px; font-size: 0.93rem; }
+  .prog-step { width: 26px; height: 26px; font-size: 0.6rem; }
+  .prog-conn { max-width: 22px; }
+  .cat-grid { grid-template-columns: repeat(3,1fr); }
+}
+@media (min-width: 540px) {
+  .step-content { max-width: 520px; }
+  .upload-area { min-height: 200px; }
+  .upload-placeholder { width: 56px; height: 56px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ══ ROLE DETECTION SCREEN ══ -->
+<div id="roleDetectScreen">
+  <div class="rd-logo">Compra<span>Ya</span></div>
+  <p class="rd-sub">Preparando tu experiencia de publicación…</p>
+  <div class="rd-spinner"></div>
+  <div class="rd-status" id="rdStatus">Verificando cuenta…</div>
+</div>
+
+<!-- ══ HEADER ══ -->
+<header class="header">
+  <a href="index-comprador.html" class="hbtn" title="Volver"><i class="fas fa-arrow-left"></i></a>
+  <a href="index-comprador.html" class="logo">Compra<span>Ya</span></a>
+  <div class="quota-bar" id="quotaBar">
+    <span class="quota-icon">📦</span>
+    <span class="quota-text" id="quotaText"><strong>—</strong> / 20</span>
+  </div>
+   <a href="perfildelvendedor.html" class="profile-av" id="profileAv" title="Perfil">
+    <svg width="11" height="11" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+  </a>
+</header>
+
+<!-- ══ PROGRESS ══ -->
+<div class="progress-wrap">
+  <div class="prog-steps" id="progSteps"></div>
+  <div class="prog-bar-outer"><div class="prog-bar-fill" id="progFill" style="width:0%"></div></div>
+</div>
+
+<!-- ══ MAIN ══ -->
+<main id="mainContent" style="display:none">
+
+  <!-- ══════ STEP 1: FOTOS ══════ -->
+  <div id="step-1" class="step-screen active">
+    <div class="step-content">
+
+      <!-- Identity bar -->
+      <div class="role-identity-bar rib-normal" id="ribStep1">
+        <div class="rib-icon" id="ribIconStep1">👤</div>
+        <div class="rib-info">
+          <div class="rib-title" id="ribTitleStep1">Publicación personal</div>
+          <div class="rib-sub" id="ribSubStep1">Hasta 5 fotos · Compresión automática WebP</div>
+        </div>
+        <div class="rib-dots">
+          <div class="rib-dot" style="background:var(--cyan)"></div>
+          <div class="rib-dot" style="background:var(--teal)"></div>
+          <div class="rib-dot" style="background:var(--lime)"></div>
+        </div>
+      </div>
+
+      <div class="step-header">
+        <div class="step-icon" id="s1Icon">📸</div>
+        <h2 class="step-title" id="s1Title">Fotos del producto</h2>
+        <p class="step-sub" id="s1Sub">Sube hasta <strong style="color:var(--cyan)" id="maxPhotosLabel">5 fotos</strong>. La primera será la portada. Se comprimen a WebP automáticamente.</p>
+      </div>
+
+      <div class="upload-area" id="uploadArea"
+        onclick="triggerFileInput()"
+        ondragover="handleDragOver(event)"
+        ondragleave="handleDragLeave(event)"
+        ondrop="handleDrop(event)">
+        <div class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+        <h4>Toca para subir fotos</h4>
+        <p>O arrastra y suelta aquí</p>
+        <small id="uploadSmall">JPG · PNG · WEBP — máx. 5 imágenes — compresión automática</small>
+        <div class="photo-count-pill" id="photoCountPill">0 / 5 fotos</div>
+      </div>
+
+      <input type="file" id="fileInput" accept="image/*" hidden multiple onchange="handleFileSelect(event)">
+
+      <div class="compress-prog" id="compressProg">
+        <div class="compress-bar-outer"><div class="compress-bar-fill" id="compressBar"></div></div>
+        <div class="compress-label" id="compressLabel">⚡ Comprimiendo…</div>
+      </div>
+
+      <div class="imgs-container" id="imgsContainer" style="display:none">
+        <div class="main-slot" id="mainSlot">
+          <img id="mainImg" src="" alt="Principal">
+          <span class="main-badge">✦ Principal</span>
+          <span class="webp-badge" id="webpBadge">✓ WebP</span>
+        </div>
+        <div class="thumb-row" id="thumbRow"></div>
+      </div>
+      <div id="storageBadgeWrap" style="text-align:center;margin-top:6px"></div>
+
+      <div class="info-tip" style="margin-top:14px">
+        <i class="fas fa-lightbulb"></i>
+        <span>Buena iluminación y fondo limpio. Fotos de calidad aumentan hasta 3× las consultas.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════ STEP 2: PRECIO ══════ -->
+  <div id="step-2" class="step-screen">
+    <div class="step-content">
+      <div class="step-header">
+        <div class="step-icon">💰</div>
+        <h2 class="step-title" id="s2Title">Precio</h2>
+        <p class="step-sub" id="s2Sub">Establece un precio justo y competitivo.</p>
+      </div>
+
+      <div class="form-group">
+        <label><i class="fas fa-tag li"></i> Precio en FCFA <span class="req">*</span></label>
+        <input type="number" id="precio" placeholder="125000" min="0" oninput="clearErr(this)">
+        <div class="field-hint"><i class="fas fa-info-circle"></i> Francos CFA. Sin puntos ni comas.</div>
+        <div class="field-err" id="err-precio"><i class="fas fa-exclamation-circle"></i><span></span></div>
+      </div>
+
+      <!-- Campo precio negociable / gratis (servicios) -->
+      <div class="form-group" id="precioAltGroup" style="display:none">
+        <label><i class="fas fa-tags li"></i> Modalidad de precio</label>
+        <div class="state-opts" id="precioModeOpts">
+          <div class="state-opt selected" data-val="fijo" onclick="selectPrecioMode(this)">💵 Precio fijo</div>
+          <div class="state-opt" data-val="negociable" onclick="selectPrecioMode(this)">🤝 Negociable</div>
+          <div class="state-opt" data-val="gratuito" onclick="selectPrecioMode(this)">🆓 Gratuito</div>
+          <div class="state-opt" data-val="consultar" onclick="selectPrecioMode(this)">📞 Consultar</div>
+        </div>
+        <input type="hidden" id="precioMode" value="fijo">
+      </div>
+
+      <div class="ai-section">
+        <div class="ai-section-title"><i class="fas fa-chart-line"></i> Análisis de precio con IA</div>
+        <button class="ai-btn ai-btn-blue" id="btnPrecioIA" onclick="runPrecioIA()" style="width:100%">
+          <i class="fas fa-search-dollar"></i> Recomendar precio óptimo
+        </button>
+        <div class="price-rec-box" id="priceRecBox">
+          <div class="rec-label">💡 Precio recomendado</div>
+          <div class="rec-price" id="recPriceVal">—</div>
+          <div class="rec-reason" id="recPriceReason"></div>
+          <button class="ai-btn ai-btn-green" onclick="usarPrecioIA()" style="margin-top:11px;width:100%;font-size:.8rem;padding:10px">
+            <i class="fas fa-check"></i> Usar este precio
+          </button>
+        </div>
+      </div>
+
+      <!-- Premium / Store -->
+      <div id="premiumSection" class="premium-section">
+        <div class="prem-head">
+          <span class="prem-head-icon">👑</span>
+          <span class="prem-head-title">Compra Ya Premium</span>
+        </div>
+        <div id="premNotActive">
+          <div class="prem-status">
+            <div class="prem-dot" id="premDot"></div>
+            <span>Plan gratuito: <strong id="pubsRestantes">—</strong> publicaciones restantes este mes</span>
+          </div>
+          <div class="prem-code-wrap">
+            <input class="prem-code-input" type="text" id="premCodeInput"
+              placeholder="Código Premium" maxlength="24" autocapitalize="characters" spellcheck="false">
+            <button class="prem-activate-btn" onclick="activarCodigo()"><i class="fas fa-key"></i> Activar</button>
+          </div>
+          <div class="prem-benefits">
+            <div class="prem-benefit"><i class="fas fa-infinity"></i> Publicaciones ilimitadas</div>
+            <div class="prem-benefit"><i class="fas fa-circle-check" style="color:var(--lime)"></i> Insignia verificada</div>
+            <div class="prem-benefit"><i class="fas fa-star"></i> Posición destacada</div>
+            <div class="prem-benefit"><i class="fas fa-headset"></i> Soporte prioritario</div>
+          </div>
+        </div>
+        <div id="premActive" style="display:none">
+          <div class="prem-active-banner">
+            <i class="fas fa-crown"></i>
+            <div>
+              <strong>¡Premium activo! 🎉</strong>
+              <span>Publicaciones ilimitadas hasta <span id="premExpiry">—</span></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Store / Entity: sin límite -->
+      <div id="storeUnlimitedBanner" class="store-unlimited-banner" style="display:none;margin-top:16px">
+        <i class="fas fa-store"></i>
+        <div>
+          <strong>Publicaciones ilimitadas activas</strong>
+          <span id="storeUnlimitedSub">Tu cuenta de tienda no tiene límite mensual.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════ STEP 3: CATEGORÍA ══════ -->
+  <div id="step-3" class="step-screen">
+    <div class="step-content">
+      <div class="step-header">
+        <div class="step-icon" id="s3Icon">🗂️</div>
+        <h2 class="step-title" id="s3Title">Categoría</h2>
+        <p class="step-sub" id="s3Sub">Elige la categoría correcta para más visibilidad.</p>
+      </div>
+
+      <!-- Normal: select -->
+      <div id="catSelectGroup">
+        <div class="form-group">
+          <label><i class="fas fa-th-large li"></i> Categoría <span class="req">*</span></label>
+          <select id="categoria" onchange="updateSubcats();clearErr(this)">
+            <option value="">Selecciona…</option>
+            <optgroup label="🛍️ Productos">
+              <option value="tecnologia">📱 Tecnología</option>
+              <option value="electrodomesticos">🏠 Electrodomésticos</option>
+              <option value="moda">👕 Moda y Ropa</option>
+              <option value="vehiculos">🚗 Vehículos</option>
+              <option value="alimentacion">🛒 Alimentación</option>
+              <option value="belleza">💄 Belleza y Cuidado</option>
+              <option value="deportes">⚽ Deportes y Ocio</option>
+              <option value="hogar">🛋️ Hogar y Jardín</option>
+              <option value="juguetes">🧸 Juguetes y Bebés</option>
+              <option value="mascotas">🐾 Mascotas</option>
+              <option value="libros">📚 Libros y Arte</option>
+              <option value="herramientas">🔧 Herramientas</option>
+            </optgroup>
+            <optgroup label="🏗️ Inmobiliaria">
+              <option value="inmuebles">🏗️ Inmuebles en venta</option>
+              <option value="alquiler">🔑 Alquiler</option>
+              <option value="terrenos">🌿 Terrenos y Parcelas</option>
+            </optgroup>
+            <optgroup label="🔧 Servicios">
+              <option value="servicios_tecnicos">🔧 Servicios Técnicos</option>
+              <option value="servicios_salud">🏥 Salud y Bienestar</option>
+              <option value="servicios_educacion">🎓 Educación y Formación</option>
+              <option value="servicios_transporte">🚚 Transporte y Mudanzas</option>
+              <option value="servicios_construccion">🏗️ Construcción</option>
+              <option value="servicios_limpieza">🧹 Limpieza</option>
+              <option value="servicios_legales">⚖️ Servicios Legales</option>
+              <option value="servicios_financieros">💰 Servicios Financieros</option>
+              <option value="servicios_eventos">🎉 Eventos y Bodas</option>
+              <option value="servicios_marketing">📊 Marketing y Publicidad</option>
+            </optgroup>
+            <optgroup label="📋 Empleo">
+              <option value="empleo_oferta">💼 Oferta de Empleo</option>
+              <option value="empleo_demanda">🙋 Busco Empleo</option>
+            </optgroup>
+            <optgroup label="📦 Otros">
+              <option value="otros">📦 Otros</option>
+            </optgroup>
+          </select>
+          <div class="field-err" id="err-categoria"><i class="fas fa-exclamation-circle"></i><span></span></div>
+        </div>
+        <div class="form-group" id="subcatGroup" style="display:none">
+          <label>Subcategoría</label>
+          <select id="subcategoria"></select>
+        </div>
+      </div>
+
+      <!-- Store / Entity: grid visual de categorías -->
+      <div id="catGridGroup" style="display:none">
+        <!-- Populated by JS based on role -->
+        <div id="catSectorsContainer"></div>
+        <input type="hidden" id="categoriaGrid" value="">
+        <div class="field-err" id="err-categoriaGrid"><i class="fas fa-exclamation-circle"></i><span></span></div>
+      </div>
+
+      <!-- Estado del producto -->
+      <div class="form-group" id="estadoGroup">
+        <label><i class="fas fa-star li"></i> Estado</label>
+        <div class="state-opts" id="stateOpts">
+          <div class="state-opt selected" data-val="nuevo" onclick="selectState(this)">✨ Nuevo</div>
+          <div class="state-opt" data-val="como_nuevo" onclick="selectState(this)">🌟 Como nuevo</div>
+          <div class="state-opt" data-val="bueno" onclick="selectState(this)">👍 Buen estado</div>
+          <div class="state-opt" data-val="aceptable" onclick="selectState(this)">🙂 Aceptable</div>
+          <div class="state-opt" data-val="para_piezas" onclick="selectState(this)">🔧 Para piezas</div>
+        </div>
+        <input type="hidden" id="estado" value="nuevo">
+      </div>
+
+      <!-- Medios de pago (store/entity) -->
+      <div id="paymentGroup" style="display:none">
+        <div class="form-group">
+          <label><i class="fas fa-credit-card li"></i> Medios de pago aceptados</label>
+          <div class="payment-methods">
+            <div class="pm-chip" onclick="togglePM(this)" data-val="efectivo"><i class="fas fa-money-bill"></i> Efectivo</div>
+            <div class="pm-chip" onclick="togglePM(this)" data-val="transferencia"><i class="fas fa-university"></i> Transferencia</div>
+            <div class="pm-chip" onclick="togglePM(this)" data-val="mooney"><i class="fas fa-mobile-alt"></i> Mooney</div>
+            <div class="pm-chip" onclick="togglePM(this)" data-val="orange_money"><i class="fab fa-orange"></i> Orange Money</div>
+            <div class="pm-chip" onclick="togglePM(this)" data-val="tarjeta"><i class="fas fa-credit-card"></i> Tarjeta</div>
+            <div class="pm-chip" onclick="togglePM(this)" data-val="paypal"><i class="fab fa-paypal"></i> PayPal</div>
+            <div class="pm-chip" onclick="togglePM(this)" data-val="bitcoin"><i class="fab fa-bitcoin"></i> Cripto</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Documentos requeridos (ministerio) -->
+      <div id="docsGroup" style="display:none">
+        <div class="form-group">
+          <label><i class="fas fa-file-alt li"></i> Documentos requeridos para el trámite</label>
+          <div class="docs-list">
+            <div class="doc-item" onclick="toggleDoc(this)" data-val="dni"><i class="fas fa-id-card"></i><span class="doc-item-name">DNI / Cédula de identidad</span><span class="doc-item-tag">Obligatorio</span></div>
+            <div class="doc-item" onclick="toggleDoc(this)" data-val="pasaporte"><i class="fas fa-passport"></i><span class="doc-item-name">Pasaporte</span><span class="doc-item-tag">Según caso</span></div>
+            <div class="doc-item" onclick="toggleDoc(this)" data-val="registro_civil"><i class="fas fa-scroll"></i><span class="doc-item-name">Certificado de registro civil</span><span class="doc-item-tag">Necesario</span></div>
+            <div class="doc-item" onclick="toggleDoc(this)" data-val="rut"><i class="fas fa-building"></i><span class="doc-item-name">RUT / Registro de empresa</span><span class="doc-item-tag">Empresas</span></div>
+            <div class="doc-item" onclick="toggleDoc(this)" data-val="comprobante_residencia"><i class="fas fa-home"></i><span class="doc-item-name">Comprobante de residencia</span><span class="doc-item-tag">Necesario</span></div>
+            <div class="doc-item" onclick="toggleDoc(this)" data-val="foto_reciente"><i class="fas fa-camera"></i><span class="doc-item-name">Fotografía reciente tamaño carnet</span><span class="doc-item-tag">Siempre</span></div>
+            <div class="doc-item" onclick="toggleDoc(this)" data-val="formulario_oficial"><i class="fas fa-file-signature"></i><span class="doc-item-name">Formulario oficial cumplimentado</span><span class="doc-item-tag">Disponible en oficina</span></div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Horarios de atención</label>
+          <div class="schedule-grid">
+            <div class="schedule-item" onclick="toggleSchedule(this)" data-val="lun_vie">
+              <i class="fas fa-calendar-week"></i> Lun – Vie
+            </div>
+            <div class="schedule-item" onclick="toggleSchedule(this)" data-val="sab">
+              <i class="fas fa-calendar-day"></i> Sábados
+            </div>
+            <div class="schedule-item" onclick="toggleSchedule(this)" data-val="manana">
+              <i class="fas fa-sun"></i> Mañana 8–13h
+            </div>
+            <div class="schedule-item" onclick="toggleSchedule(this)" data-val="tarde">
+              <i class="fas fa-moon"></i> Tarde 15–18h
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════ STEP 4: INFORMACIÓN ══════ -->
+  <div id="step-4" class="step-screen">
+    <div class="step-content">
+      <div class="step-header">
+        <div class="step-icon">📝</div>
+        <h2 class="step-title" id="s4Title">Información</h2>
+        <p class="step-sub" id="s4Sub">Un buen título y la categoría correcta atraen más compradores.</p>
+      </div>
+
+      <div class="form-group">
+        <label><i class="fas fa-heading li"></i> Título <span class="req">*</span></label>
+        <input type="text" id="titulo" placeholder="Ej: iPhone 13 Pro 256GB Negro" maxlength="90"
+          oninput="updateCounter(this,'tituloCount',90);clearErr(this)">
+        <div class="char-counter" id="tituloCount">0 / 90</div>
+        <div class="field-err" id="err-titulo"><i class="fas fa-exclamation-circle"></i><span></span></div>
+      </div>
+
+      <!-- Campos extra para tiendas/entidades -->
+      <div id="extraInfoGroup" style="display:none">
+        <div class="grid-2">
+          <div class="form-group">
+            <label><i class="fas fa-building li"></i> Nombre de la entidad</label>
+            <input type="text" id="entityName" placeholder="Ej: Ministerio de Educación">
+          </div>
+          <div class="form-group">
+            <label><i class="fas fa-link li"></i> Sitio web (opcional)</label>
+            <input type="url" id="entityWeb" placeholder="https://...">
+          </div>
+        </div>
+        <div class="form-group">
+          <label><i class="fas fa-at li"></i> Email oficial de contacto</label>
+          <input type="email" id="entityEmail" placeholder="contacto@entidad.gq">
+          <div class="field-hint"><i class="fas fa-shield-alt"></i> Solo para verificación, no se mostrará públicamente.</div>
+        </div>
+      </div>
+
+      <!-- Etiquetas de calidad -->
+      <div class="form-group">
+        <label><i class="fas fa-tags li"></i> Etiquetas de publicación</label>
+        <div class="quality-tags-wrap" id="qualityTagsWrap">
+          <!-- poblado por JS según rol -->
+        </div>
+        <div class="field-hint"><i class="fas fa-info-circle"></i> Selecciona las que apliquen. Aparecerán en tu anuncio.</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════ STEP 5: DESCRIPCIÓN ══════ -->
+  <div id="step-5" class="step-screen">
+    <div class="step-content">
+      <div class="step-header">
+        <div class="step-icon">✍️</div>
+        <h2 class="step-title" id="s5Title">Descripción</h2>
+        <p class="step-sub" id="s5Sub">Cuanto más completa, más rápido vendes. ¡La IA te ayuda!</p>
+      </div>
+
+      <div class="form-group">
+        <label><i class="fas fa-align-left li"></i> Descripción <span class="req">*</span></label>
+        <textarea id="descripcion" rows="7"
+          placeholder="Describe el estado, características, qué incluye, por qué vendes…"
+          maxlength="1800"
+          oninput="updateCounter(this,'descCount',1800);clearErr(this)"></textarea>
+        <div class="char-counter" id="descCount">0 / 1800</div>
+        <div class="field-err" id="err-descripcion"><i class="fas fa-exclamation-circle"></i><span></span></div>
+      </div>
+
+      <!-- Campos extra descripción entidades -->
+      <div id="extraDescGroup" style="display:none">
+        <div class="form-group">
+          <label><i class="fas fa-list-ol li"></i> Pasos del trámite / proceso (opcional)</label>
+          <textarea id="pasosTramite" rows="4"
+            placeholder="1. Reúne los documentos&#10;2. Dirígete a la oficina&#10;3. Presenta el formulario…"
+            maxlength="800"></textarea>
+            </div>
+        <div class="form-group">
+          <label><i class="fas fa-clock li"></i> Tiempo estimado de respuesta</label>
+          <select id="tiempoRespuesta">
+            <option value="">Selecciona…</option>
+            <option value="inmediato">⚡ Inmediato (en el acto)</option>
+            <option value="1-3_dias">📅 1 a 3 días hábiles</option>
+            <option value="1_semana">📆 1 semana</option>
+            <option value="2_semanas">🗓️ 2 semanas</option>
+            <option value="1_mes">📋 Hasta 1 mes</option>
+            <option value="a_consultar">❓ A consultar</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="ai-section">
+        <div class="ai-section-title"><i class="fas fa-robot"></i> IA – Asistente de redacción</div>
+        <div class="ai-btns-col">
+          <button class="ai-btn ai-btn-blue" id="btnGenDesc" onclick="runGenerarDesc()">
+            <i class="fas fa-wand-magic-sparkles"></i> <span id="btnGenDescLabel">Generar descripción completa</span>
+          </button>
+          <button class="ai-btn ai-btn-orange" id="btnMaxDesc" onclick="runMejorarDesc()">
+            <i class="fas fa-rocket"></i> Mejorar / Maximizar descripción
+          </button>
+        </div>
+      </div>
+
+      <div class="info-tip tip-success" style="margin-top:12px">
+        <i class="fas fa-check-circle"></i>
+        <span>Descripciones de más de 200 caracteres reciben un 40% más de consultas.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════ STEP 6: CONTACTO ══════ -->
+  <div id="step-6" class="step-screen">
+    <div class="step-content">
+      <div class="step-header">
+        <div class="step-icon">📞</div>
+        <h2 class="step-title" id="s6Title">Datos de contacto</h2>
+        <p class="step-sub" id="s6Sub">Así te contactarán los compradores interesados.</p>
+      </div>
+
+      <div class="form-group">
+        <label><i class="fas fa-phone li"></i> Teléfono / WhatsApp <span class="req">*</span></label>
+        <div class="phone-wrap">
+          <div class="country-sel">
+            <div class="country-trigger" id="countryTrigger" onclick="toggleCountryDD()">
+              <span class="flag" id="selFlag">🇬🇶</span>
+              <span class="code" id="selCode">+240</span>
+              <i class="fas fa-chevron-down" style="color:var(--muted);font-size:.62rem;margin-left:2px"></i>
+            </div>
+            <div class="country-dropdown" id="countryDD">
+              <input class="country-search-inp" type="text" id="countrySearch"
+                placeholder="Buscar país…" oninput="filterCountries(this.value)">
+              <div class="country-list" id="countryList"></div>
+            </div>
+          </div>
+          <div class="phone-input-wrap">
+            <input type="tel" id="telefono" placeholder="222 003 467" oninput="clearErr(this)">
+          </div>
+        </div>
+        <div class="field-hint"><i class="fab fa-whatsapp"></i> Los compradores te contactarán por WhatsApp.</div>
+        <div class="field-err" id="err-telefono"><i class="fas fa-exclamation-circle"></i><span></span></div>
+      </div>
+
+      <div class="form-group">
+        <label><i class="fas fa-map-marker-alt li"></i> Ubicación</label>
+        <input type="text" id="ubicacion" value="Malabo, Guinea Ecuatorial">
+      </div>
+
+      <!-- Segundo teléfono (entidades) -->
+      <div id="phone2Group" style="display:none">
+        <div class="form-group">
+          <label><i class="fas fa-phone-alt li"></i> Teléfono fijo de la oficina (opcional)</label>
+          <input type="tel" id="telefonoFijo" placeholder="09X XXX XXX">
+        </div>
+      </div>
+
+      <div class="info-tip tip-warn" style="margin-top:16px">
+        <i class="fas fa-map-marker-alt"></i>
+        <span>Para quedar con compradores elige siempre lugares públicos y concurridos.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════ STEP 7: VISTA PREVIA ══════ -->
+  <div id="step-7" class="step-screen">
+    <div class="step-content">
+      <div class="step-header">
+        <div class="step-icon">👀</div>
+        <h2 class="step-title">Vista previa</h2>
+        <p class="step-sub">Así verán tu anuncio los compradores en Compra Ya.</p>
+      </div>
+      <div class="final-card" id="finalCard"></div>
+      <div class="info-tip tip-success" style="margin-top:16px">
+        <i class="fas fa-check-circle"></i>
+        <span>Tu anuncio será visible para miles de compradores. ¡Pulsa <strong>Publicar</strong>!</span>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- ══ PUBLISH FLOAT ══ -->
+<button class="btn-publish-float" id="btnPublishFloat" onclick="publicarProducto()">
+  <div class="pulse-ring"></div>
+  <i class="fas fa-paper-plane"></i> <span id="btnPublishLabel">Publicar anuncio</span>
+</button>
+
+<!-- ══ BOTTOM NAV ══ -->
+<div class="bottom-nav">
+  <button id="btnPrev" class="btn-nav btn-prev" onclick="prevStep()" style="display:none">
+    <i class="fas fa-arrow-left"></i> Anterior
+  </button>
+  <button id="btnNext" class="btn-nav btn-next" onclick="nextStep()">
+    Siguiente <i class="fas fa-arrow-right"></i>
+  </button>
+</div>
+
+<div id="toast"></div>
+<div id="loadingOverlay">
+  <div class="spinner"></div>
+  <div class="loading-title" id="loadingTitle">Preparando…</div>
+  <div class="loading-sub" id="loadingSub">Por favor espera</div>
+  <div class="upload-prog-wrap" id="uploadProgWrap" style="display:none">
+    <div class="upload-prog-outer"><div class="upload-prog-fill" id="uploadProgFill"></div></div>
+    <div class="upload-prog-label" id="uploadProgLabel"></div>
+  </div>
+</div>
+
+<div id="successScreen">
+  <div class="success-icon">✅</div>
+  <h2 class="success-title">¡Publicado con éxito!</h2>
+  <p class="success-sub" id="successSub">Tu producto ya está visible para miles de compradores en Compra Ya.</p>
+  <button class="btn-success-main" id="btnSeeProduct">Ver mi anuncio</button>
+  <button class="btn-success-sec" onclick="window.location.href='index-comprador.html'">Volver al inicio</button>
+</div>
+
+<div id="loginRequired">
+  <div class="login-icon">🔒</div>
+  <h2 class="login-title">Inicia sesión primero</h2>
+  <p class="login-sub">Para publicar necesitas una cuenta en Compra Ya.</p>
+  <a href="index.html" class="btn-login"><i class="fas fa-sign-in-alt"></i> Iniciar sesión</a>
+</div>
+
+<!-- ══════════════════════════════════════════
+     FIREBASE + FULL LOGIC
+══════════════════════════════════════════ -->
+<script type="module">
+import { initializeApp }        from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+import { getFirestore, collection, addDoc, serverTimestamp, doc, getDoc, updateDoc, setDoc, getDocs, query, where, limit }
+  from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+import { getAuth, onAuthStateChanged }
+  from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+import { getStorage, ref as sRef, uploadBytes, getDownloadURL }
+  from "https://www.gstatic.com/firebasejs/10.14.1/firebase-storage.js";
+import { firebaseConfig, GITHUB_USER, GITHUB_REPO, GITHUB_BRANCH, GITHUB_TOKEN, GEMINI_KEY }
+  from './js/config.js';
+
+const app     = initializeApp(firebaseConfig);
+const db      = getFirestore(app);
+const auth    = getAuth(app);
+const storage = getStorage(app);
+
+/* ══════════════════════════════════════════
+   CONSTANTES
+══════════════════════════════════════════ */
+const GEMINI_MODEL  = 'gemini-2.5-flash';
+const MAX_FREE_PUB  = 20;
+
+// Límite de fotos por rol
+const MAX_PHOTOS_BY_ROLE = {
+  normal:   5,
+  premium:  10,
+  store:    15,
+  entity:   15,
+  ministry: 15
+};
+
+/* ══════════════════════════════════════════
+   STATE
+══════════════════════════════════════════ */
+let currentUser      = null;
+let userData         = {};
+let userRole         = 'normal'; // normal | premium | store | entity | ministry
+let userRoleLabel    = 'Usuario';
+let isPremium        = false;
+let userStoreId      = null;
+let userStoreName    = null;
+let pubsThisMonth    = 0;
+let currentStep      = 1;
+let TOTAL_STEPS      = 7;
+let MAX_PHOTOS       = 5;
+let selectedFiles    = [];
+let compressedBlobs  = [];
+let publishedId      = null;
+let priceIARec       = null;
+let selectedDialCode = '+240';
+let toastTimer       = null;
+let selectedPaymentMethods = [];
+let selectedDocs     = [];
+let selectedSchedules= [];
+let selectedQualityTags = [];
+
+/* ══════════════════════════════════════════
+   ROLE DEFINITIONS
+══════════════════════════════════════════ */
+const ROLE_CONFIG = {
+  normal: {
+    label: 'Usuario',
+    icon: '👤',
+    badgeClass: 'rb-normal',
+    ribClass: 'rib-normal',
+    modeClass: '',
+    bodyMode: '',
+    stepTitle1: 'Fotos del producto',
+    stepSub1: 'Sube hasta <strong style="color:var(--cyan)">5 fotos</strong>. La primera será la portada.',
+    stepTitle3: 'Categoría del producto',
+    stepSub3: 'Elige la categoría correcta para más visibilidad.',
+    stepTitle4: 'Información del producto',
+    stepSub4: 'Un buen título y descripción atraen más compradores.',
+    ribTitle: 'Publicación personal',
+    ribSub: 'Hasta 5 fotos · Compresión automática WebP',
+    publishLabel: 'Publicar anuncio',
+    successSub: 'Tu producto ya está visible para miles de compradores en Compra Ya.',
+    showCatGrid: false,
+    showExtraInfo: false,
+    showExtraDesc: false,
+    showDocs: false,
+    showPayment: false,
+    showPhone2: false,
+    showPrecioAlt: false,
+    qualityTags: [
+      {id:'calidad',label:'⭐ Producto de calidad',cls:'qt-calidad'},
+      {id:'verificado',label:'✅ Producto verificado',cls:'qt-verificado'},
+      {id:'doc',label:'📄 Con documentación',cls:'qt-doc'},
+      {id:'garantia',label:'🛡️ Con garantía',cls:'qt-garantia'},
+      {id:'importado',label:'✈️ Importado',cls:'qt-importado'},
+      {id:'nacional',label:'🇬🇶 Fabricación nacional',cls:'qt-nacional'},
+      {id:'urgente',label:'🔥 Venta urgente',cls:'qt-urgente'},
+      {id:'negociable',label:'🤝 Precio negociable',cls:'qt-negociable'},
+    ]
+  },
+  premium: {
+    label: 'Premium',
+    icon: '👑',
+    badgeClass: 'rb-premium',
+    ribClass: 'rib-premium',
+    modeClass: 'mode-premium',
+    bodyMode: 'mode-premium',
+    stepTitle1: 'Fotos del producto',
+    stepSub1: 'Sube hasta <strong style="color:var(--gold)">10 fotos</strong>. Acceso Premium activo.',
+    stepTitle3: 'Categoría del producto',
+    stepSub3: 'Elige la categoría correcta. Tu anuncio aparecerá destacado.',
+    stepTitle4: 'Información del producto',
+    stepSub4: 'Descripción premium. Tu anuncio tendrá insignia de verificado.',
+    ribTitle: 'Publicación Premium',
+    ribSub: 'Hasta 10 fotos · Posición destacada · Insignia Premium',
+    publishLabel: 'Publicar como Premium',
+    successSub: 'Tu anuncio Premium ya está visible y destacado en Compra Ya.',
+    showCatGrid: false,
+    showExtraInfo: false,
+    showExtraDesc: false,
+    showDocs: false,
+    showPayment: false,
+    showPhone2: false,
+    showPrecioAlt: false,
+    qualityTags: [
+      {id:'calidad',label:'⭐ Producto de calidad',cls:'qt-calidad'},
+      {id:'verificado',label:'✅ Producto verificado',cls:'qt-verificado'},
+      {id:'doc',label:'📄 Con documentación',cls:'qt-doc'},
+      {id:'premium',label:'👑 Publicación Premium',cls:'qt-premium'},
+      {id:'garantia',label:'🛡️ Con garantía',cls:'qt-garantia'},
+      {id:'importado',label:'✈️ Importado',cls:'qt-importado'},
+      {id:'nacional',label:'🇬🇶 Nacional',cls:'qt-nacional'},
+      {id:'urgente',label:'🔥 Urgente',cls:'qt-urgente'},
+      {id:'exclusivo',label:'💎 Exclusivo',cls:'qt-exclusivo'},
+    ]
+  },
+  store: {
+    label: 'Tienda',
+    icon: '🏪',
+    badgeClass: 'rb-store',
+    ribClass: 'rib-store',
+    modeClass: 'mode-store',
+    bodyMode: 'mode-store',
+    stepTitle1: 'Galería del producto',
+    stepSub1: 'Sube hasta <strong style="color:var(--lime)">15 fotos</strong>. Galería profesional de tienda.',
+    stepTitle3: 'Categoría y configuración',
+    stepSub3: 'Selecciona la categoría y configura tu catálogo de tienda.',
+    stepTitle4: 'Ficha técnica del producto',
+    stepSub4: 'Título profesional, documentación y etiquetas de tienda.',
+    ribTitle: 'Publicación de Tienda',
+    ribSub: 'Hasta 15 fotos · Sin límite mensual · Catálogo profesional',
+    publishLabel: 'Publicar en mi tienda',
+    successSub: 'Tu producto ya está en tu catálogo de tienda en Compra Ya.',
+    showCatGrid: true,
+    showExtraInfo: false,
+    showExtraDesc: false,
+    showDocs: false,
+    showPayment: true,
+    showPhone2: false,
+    showPrecioAlt: true,
+    qualityTags: [
+      {id:'calidad',label:'⭐ Producto de calidad',cls:'qt-calidad'},
+      {id:'verificado',label:'✅ Tienda verificada',cls:'qt-verificado'},
+      {id:'doc',label:'📄 Con documentación',cls:'qt-doc'},
+      {id:'garantia',label:'🛡️ Garantía oficial',cls:'qt-garantia'},
+      {id:'importado',label:'✈️ Importado',cls:'qt-importado'},
+      {id:'nacional',label:'🇬🇶 Nacional',cls:'qt-nacional'},
+      {id:'urgente',label:'🔥 Oferta limitada',cls:'qt-urgente'},
+      {id:'exclusivo',label:'💎 Producto exclusivo',cls:'qt-exclusivo'},
+      {id:'servicio',label:'🔧 Servicio incluido',cls:'qt-servicio'},
+      {id:'premium',label:'👑 Gama premium',cls:'qt-premium'},
+    ]
+  },
+  entity: {
+    label: 'Entidad',
+    icon: '🏢',
+    badgeClass: 'rb-entity',
+    ribClass: 'rib-entity',
+    modeClass: 'mode-entity',
+    bodyMode: 'mode-entity',
+    stepTitle1: 'Imágenes del servicio',
+    stepSub1: 'Sube hasta <strong style="color:var(--orange)">15 imágenes</strong> del servicio o instalaciones.',
+    stepTitle3: 'Tipo de servicio',
+    stepSub3: 'Selecciona la categoría de servicio que ofrece tu entidad.',
+    stepTitle4: 'Información de la entidad',
+    stepSub4: 'Nombre oficial, contacto y etiquetas del servicio.',
+    ribTitle: 'Publicación de Entidad',
+    ribSub: 'Hasta 15 imágenes · Sin límite · Ficha oficial',
+    publishLabel: 'Publicar servicio',
+    successSub: 'Tu servicio ya está visible para los ciudadanos en Compra Ya.',
+    showCatGrid: true,
+    showExtraInfo: true,
+    showExtraDesc: true,
+    showDocs: false,
+    showPayment: true,
+    showPhone2: true,
+    showPrecioAlt: true,
+    qualityTags: [
+      {id:'servicio',label:'🔧 Servicio de calidad',cls:'qt-servicio'},
+      {id:'oficial',label:'🏛️ Servicio oficial',cls:'qt-oficial'},
+      {id:'verificado',label:'✅ Entidad verificada',cls:'qt-verificado'},
+      {id:'gratuito',label:'🆓 Servicio gratuito',cls:'qt-gratuito'},
+      {id:'tramite',label:'📋 Trámite oficial',cls:'qt-tramite'},
+      {id:'cita',label:'📅 Con cita previa',cls:'qt-cita'},
+      {id:'presencial',label:'🏢 Atención presencial',cls:'qt-presencial'},
+      {id:'online',label:'💻 Atención online',cls:'qt-online'},
+    ]
+    },
+  ministry: {
+    label: 'Ministerio',
+    icon: '🏛️',
+    badgeClass: 'rb-ministry',
+    ribClass: 'rib-ministry',
+    modeClass: 'mode-ministry',
+    bodyMode: 'mode-ministry',
+    stepTitle1: 'Imágenes institucionales',
+    stepSub1: 'Sube hasta <strong style="color:var(--purple)">15 imágenes</strong> oficiales del trámite o servicio.',
+    stepTitle3: 'Tipo de trámite',
+    stepSub3: 'Selecciona la categoría oficial del trámite o servicio ministerial.',
+    stepTitle4: 'Ficha del trámite',
+    stepSub4: 'Nombre oficial, documentos requeridos y datos de contacto.',
+    ribTitle: 'Publicación Ministerial',
+    ribSub: 'Canal oficial de trámites y servicios del gobierno',
+    publishLabel: 'Publicar trámite oficial',
+    successSub: 'El trámite ya está visible para los ciudadanos de Guinea Ecuatorial en Compra Ya.',
+    showCatGrid: true,
+    showExtraInfo: true,
+    showExtraDesc: true,
+    showDocs: true,
+    showPayment: false,
+    showPhone2: true,
+    showPrecioAlt: true,
+    qualityTags: [
+      {id:'oficial',label:'🏛️ Trámite oficial',cls:'qt-oficial'},
+      {id:'gratuito',label:'🆓 Trámite gratuito',cls:'qt-gratuito'},
+      {id:'tramite',label:'📋 Documento necesario',cls:'qt-tramite'},
+      {id:'cita',label:'📅 Requiere cita previa',cls:'qt-cita'},
+      {id:'presencial',label:'🏢 Solo presencial',cls:'qt-presencial'},
+      {id:'online',label:'💻 Disponible online',cls:'qt-online'},
+      {id:'urgente',label:'⚡ Trámite urgente',cls:'qt-urgente'},
+    ]
+  }
+};
+
+/* ══════════════════════════════════════════
+   CATEGORY SECTORS POR ROL
+══════════════════════════════════════════ */
+const CAT_SECTORS = {
+  store: [
+    {
+      title: 'Productos físicos',
+      cats: [
+        {ico:'📱',name:'Tecnología',sub:'Electrónica',val:'tecnologia'},
+        {ico:'🏠',name:'Electrodomésticos',sub:'Para el hogar',val:'electrodomesticos'},
+        {ico:'👕',name:'Moda',sub:'Ropa y calzado',val:'moda'},
+        {ico:'💄',name:'Belleza',sub:'Cuidado personal',val:'belleza'},
+        {ico:'🛋️',name:'Hogar',sub:'Decoración',val:'hogar'},
+        {ico:'🧸',name:'Juguetes',sub:'Bebés y niños',val:'juguetes'},
+        {ico:'⚽',name:'Deportes',sub:'Fitness y ocio',val:'deportes'},
+        {ico:'🔧',name:'Herramientas',sub:'Bricolaje',val:'herramientas'},
+        {ico:'🐾',name:'Mascotas',sub:'Animales',val:'mascotas'},
+        {ico:'🛒',name:'Alimentación',sub:'Comida y bebida',val:'alimentacion'},
+        {ico:'📚',name:'Libros',sub:'Arte y cultura',val:'libros'},
+        {ico:'📦',name:'Otros',sub:'General',val:'otros'},
+      ]
+    },
+    {
+      title: 'Servicios de tienda',
+      cats: [
+        {ico:'🚚',name:'Envíos',sub:'Entrega a domicilio',val:'servicios_transporte'},
+        {ico:'🔧',name:'Instalación',sub:'Montaje técnico',val:'servicios_tecnicos'},
+        {ico:'⚠️',name:'Garantía',sub:'Servicio postventa',val:'servicios_garantia'},
+        {ico:'💰',name:'Financiación',sub:'Cuotas y crédito',val:'servicios_financieros'},
+      ]
+    }
+  ],
+  entity: [
+    {
+      title: 'Servicios empresariales',
+      cats: [
+        {ico:'⚖️',name:'Legal y notarial',sub:'Asesoría jurídica',val:'servicios_legales'},
+        {ico:'💰',name:'Financiero',sub:'Banca y seguros',val:'servicios_financieros'},
+        {ico:'📊',name:'Consultoría',sub:'Gestión empresarial',val:'servicios_consultoria'},
+        {ico:'🏗️',name:'Construcción',sub:'Obras y reformas',val:'servicios_construccion'},
+        {ico:'🚚',name:'Transporte',sub:'Logística y mudanzas',val:'servicios_transporte'},
+        {ico:'🧹',name:'Limpieza',sub:'Industrial y hogar',val:'servicios_limpieza'},
+        {ico:'📊',name:'Marketing',sub:'Publicidad y diseño',val:'servicios_marketing'},
+        {ico:'🎉',name:'Eventos',sub:'Bodas y celebraciones',val:'servicios_eventos'},
+      ]
+    },
+    {
+      title: 'Servicios de salud y educación',
+      cats: [
+        {ico:'🏥',name:'Salud',sub:'Clínicas y médicos',val:'servicios_salud'},
+        {ico:'🎓',name:'Educación',sub:'Formación y cursos',val:'servicios_educacion'},
+        {ico:'🧠',name:'Psicología',sub:'Salud mental',val:'servicios_psicologia'},
+        {ico:'💊',name:'Farmacia',sub:'Medicamentos',val:'servicios_farmacia'},
+      ]
+    },
+    {
+      title: 'Inmobiliaria y alquiler',
+      cats: [
+        {ico:'🏗️',name:'Venta',sub:'Inmuebles',val:'inmuebles'},
+        {ico:'🔑',name:'Alquiler',sub:'Pisos y locales',val:'alquiler'},
+        {ico:'🌿',name:'Terrenos',sub:'Parcelas',val:'terrenos'},
+        {ico:'🏢',name:'Locales',sub:'Oficinas y tiendas',val:'locales_comerciales'},
+      ]
+    }
+  ],
+  ministry: [
+    {
+      title: 'Trámites de identidad y civil',
+      cats: [
+        {ico:'🪪',name:'DNI / Cédula',sub:'Identidad',val:'tramite_dni'},
+        {ico:'✈️',name:'Pasaporte',sub:'Viajes al exterior',val:'tramite_pasaporte'},
+        {ico:'📜',name:'Registro civil',sub:'Partidas y actas',val:'tramite_registro_civil'},
+        {ico:'💒',name:'Matrimonio',sub:'Certificados',val:'tramite_matrimonio'},
+        {ico:'👶',name:'Nacimiento',sub:'Inscripción',val:'tramite_nacimiento'},
+      ]
+    },
+    {
+      title: 'Trámites empresariales',
+      cats: [
+        {ico:'🏢',name:'Registro empresa',sub:'Constitución',val:'tramite_empresa'},
+        {ico:'📋',name:'Licencia comercial',sub:'Permisos',val:'tramite_licencia'},
+        {ico:'🧾',name:'Fiscalidad',sub:'Impuestos y tasas',val:'tramite_fiscal'},
+        {ico:'🛃',name:'Aduanas',sub:'Importación/exportación',val:'tramite_aduanas'},
+      ]
+    },
+    {
+      title: 'Servicios públicos',
+      cats: [
+        {ico:'🎓',name:'Educación',sub:'Ministerio de Educación',val:'servicio_educacion'},
+        {ico:'🏥',name:'Sanidad',sub:'Ministerio de Salud',val:'servicio_sanidad'},
+        {ico:'🌿',name:'Medio ambiente',sub:'Permisos ambientales',val:'servicio_medioambiente'},
+        {ico:'🔌',name:'Energía',sub:'SEGESA y conexiones',val:'servicio_energia'},
+        {ico:'🚰',name:'Agua',sub:'SNAPE y conexiones',val:'servicio_agua'},
+        {ico:'🏘️',name:'Urbanismo',sub:'Licencias de obra',val:'servicio_urbanismo'},
+        {ico:'🌾',name:'Agricultura',sub:'Permisos y ayudas',val:'servicio_agricultura'},
+        {ico:'⚖️',name:'Justicia',sub:'Certificados y notaría',val:'servicio_justicia'},
+      ]
+    }
+  ]
+};
+
+/* ══════════════════════════════════════════
+   TOAST
+══════════════════════════════════════════ */
+window.showToast = function(msg, type = 'info', dur = 4000) {
+  const el = document.getElementById('toast');
+  el.innerHTML  = msg;
+  el.className  = `show ${type}`;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { el.className = ''; }, dur);
+};
+ 
+/* ══════════════════════════════════════════
+   AUTH + ROLE DETECTION
+══════════════════════════════════════════ */
+onAuthStateChanged(auth, async user => {
+  if (!user) {
+    document.getElementById('roleDetectScreen').classList.add('hidden');
+    setTimeout(() => document.getElementById('loginRequired').classList.add('active'), 600);
+    return;
+  }
+  currentUser = user;
+  document.getElementById('rdStatus').textContent = 'Cargando perfil de usuario…';
+  await detectUserRole(user.uid);
+  applyRoleUI();
+  document.getElementById('roleDetectScreen').classList.add('hidden');
+  document.getElementById('mainContent').style.display = 'block';
+  initPage();
+});
+
+async function detectUserRole(uid) {
+  try {
+    document.getElementById('rdStatus').textContent = 'Verificando tipo de cuenta…';
+    const snap = await getDoc(doc(db, 'usuarios', uid));
+    userData = snap.exists() ? snap.data() : {};
+
+    const dbRole = userData.role || 'normal';
+    isPremium    = userData.isPremium === true || dbRole === 'premium' || dbRole === 'store' || dbRole === 'entity' || dbRole === 'ministry' || dbRole === 'verificado';
+
+    // Detectar rol
+    if      (dbRole === 'ministry')  userRole = 'ministry';
+    else if (dbRole === 'entity')    userRole = 'entity';
+    else if (dbRole === 'store')     userRole = 'store';
+    else if (dbRole === 'premium' || dbRole === 'verificado') userRole = 'premium';
+    else                             userRole = 'normal';
+
+    // Si tiene tienda
+    userStoreId   = userData.storeId   || null;
+    userStoreName = userData.storeName || null;
+
+    // Publicaciones este mes
+    const ahora     = new Date();
+    const mesActual = `${ahora.getFullYear()}-${String(ahora.getMonth()+1).padStart(2,'0')}`;
+    pubsThisMonth   = userData.ultimoResetMes === mesActual ? (userData.publicacionesEsteMes || 0) : 0;
+
+    document.getElementById('rdStatus').textContent = `Cuenta ${ROLE_CONFIG[userRole].label} detectada ✓`;
+
+    // Pequeña pausa para que se vea el status
+    await new Promise(r => setTimeout(r, 600));
+  } catch(e) {
+    console.error('detectUserRole:', e);
+    userRole = 'normal';
+  }
+}
+
+/* ══════════════════════════════════════════
+   APPLY ROLE UI - ANTI-CRASH VERSION
+══════════════════════════════════════════ */
+function applyRoleUI() {
+  const cfg = ROLE_CONFIG[userRole];
+  if (!cfg) return console.error("Error: Rol no definido en ROLE_CONFIG");
+
+  MAX_PHOTOS = MAX_PHOTOS_BY_ROLE[userRole] || 5;
+
+  /**
+   * Helper: Manipulación segura del DOM
+   * Evita el error "Cannot set properties of null"
+   */
+  const ui = {
+    set: (id, value, prop = 'textContent') => {
+      const el = document.getElementById(id);
+      if (el) el[prop] = value;
+    },
+    display: (id, show) => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = show ? 'block' : 'none';
+    },
+    class: (id, className) => {
+      const el = document.getElementById(id);
+      if (el) el.className = className;
+    }
+  };
+
+  // 1. Body & Global
+  document.body.classList.remove('mode-normal','mode-premium','mode-store','mode-entity','mode-ministry');
+  if (cfg.bodyMode) document.body.classList.add(cfg.bodyMode);
+
+  // 2. Header Badge
+  const badge = document.getElementById('roleBadgeHdr');
+  if (badge) {
+    badge.className = `role-badge-hdr ${cfg.badgeClass}`;
+    badge.innerHTML = `${cfg.icon} <span>${cfg.label}</span>`;
+  }
+
+  // 3. Pasos (Asignación Segura)
+  ui.set('s1Title', cfg.stepTitle1);
+  ui.set('s1Sub', cfg.stepSub1, 'innerHTML');
+  ui.set('s3Title', cfg.stepTitle3);
+  ui.set('s3Sub', cfg.stepSub3);
+  ui.set('s4Title', cfg.stepTitle4);
+  ui.set('s4Sub', cfg.stepSub4);
+
+  // 4. Fotos y Etiquetas
+  ui.set('maxPhotosLabel', `${MAX_PHOTOS} fotos`, 'innerHTML');
+  ui.set('uploadSmall', `JPG · PNG · WEBP — máx. ${MAX_PHOTOS} imágenes — compresión automática`);
+  ui.set('photoCountPill', `0 / ${MAX_PHOTOS} fotos`);
+
+  // 5. Role identity bar
+  ui.class('ribStep1', `role-identity-bar ${cfg.ribClass}`);
+  ui.set('ribIconStep1', cfg.icon);
+  ui.set('ribTitleStep1', cfg.ribTitle);
+  ui.set('ribSubStep1', cfg.ribSub);
+
+  // 6. Botones y Mensajes
+  ui.set('btnPublishLabel', cfg.publishLabel);
+  ui.set('successSub', cfg.successSub);
+
+  // 7. Visibilidad de Grupos
+  ui.display('catSelectGroup', !cfg.showCatGrid);
+  ui.display('catGridGroup', cfg.showCatGrid);
+  ui.display('extraInfoGroup', cfg.showExtraInfo);
+  ui.display('extraDescGroup', cfg.showExtraDesc);
+  ui.display('docsGroup', cfg.showDocs);
+  ui.display('paymentGroup', cfg.showPayment);
+  ui.display('phone2Group', cfg.showPhone2);
+  ui.display('precioAltGroup', cfg.showPrecioAlt);
+
+  // Lógica específica de estados
+  const isGov = (userRole === 'entity' || userRole === 'ministry');
+  ui.display('estadoGroup', !isGov);
+
+  // 8. Callbacks externos (Protegidos)
+  if (cfg.showCatGrid && typeof buildCatGrid === 'function') {
+    buildCatGrid(CAT_SECTORS[userRole] || CAT_SECTORS.store);
+  }
+  
+  if (typeof buildQualityTags === 'function') buildQualityTags(cfg.qualityTags);
+
+  // 9. Secciones Especiales
+  if (typeof updatePremiumUI === 'function') updatePremiumUI();
+  if (typeof updateQuotaBar === 'function') updateQuotaBar();
+
+  // 10. Etiquetas Dinámicas AI
+  let aiLabel = 'Generar descripción';
+  if (isGov) aiLabel = 'Generar descripción del servicio';
+  else if (userRole === 'store') aiLabel = 'Generar ficha técnica del producto';
+  ui.set('btnGenDescLabel', aiLabel);
+}
+
+/* ══════════════════════════════════════════
+   CATEGORY GRID (tienda/entidad/ministerio)
+══════════════════════════════════════════ */
+function buildCatGrid(sectors) {
+  const container = document.getElementById('catSectorsContainer');
+  container.innerHTML = '';
+  sectors.forEach(sector => {
+    const block = document.createElement('div');
+    block.className = 'cat-sector';
+    block.innerHTML = `<div class="cat-sector-title">${sector.title}</div>
+      <div class="cat-grid">
+        ${sector.cats.map(c => `
+          <div class="cat-card" data-val="${c.val}" onclick="selectCatCard(this)">
+            <span class="cat-card-ico">${c.ico}</span>
+            <div class="cat-card-name">${c.name}</div>
+            <div class="cat-card-sub">${c.sub}</div>
+            <div class="cat-card-check"><i class="fas fa-check" style="font-size:.5rem"></i></div>
+          </div>`).join('')}
+      </div>`;
+    container.appendChild(block);
+  });
+}
+
+window.selectCatCard = function(el) {
+  document.querySelectorAll('.cat-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('categoriaGrid').value = el.dataset.val;
+  // Sync with normal select for form processing
+  const sel = document.getElementById('categoria');
+  if (sel) sel.value = el.dataset.val;
+};
+
+/* ══════════════════════════════════════════
+   QUALITY TAGS
+══════════════════════════════════════════ */
+function buildQualityTags(tags) {
+  const wrap = document.getElementById('qualityTagsWrap');
+  wrap.innerHTML = tags.map(t => `
+    <div class="q-tag ${t.cls}" data-id="${t.id}" onclick="toggleQTag(this)">
+      ${t.label}
+    </div>`).join('');
+}
+
+window.toggleQTag = function(el) {
+  el.classList.toggle('selected');
+  const id = el.dataset.id;
+  if (el.classList.contains('selected')) {
+    if (!selectedQualityTags.includes(id)) selectedQualityTags.push(id);
+  } else {
+    selectedQualityTags = selectedQualityTags.filter(x => x !== id);
+  }
+};
+
+/* ══════════════════════════════════════════
+   PREMIUM & QUOTA UI
+══════════════════════════════════════════ */
+function updatePremiumUI() {
+  const restantes = Math.max(0, MAX_FREE_PUB - pubsThisMonth);
+  document.getElementById('pubsRestantes').textContent = restantes;
+  const premDot = document.getElementById('premDot');
+  // Store/entity/ministry no ven la sección premium clásica
+  if (userRole === 'store' || userRole === 'entity' || userRole === 'ministry') {
+    document.getElementById('premiumSection').style.display = 'none';
+    document.getElementById('storeUnlimitedBanner').style.display = 'flex';
+    const roleLabels = {store:'Cuenta de tienda',entity:'Cuenta de entidad',ministry:'Cuenta ministerial'};
+    document.getElementById('storeUnlimitedSub').textContent =
+      `${roleLabels[userRole]} — sin límite de publicaciones.`;
+    return;
+  }
+
+  if (isPremium) {
+    document.getElementById('premNotActive').style.display = 'none';
+    document.getElementById('premActive').style.display    = 'block';
+    if (premDot) { premDot.classList.add('active'); }
+    const exp = userData.premiumExpiry
+      ? new Date(userData.premiumExpiry.toMillis?.() || userData.premiumExpiry)
+          .toLocaleDateString('es-ES',{day:'numeric',month:'long',year:'numeric'})
+      : 'tiempo indefinido';
+    document.getElementById('premExpiry').textContent = exp;
+  } else {
+    document.getElementById('premNotActive').style.display = 'block';
+    document.getElementById('premActive').style.display    = 'none';
+  }
+}
+
+function updateQuotaBar() {
+  const bar  = document.getElementById('quotaBar');
+  const text = document.getElementById('quotaText');
+  if (isPremium || userRole !== 'normal') {
+    text.innerHTML = '<strong>∞</strong> Sin límite';
+    bar.className  = 'quota-bar premium-mode';
+    return;
+  }
+  const pct = pubsThisMonth / MAX_FREE_PUB;
+  text.innerHTML = `<strong>${pubsThisMonth}</strong> / ${MAX_FREE_PUB}`;
+  bar.className  = `quota-bar${pct >= 1 ? ' danger' : pct >= 0.75 ? ' warn' : ''}`;
+}
+
+/* ══════════════════════════════════════════
+   PREMIUM CODE
+══════════════════════════════════════════ */
+window.activarCodigo = async function() {
+  const raw  = (document.getElementById('premCodeInput').value || '').trim().toUpperCase();
+  if (!raw)  { showToast('⚠️ Introduce un código Premium', 'warn'); return; }
+  if (!currentUser) { showToast('❌ Inicia sesión primero', 'error'); return; }
+  showToast('⏳ Verificando código…', 'info');
+  try {
+    const codeRef  = doc(db, 'codigosPremium', raw);
+    const codeSnap = await getDoc(codeRef);
+    if (!codeSnap.exists()) { showToast('❌ Código no válido o inexistente', 'error'); return; }
+    const cd = codeSnap.data();
+    if (cd.usado) { showToast('❌ Este código ya fue utilizado', 'error'); return; }
+    const dias   = cd.duracionDias || 30;
+    const expiry = new Date();
+    expiry.setDate(expiry.getDate() + dias);
+    await Promise.all([
+      updateDoc(codeRef, { usado:true, usadoPor:currentUser.uid, usadoEn:serverTimestamp() }),
+      updateDoc(doc(db,'usuarios',currentUser.uid), {
+        isPremium:true, premiumExpiry:expiry,
+        premiumActivadoEn:serverTimestamp(), codigoPremiumUsado:raw,
+        role:'premium'
+      })
+    ]);
+    isPremium = true; userRole = 'premium';
+    userData.isPremium = true; userData.premiumExpiry = expiry;
+    applyRoleUI(); updateQuotaBar();
+    showToast(`🎉 ¡Premium activado hasta ${expiry.toLocaleDateString('es-ES')}!`, 'success', 5000);
+  } catch(e) {
+    console.error('activarCodigo:', e);
+    showToast('❌ Error al verificar el código', 'error');
+  }
+};
+
+/* ══════════════════════════════════════════
+   GEMINI API
+══════════════════════════════════════════ */
+async function callGemini(prompt, imgBase64 = null, mimeType = null) {
+  const url   = `https://generativelanguage.googleapis.com/v1/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_KEY}`;
+  const parts = [];
+  if (imgBase64 && mimeType) {
+    parts.push({ inline_data:{ mime_type:mimeType, data:imgBase64.replace(/^data:[^,]+,/,'') }});
+  }
+  parts.push({ text: prompt });
+  const res = await fetch(url, {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({
+      contents:[{ parts }],
+      generationConfig:{ temperature:0.7, maxOutputTokens:1200 },
+      safetySettings:[
+        {category:'HARM_CATEGORY_HARASSMENT',threshold:'BLOCK_NONE'},
+        {category:'HARM_CATEGORY_HATE_SPEECH',threshold:'BLOCK_NONE'}
+      ]
+    })
+  });
+  if (!res.ok) { const e = await res.json().catch(()=>{}); throw new Error(`Gemini ${res.status}: ${e?.error?.message||'Error'}`); }
+  const data = await res.json();
+  const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+  if (!text) throw new Error('Respuesta vacía de Gemini');
+  return text;
+}
+
+function parseGeminiJSON(text) {
+  try {
+    const clean = text.replace(/```json|```/g,'').trim();
+    const match = clean.match(/[\[{][\s\S]*[\]}]/);
+    return match ? JSON.parse(match[0]) : null;
+  } catch { return null; }
+}
+
+async function fileToBase64(file) {
+  return new Promise((res,rej) => {
+    const r = new FileReader();
+    r.onload  = e => res(e.target.result);
+    r.onerror = () => rej(new Error('Error leyendo archivo'));
+    r.readAsDataURL(file);
+  });
+}
+
+/* ══════════════════════════════════════════
+   AI HANDLERS
+══════════════════════════════════════════ */
+window.runPrecioIA = async function() {
+  const btn = document.getElementById('btnPrecioIA');
+  btn.disabled = true; btn.innerHTML = '<i class="fas fa-circle-notch ai-spin"></i> Analizando…';
+  try {
+    const titulo = document.getElementById('titulo')?.value || '';
+    const cat    = document.getElementById('categoria')?.value || document.getElementById('categoriaGrid')?.value || '';
+    let b64 = null, mime = null;
+    if (selectedFiles.length) { b64 = await fileToBase64(selectedFiles[0]); mime = selectedFiles[0].type; }
+
+    const ctx = userRole === 'ministry' ? 'trámite gubernamental en Guinea Ecuatorial' :
+                userRole === 'entity'   ? 'servicio empresarial en Guinea Ecuatorial' :
+                'producto en el marketplace Compra Ya de Guinea Ecuatorial (FCFA)';
+
+    const prompt = `Eres experto en precios de ${ctx}. ` +
+      `Analiza ${b64?'esta imagen':'el producto/servicio'} "${titulo}" (categoría: ${cat}). ` +
+      `SOLO JSON válido: {"precio": NUMBER, "razon": "máx 90 chars"}. Si es gratuito usa 0.`;
+
+    const raw  = await callGemini(prompt, b64, mime);
+    const data = parseGeminiJSON(raw);
+    if (data?.precio !== undefined) {
+      priceIARec = data.precio;
+      document.getElementById('recPriceVal').textContent    = data.precio === 0 ? 'GRATUITO' : Number(data.precio).toLocaleString('es-ES') + ' FCFA';
+      document.getElementById('recPriceReason').textContent = data.razon || '';
+      document.getElementById('priceRecBox').classList.add('show');
+    } else { showToast('⚠️ La IA no pudo calcular un precio', 'warn'); }
+  } catch(e) { console.error(e); showToast('❌ Error IA: '+e.message.slice(0,60),'error'); }
+  finally { btn.disabled=false; btn.innerHTML='<i class="fas fa-search-dollar"></i> Recomendar precio óptimo'; }
+};
+
+window.usarPrecioIA = function() {
+  if (priceIARec !== null) document.getElementById('precio').value = priceIARec;
+};
+
+window.runGenerarDesc = async function() {
+  const btn = document.getElementById('btnGenDesc');
+  btn.disabled = true; btn.innerHTML = '<i class="fas fa-circle-notch ai-spin"></i> Generando…';
+  try {
+    const titulo = document.getElementById('titulo').value || '';
+    const cat    = document.getElementById('categoria')?.value || document.getElementById('categoriaGrid')?.value || '';
+    const estado = document.getElementById('estado').value || 'nuevo';
+    const precio = document.getElementById('precio').value || '';
+    let b64 = null, mime = null;
+    if (selectedFiles.length) { b64 = await fileToBase64(selectedFiles[0]); mime = selectedFiles[0].type; }
+
+    let prompt = '';
+    if (userRole === 'ministry') {
+      prompt = `Eres experto en comunicación oficial del gobierno de Guinea Ecuatorial. ` +
+        `Redacta una descripción oficial, clara y accesible para ciudadanos del trámite: "${titulo}" (${cat}). ` +
+        `Incluye: qué es, para quién es, cuándo se necesita, cómo solicitarlo. Máx 900 chars. Tono formal pero accesible.`;
+    } else if (userRole === 'entity') {
+      prompt = `Eres experto en comunicación corporativa en Guinea Ecuatorial. ` +
+        `Redacta una descripción atractiva para el servicio "${titulo}" (${cat}). ` +
+        `Incluye: qué ofrece, ventajas, a quién va dirigido, cómo contactar. Máx 900 chars. Profesional y persuasivo.`;
+    } else if (userRole === 'store') {
+      prompt = `Eres experto en e-commerce en Guinea Ecuatorial. ` +
+        `Genera una ficha técnica atractiva para el producto ${b64?'en la imagen':'"'+titulo+'"'} ` +
+        `(categoría: ${cat}, estado: ${estado}${precio?' precio: '+precio+' FCFA':''}). ` +
+        `Características, beneficios, especificaciones. Emojis moderados. Máx 900 chars.`;
+    } else {
+      prompt = `Eres experto en ventas en Guinea Ecuatorial. ` +
+        (b64?`Observa esta imagen del producto "${titulo}". `:`Producto: "${titulo}". `) +
+        `Categoría: ${cat} | Estado: ${estado}${precio?` | Precio: ${precio} FCFA`:''}. ` +
+        `Descripción atractiva: características, estado real, llamada a la acción. Emojis moderados. Máx 900 chars.`;
+    }
+
+    const result = await callGemini(prompt, b64, mime);
+    document.getElementById('descripcion').value = result.trim().slice(0, 1800);
+    updateCounter(document.getElementById('descripcion'), 'descCount', 1800);
+    showToast('✅ Descripción generada por IA', 'success');
+  } catch(e) { console.error(e); showToast('❌ Error IA: '+e.message.slice(0,60),'error'); }
+  finally { btn.disabled=false; btn.innerHTML=`<i class="fas fa-wand-magic-sparkles"></i> <span id="btnGenDescLabel">${document.getElementById('btnGenDescLabel')?.textContent||'Generar descripción'}</span>`; }
+};
+
+window.runMejorarDesc = async function() {
+  const desc = (document.getElementById('descripcion').value || '').trim();
+  if (!desc || desc.length < 10) { showToast('⚠️ Escribe algo primero para mejorar','warn'); return; }
+  const btn = document.getElementById('btnMaxDesc');
+  btn.disabled = true; btn.innerHTML = '<i class="fas fa-circle-notch ai-spin"></i> Mejorando…';
+  try {
+    const context = userRole === 'ministry' ? 'trámite gubernamental en Guinea Ecuatorial, tono oficial' :
+                    userRole === 'entity'   ? 'servicio empresarial en Guinea Ecuatorial, tono profesional' :
+                    'marketplace en Guinea Ecuatorial, tono persuasivo';
+    const prompt = `Mejora esta descripción para un ${context}. ` +
+      `Hazla más clara, detallada y atractiva. Emojis relevantes. Máx 1200 chars. Solo el texto:\n\n${desc}`;
+    const result = await callGemini(prompt);
+    document.getElementById('descripcion').value = result.trim().slice(0,1800);
+    updateCounter(document.getElementById('descripcion'),'descCount',1800);
+    showToast('✅ Descripción mejorada por IA','success');
+  } catch(e) { console.error(e); showToast('❌ Error IA: '+e.message.slice(0,60),'error'); }
+  finally { btn.disabled=false; btn.innerHTML='<i class="fas fa-rocket"></i> Mejorar / Maximizar descripción'; }
+};
+
+/* ══════════════════════════════════════════
+   IMAGE HANDLING & COMPRESSION
+══════════════════════════════════════════ */
+async function compressToWebP(file, maxW = 1200, quality = 0.82) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      let {width,height} = img;
+      if (width > maxW) { height = Math.round(height*maxW/width); width = maxW; }
+      const canvas = document.createElement('canvas');
+      canvas.width = width; canvas.height = height;
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#ffffff'; ctx.fillRect(0,0,width,height);
+      ctx.drawImage(img,0,0,width,height);
+      canvas.toBlob(blob => blob ? resolve(blob) : reject(new Error('toBlob failed')), 'image/webp', quality);
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('Image load error')); };
+    img.src = url;
+  });
+}
+
+async function compressAllFiles() {
+  const prog = document.getElementById('compressProg');
+  const bar  = document.getElementById('compressBar');
+  const lbl  = document.getElementById('compressLabel');
+  prog.classList.add('show'); compressedBlobs = [];
+  for (let i = 0; i < selectedFiles.length; i++) {
+    const pct = Math.round(i/selectedFiles.length*100);
+    bar.style.width = pct+'%';
+    lbl.textContent = `⚡ Comprimiendo ${i+1} de ${selectedFiles.length} a WebP…`;
+    try { compressedBlobs.push(await compressToWebP(selectedFiles[i])); }
+    catch { compressedBlobs.push(selectedFiles[i]); }
+  }
+  bar.style.width = '100%';
+  lbl.textContent = `✅ ${selectedFiles.length} imagen${selectedFiles.length>1?'es':''} lista${selectedFiles.length>1?'s':''}`;
+  setTimeout(() => { prog.classList.remove('show'); document.getElementById('webpBadge').classList.add('show'); }, 1100);
+}
+
+window.triggerFileInput = function() {
+  if (selectedFiles.length >= MAX_PHOTOS) { showToast(`✅ Ya tienes ${MAX_PHOTOS} fotos (máximo)`, 'warn'); return; }
+  document.getElementById('fileInput').click();
+};
+window.handleFileSelect = e => addFiles(Array.from(e.target.files));
+window.handleDragOver   = e => { e.preventDefault(); document.getElementById('uploadArea').classList.add('drag-over'); };
+window.handleDragLeave  = ()  => document.getElementById('uploadArea').classList.remove('drag-over');
+window.handleDrop       = e => {
+  e.preventDefault(); document.getElementById('uploadArea').classList.remove('drag-over');
+  addFiles(Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/')));
+};
+
+async function addFiles(files) {
+  const space = MAX_PHOTOS - selectedFiles.length;
+  if (space <= 0) { showToast(`⚠️ Máximo ${MAX_PHOTOS} fotos`, 'warn'); return; }
+  const added = files.slice(0, space);
+  if (files.length > space) showToast(`⚠️ Solo se añaden ${added.length} fotos (límite ${MAX_PHOTOS})`, 'warn');
+  selectedFiles = [...selectedFiles, ...added];
+  renderImages();
+  if (added.length) showToast(`✅ ${added.length} foto${added.length>1?'s':''} añadida${added.length>1?'s':''}`, 'success');
+  await compressAllFiles();
+}
+
+function renderImages() {
+  const container  = document.getElementById('imgsContainer');
+  const thumbRow   = document.getElementById('thumbRow');
+  const uploadArea = document.getElementById('uploadArea');
+  const pill       = document.getElementById('photoCountPill');
+  const count      = selectedFiles.length;
+  pill.textContent = `${count} / ${MAX_PHOTOS} fotos`;
+  pill.className   = `photo-count-pill${count >= MAX_PHOTOS ? ' full' : ''}`;
+  if (!count) { container.style.display = 'none'; uploadArea.classList.remove('full'); return; }
+  uploadArea.classList.toggle('full', count >= MAX_PHOTOS);
+  container.style.display = 'flex';
+  document.getElementById('mainImg').src = URL.createObjectURL(selectedFiles[0]);
+  thumbRow.innerHTML = '';
+  for (let i = 1; i < count; i++) {
+    const slot = document.createElement('div');
+    slot.className = 'thumb-slot';
+    slot.innerHTML = `<img src="${URL.createObjectURL(selectedFiles[i])}" alt="foto ${i+1}">
+      <button class="thumb-remove" onclick="removeImg(${i})">×</button>`;
+    thumbRow.appendChild(slot);
+  }
+  if (count < MAX_PHOTOS) {
+    const addBtn = document.createElement('div');
+    addBtn.className = 'add-thumb';
+    addBtn.innerHTML = '<i class="fas fa-plus"></i><span>Añadir</span>';
+    addBtn.onclick = () => document.getElementById('fileInput').click();
+    thumbRow.appendChild(addBtn);
+  }
+  const mainSlot = document.getElementById('mainSlot');
+  let mr = mainSlot.querySelector('.thumb-remove');
+  if (!mr) {
+    mr = document.createElement('button');
+    mr.className = 'thumb-remove';
+    mr.style.cssText = 'position:absolute;top:-7px;right:-7px;z-index:5';
+    mr.innerHTML = '×'; mr.onclick = () => removeImg(0);
+    mainSlot.appendChild(mr);
+  }
+}
+
+window.removeImg = function(i) {
+  URL.revokeObjectURL(selectedFiles[i]);
+  selectedFiles.splice(i,1);
+  if (compressedBlobs[i]) compressedBlobs.splice(i,1);
+  renderImages();
+  if (!selectedFiles.length) {
+    document.getElementById('webpBadge').classList.remove('show');
+    document.getElementById('imgsContainer').style.display = 'none';
+  }
+  showToast('🗑️ Foto eliminada');
+};
+
+/* ══════════════════════════════════════════
+   FORM HELPERS
+══════════════════════════════════════════ */
+window.selectState = function(el) {
+  document.querySelectorAll('.state-opt').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('estado').value = el.dataset.val;
+};
+
+window.selectPrecioMode = function(el) {
+  document.querySelectorAll('#precioModeOpts .state-opt').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('precioMode').value = el.dataset.val;
+  const precioInput = document.getElementById('precio');
+  if (el.dataset.val === 'gratuito') { precioInput.value = 0; precioInput.disabled = true; }
+  else if (el.dataset.val === 'consultar') { precioInput.value = 0; precioInput.disabled = true; }
+  else { precioInput.disabled = false; }
+};
+
+window.togglePM = function(el) {
+  el.classList.toggle('selected');
+  const v = el.dataset.val;
+  selectedPaymentMethods = el.classList.contains('selected')
+    ? [...selectedPaymentMethods, v]
+    : selectedPaymentMethods.filter(x => x !== v);
+};
+
+window.toggleDoc = function(el) {
+  el.classList.toggle('selected');
+  const v = el.dataset.val;
+  selectedDocs = el.classList.contains('selected')
+    ? [...selectedDocs, v]
+    : selectedDocs.filter(x => x !== v);
+};
+
+window.toggleSchedule = function(el) {
+  el.classList.toggle('selected');
+  const v = el.dataset.val;
+  selectedSchedules = el.classList.contains('selected')
+    ? [...selectedSchedules, v]
+    : selectedSchedules.filter(x => x !== v);
+};
+
+window.updateSubcats = function() {
+  const cat = document.getElementById('categoria').value;
+  const grp = document.getElementById('subcatGroup');
+  const sel = document.getElementById('subcategoria');
+  const subs = {
+    tecnologia:['📱 Teléfonos','💻 Ordenadores','📟 Tablets','🎮 Gaming','⌚ Wearables','📷 Cámaras','🖨️ Periféricos'],
+    electrodomesticos:['❄️ Neveras','📺 Televisores','🧺 Lavadoras','🍳 Cocinas','🌬️ Climatización','🧹 Aspiradoras'],
+    moda:['👔 Hombre','👗 Mujer','👟 Calzado','👜 Bolsos y accesorios','💍 Joyería','🧢 Gorras y sombreros'],
+    vehiculos:['🚗 Coches','🏍️ Motos','🚌 Autobuses y furgones','🔩 Recambios y accesorios'],
+    alimentacion:['🥩 Carne y pescado','🥦 Frutas y verduras','🛒 Productos de despensa','🍺 Bebidas','🌿 Productos locales'],
+    belleza:['💄 Maquillaje','🧴 Cuidado de piel','💆 Cuidado capilar','🌸 Perfumes y colonias'],
+    deportes:['⚽ Fútbol','🏋️ Fitness y gimnasio','🚵 Ciclismo','🥊 Artes marciales','🏊 Natación'],
+    hogar:['🛋️ Muebles','🛏️ Dormitorio','🪴 Decoración','🔧 Bricolaje y jardín'],
+    servicios_tecnicos:['📱 Reparación móviles','💻 Informática','🔌 Electricidad','🔧 Fontanería','❄️ Climatización'],
+    servicios_salud:['🏥 Consultas médicas','💊 Farmacia','🦷 Odontología','👁️ Optometría','🧠 Psicología'],
+    servicios_educacion:['🎓 Clases particulares','📚 Preparación exámenes','💻 Informática','🗣️ Idiomas','🎵 Música'],
+    servicios_transporte:['🚚 Mudanzas','📦 Mensajería','🚗 Taxi y traslados','✈️ Transporte aéreo'],
+    servicios_construccion:['🏗️ Obra nueva','🔨 Reformas','🪵 Carpintería','🪟 Ventanas y puertas'],
+    servicios_limpieza:['🧹 Limpieza doméstica','🏢 Limpieza de oficinas','🪟 Limpieza de cristales','🚗 Lavado de coches'],
+    servicios_legales:['⚖️ Abogados','📋 Notaría','🏛️ Asesoría fiscal','🏢 Derecho mercantil'],
+    servicios_financieros:['💰 Préstamos','💳 Seguros','📊 Inversión','💱 Cambio de divisas'],
+    servicios_eventos:['💒 Bodas','🎉 Fiestas y cumpleaños','📸 Fotografía y video','🎤 DJ y animación'],
+    servicios_marketing:['📊 Redes sociales','🎨 Diseño gráfico','🌐 Páginas web','📱 Publicidad digital'],
+  };
+  if (cat && subs[cat]) {
+    sel.innerHTML   = subs[cat].map(s => `<option>${s}</option>`).join('');
+    grp.style.display = 'block';
+  } else { grp.style.display = 'none'; }
+};
+
+window.updateCounter = function(el, id, max) {
+  const counter = document.getElementById(id); if (!counter) return;
+  const len = el.value.length;
+  counter.textContent = `${len} / ${max}`;
+  counter.className = 'char-counter' + (len>=max?' danger': len>max*.85?' warn':'');
+};
+
+/* ══════════════════════════════════════════
+   PROGRESS + NAVIGATION
+══════════════════════════════════════════ */
+function initPage() {
+  buildProgress();
+  buildEmojiPickers();
+  renderCountries();
+  showStep(1);
+  console.log(`%c🚀 Compra Ya Publicar v5.0 — Rol: ${userRole}`, 'color:#00f5ff;font-weight:bold');
+}
+
+function buildProgress() {
+  const wrap = document.getElementById('progSteps');
+  wrap.innerHTML = '';
+  for (let i = 1; i <= TOTAL_STEPS; i++) {
+    if (i > 1) {
+      const conn = document.createElement('div');
+      conn.className = 'prog-conn'; conn.id = `conn-${i-1}`;
+      wrap.appendChild(conn);
+    }
+    const d = document.createElement('div');
+    d.className = `prog-step${i===1?' active':''}`; d.id = `prog-${i}`; d.setAttribute('data-n',i);
+    d.innerHTML = `<span>${i}</span>`;
+    wrap.appendChild(d);
+  }
+}
+
+function updateProgress(step) {
+  for (let i = 1; i <= TOTAL_STEPS; i++) {
+    const el = document.getElementById(`prog-${i}`);
+    if (!el) continue;
+    el.classList.remove('active','done');
+    if (i < step)  el.classList.add('done');
+    if (i === step) el.classList.add('active');
+    const conn = document.getElementById(`conn-${i-1}`);
+    if (conn) conn.classList.toggle('done', i-1 < step);
+  }
+  document.getElementById('progFill').style.width = ((step-1)/(TOTAL_STEPS-1)*100)+'%';
+}
+
+function showStep(step) {
+  document.querySelector('.step-screen.active')?.classList.remove('active');
+  const screen = document.getElementById(`step-${step}`);
+  if (!screen) return;
+  screen.classList.add('active');
+  currentStep = step;
+  updateProgress(step);
+  document.getElementById('btnPrev').style.display = step === 1 ? 'none' : 'flex';
+  document.getElementById('btnNext').style.display = step === TOTAL_STEPS ? 'none' : 'flex';
+  const pub = document.getElementById('btnPublishFloat');
+  pub.className = step === TOTAL_STEPS ? 'btn-publish-float show' : 'btn-publish-float';
+  if (step === TOTAL_STEPS) buildFinalPreview();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+window.nextStep = function() { if (validateStep(currentStep) && currentStep < TOTAL_STEPS) showStep(currentStep+1); };
+window.prevStep = function() { if (currentStep > 1) showStep(currentStep-1); };
+/* ══════════════════════════════════════════
+   VALIDATION
+══════════════════════════════════════════ */
+function showFieldErr(id, msg) {
+  const inp = document.getElementById(id);
+  const err = document.getElementById(`err-${id}`);
+  if (inp) { inp.classList.add('err'); inp.focus(); }
+  if (err) { err.querySelector('span').textContent = msg; err.classList.add('show'); }
+}
+window.clearErr = function(el) {
+  el.classList.remove('err');
+  const err = document.getElementById(`err-${el.id}`);
+  if (err) err.classList.remove('show');
+};
+
+function validateStep(step) {
+  if (step === 1) {
+    if (!selectedFiles.length) { showToast('❌ Sube al menos una foto','error'); return false; }
+  }
+  if (step === 2) {
+    const pm = document.getElementById('precioMode').value;
+    if (pm !== 'gratuito' && pm !== 'consultar') {
+      const v = parseInt(document.getElementById('precio').value);
+      if (!v || isNaN(v) || v <= 0) { showFieldErr('precio','Introduce un precio válido mayor que 0'); return false; }
+    }
+    if (userRole === 'normal' && !isPremium && pubsThisMonth >= MAX_FREE_PUB) {
+      showToast(`❌ Límite de ${MAX_FREE_PUB} publicaciones alcanzado. Activa Premium para continuar.`, 'error', 6000);
+      return false;
+    }
+  }
+  if (step === 3) {
+    const cat = ROLE_CONFIG[userRole].showCatGrid
+      ? document.getElementById('categoriaGrid').value
+      : document.getElementById('categoria').value;
+    if (!cat) {
+      if (ROLE_CONFIG[userRole].showCatGrid) showFieldErr('categoriaGrid','Selecciona una categoría');
+      else showFieldErr('categoria','Selecciona una categoría');
+      return false;
+    }
+  }
+  if (step === 4) {
+    if (!document.getElementById('titulo').value.trim()) { showFieldErr('titulo','El título es obligatorio'); return false; }
+  }
+  if (step === 5) {
+    const d = document.getElementById('descripcion').value.trim();
+    if (!d) { showFieldErr('descripcion','La descripción es obligatoria'); return false; }
+    if (d.length < 15) { showFieldErr('descripcion','Escribe al menos 15 caracteres'); return false; }
+  }
+  if (step === 6) {
+    const t = document.getElementById('telefono').value.trim();
+    if (!t) { showFieldErr('telefono','El teléfono es obligatorio'); return false; }
+    if (!/^[\d\s\-\(\)]{6,}$/.test(t)) { showFieldErr('telefono','Introduce un número válido'); return false; }
+  }
+  return true;
+}
+
+/* ══════════════════════════════════════════
+   FINAL PREVIEW
+══════════════════════════════════════════ */
+function buildFinalPreview() {
+  const titulo    = document.getElementById('titulo').value || 'Sin título';
+  const precio    = parseInt(document.getElementById('precio').value) || 0;
+  const precioMode = document.getElementById('precioMode').value;
+  const desc      = document.getElementById('descripcion').value || '';
+  const catVal    = ROLE_CONFIG[userRole].showCatGrid
+    ? document.getElementById('categoriaGrid').value
+    : document.getElementById('categoria').value;
+  const estado    = document.getElementById('estado').value || '—';
+  const telefono  = document.getElementById('telefono').value || '—';
+  const ubicacion = document.getElementById('ubicacion').value || '—';
+  const imgs      = selectedFiles.map(f => URL.createObjectURL(f));
+  const mainSrc   = imgs[0] || `https://placehold.co/400x300/121d30/00f5ff?text=Sin+imagen`;
+
+  const precioDisplay = precioMode === 'gratuito' ? '🆓 Gratuito' :
+                        precioMode === 'consultar' ? '📞 Consultar' :
+                        precioMode === 'negociable' ? `${precio.toLocaleString('es-ES')} FCFA 🤝` :
+                        `${precio.toLocaleString('es-ES')} FCFA`;
+
+  // Role badge
+  const roleLabels = {
+    normal:'',
+    premium:'👑 Premium',
+    store:'🏪 Tienda oficial',
+    entity:'🏢 Entidad verificada',
+    ministry:'🏛️ Ministerio'
+  };
+  const roleFbClass = {
+    normal:'',
+    premium:'fb-premium',
+    store:'fb-store',
+    entity:'fb-entity',
+    ministry:'fb-ministry'
+  };
+
+  // Seal
+  const sealConfig = {
+    normal: '',
+    premium: `<div class="verified-seal"><i class="fas fa-crown"></i> Publicación Premium verificada</div>`,
+    store:   `<div class="verified-seal store-seal"><i class="fas fa-store"></i> Tienda oficial en Compra Ya</div>`,
+    entity:  `<div class="verified-seal entity-seal"><i class="fas fa-building"></i> Entidad empresarial verificada</div>`,
+    ministry:`<div class="verified-seal ministry-seal"><i class="fas fa-landmark"></i> Servicio oficial del gobierno de Guinea Ecuatorial</div>`,
+  };
+
+  // Tags
+  const tagMap = {
+    calidad: {cls:'ft-calidad',label:'⭐ Calidad'},
+    verificado:{cls:'ft-verificado',label:'✅ Verificado'},
+    doc:{cls:'ft-doc',label:'📄 Documentado'},
+    premium:{cls:'ft-premium',label:'👑 Premium'},
+    servicio:{cls:'ft-servicio',label:'🔧 Servicio'},
+    oficial:{cls:'ft-oficial',label:'🏛️ Oficial'},
+    garantia:{cls:'ft-garantia',label:'🛡️ Garantía'},
+    urgente:{cls:'ft-urgente',label:'🔥 Urgente'},
+    exclusivo:{cls:'ft-exclusivo',label:'💎 Exclusivo'},
+    gratuito:{cls:'ft-gratuito',label:'🆓 Gratuito'},
+    tramite:{cls:'ft-tramite',label:'📋 Trámite'},
+    cita:{cls:'ft-cita',label:'📅 Cita previa'},
+    presencial:{cls:'ft-presencial',label:'🏢 Presencial'},
+    online:{cls:'ft-online',label:'💻 Online'},
+    importado:{cls:'ft-verificado',label:'✈️ Importado'},
+    nacional:{cls:'ft-verificado',label:'🇬🇶 Nacional'},
+  };
+
+  const tagsHtml = selectedQualityTags.map(id => {
+    const t = tagMap[id]; if (!t) return '';
+    return `<span class="final-tag ${t.cls}">${t.label}</span>`;
+  }).join('');
+
+  const thumbsHtml = imgs.length > 1
+    ? `<div class="final-thumbs">${imgs.map((s,i) =>
+        `<div class="final-thumb${i===0?' active':''}" onclick="switchFinalImg(${i})"><img src="${s}"></div>`
+      ).join('')}</div>` : '';
+
+  const roleBadgeHtml = roleLabels[userRole]
+    ? `<span class="final-badge ${roleFbClass[userRole]}">${roleLabels[userRole]}</span>`
+    : '';
+
+  document.getElementById('finalCard').innerHTML = `
+    <div class="final-main-wrap">
+      <img class="final-main-img" id="finalMainImg" src="${mainSrc}" alt="principal">
+      <span class="final-img-no">${imgs.length} foto${imgs.length!==1?'s':''}</span>
+    </div>
+    ${thumbsHtml}
+    <div class="final-body">
+      ${roleBadgeHtml}
+      <span class="final-badge">${catVal || 'Sin categoría'}</span>
+      <div class="final-title">${titulo}</div>
+      <div class="final-price">${precioDisplay}</div>
+      ${tagsHtml ? `<div class="final-tags-row">${tagsHtml}</div>` : ''}
+      <div class="final-desc">${desc.slice(0,350)}${desc.length>350?'…':''}</div>
+      ${sealConfig[userRole]}
+      <div class="final-meta">
+        ${estado !== '—' ? `<span class="final-meta-item"><i class="fas fa-tag"></i>${estado}</span>` : ''}
+        <span class="final-meta-item"><i class="fas fa-phone"></i>${selectedDialCode} ${telefono}</span>
+        <span class="final-meta-item"><i class="fas fa-map-marker-alt"></i>${ubicacion}</span>
+        ${selectedPaymentMethods.length ? `<span class="final-meta-item"><i class="fas fa-credit-card"></i>${selectedPaymentMethods.join(', ')}</span>` : ''}
+      </div>
+    </div>`;
+}
+
+window.switchFinalImg = function(idx) {
+  const imgs = selectedFiles.map(f => URL.createObjectURL(f));
+  document.getElementById('finalMainImg').src = imgs[idx];
+  document.querySelectorAll('.final-thumb').forEach((t,i) => t.classList.toggle('active', i===idx));
+};
+
+/* ══════════════════════════════════════════
+   GITHUB UPLOAD
+══════════════════════════════════════════ */
+async function blobToBase64Raw(blob) {
+  return new Promise((res,rej) => {
+    const r = new FileReader();
+    r.onload  = e => res(e.target.result.split(',')[1]);
+    r.onerror = rej;
+    r.readAsDataURL(blob);
+  });
+}
+
+async function uploadImageGitHub(blob, idx) {
+  const base64 = await blobToBase64Raw(blob);
+  const path   = `uploads/${currentUser.uid}_${Date.now()}_${idx}.webp`;
+  const res    = await fetch(
+    `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${path}`,
+    {
+      method:'PUT',
+      headers:{ Authorization:`Bearer ${GITHUB_TOKEN}`, 'Content-Type':'application/json', Accept:'application/vnd.github.v3+json' },
+      body:JSON.stringify({ message:`Upload ${idx} — ${new Date().toISOString()}`, content:base64, branch:GITHUB_BRANCH })
+    }
+  );
+  if (!res.ok) { const e = await res.json().catch(()=>{}); throw new Error(`GitHub ${res.status}: ${e.message||'Error'}`); }
+  return `https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/${GITHUB_BRANCH}/${path}`;
+}
+
+async function uploadAllImages() {
+  const urls = [];
+  const total = compressedBlobs.length;
+  for (let i = 0; i < total; i++) {
+    setUploadProg(i, total);
+    try { urls.push(await uploadImageGitHub(compressedBlobs[i], i)); }
+    catch(e) { console.error(`Foto ${i+1} falló:`, e.message); showToast(`⚠️ Foto ${i+1} no pudo subirse`, 'warn'); }
+  }
+  setUploadProg(total, total);
+  if (urls.length) {
+    document.getElementById('storageBadgeWrap').innerHTML = '<span class="storage-badge github"><i class="fab fa-github"></i> Guardado en GitHub</span>';
+  }
+  return urls;
+}
+
+/* ══════════════════════════════════════════
+   PUBLISH
+══════════════════════════════════════════ */
+window.publicarProducto = async function() {
+  if (!currentUser) { showToast('❌ Inicia sesión para publicar', 'error'); return; }
+
+  // Limit check solo para normales
+  if (userRole === 'normal' && !isPremium && pubsThisMonth >= MAX_FREE_PUB) {
+    showToast(`❌ Límite de ${MAX_FREE_PUB} publicaciones. Activa Premium.`, 'error', 6000);
+    showStep(2); return;
+  }
+
+  const titulo      = document.getElementById('titulo').value.trim();
+  const precio      = parseInt(document.getElementById('precio').value) || 0;
+  const precioMode  = document.getElementById('precioMode').value;
+  const descripcion = document.getElementById('descripcion').value.trim();
+  const catVal      = ROLE_CONFIG[userRole].showCatGrid
+    ? document.getElementById('categoriaGrid').value
+    : document.getElementById('categoria').value;
+  const subcategoria= document.getElementById('subcategoria')?.value || '';
+  const estado      = document.getElementById('estado').value;
+  const telefonoRaw = document.getElementById('telefono').value.trim();
+  const telefono    = `${selectedDialCode} ${telefonoRaw}`;
+  const ubicacion   = document.getElementById('ubicacion').value.trim() || 'Malabo, Guinea Ecuatorial';
+  const entityName  = document.getElementById('entityName')?.value || '';
+  const entityWeb   = document.getElementById('entityWeb')?.value || '';
+  const entityEmail = document.getElementById('entityEmail')?.value || '';
+  const pasosTramite= document.getElementById('pasosTramite')?.value || '';
+  const tiempoResp  = document.getElementById('tiempoRespuesta')?.value || '';
+  const telefonoFijo= document.getElementById('telefonoFijo')?.value || '';
+
+  const errs = [];
+  if (!selectedFiles.length) errs.push('al menos una foto');
+  if (!titulo)               errs.push('título');
+  if (!catVal)               errs.push('categoría');
+  if (!descripcion)          errs.push('descripción');
+  if (!telefonoRaw)          errs.push('teléfono');
+  if (precioMode === 'fijo' && (!precio || precio <= 0)) errs.push('precio válido');
+  if (errs.length) { showToast(`❌ Faltan: ${errs.join(', ')}`, 'error'); return; }
+
+  if (compressedBlobs.length !== selectedFiles.length) {
+    setLoading(true, 'Comprimiendo imágenes…');
+    await compressAllFiles();
+  }
+
+  setLoading(true, 'Subiendo imágenes…', 'Usando GitHub como almacenamiento', true);
+  const imageUrls = await uploadAllImages();
+  if (!imageUrls.length) {
+    setLoading(false);
+    showToast('❌ No se pudo subir ninguna imagen. Comprueba tu conexión.', 'error');
+    return;
+  }
+
+  setLoading(true, 'Publicando tu anuncio…', 'Guardando en Compra Ya');
+  try {
+    const ahora     = new Date();
+    const mesActual = `${ahora.getFullYear()}-${String(ahora.getMonth()+1).padStart(2,'0')}`;
+    const nombreBusca = (currentUser.displayName||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+
+    // Boost score by role
+    const boostMap = { normal:0, premium:10, store:25, entity:20, ministry:30 };
+
+    const producto = {
+      // Básicos
+      titulo, precio, precioMode,
+      descripcion, categoria:catVal, subcategoria, estado,
+      telefono, ubicacion,
+      imagen:imageUrls[0], imagenes:imageUrls,
+      status:'activo', vendido:false,
+      createdAt:serverTimestamp(), fechaPublicacion:serverTimestamp(),
+      vistas:0, likes:0, likesBy:[], reviews:[],
+
+      // Vendedor
+      vendedorId:currentUser.uid, vendedorEmail:currentUser.email||'',
+      vendedorNombre:currentUser.displayName||'', vendedorNombreBusca:nombreBusca,
+      vendedorFoto:currentUser.photoURL||'',
+
+      // Rol y verificación
+      role:userRole, verificado:isPremium,
+      destacado:userRole!=='normal',
+      boostScore:boostMap[userRole]||0,
+
+      // Etiquetas de calidad
+      qualityTags:selectedQualityTags,
+
+      // Tienda
+      tienetienda:userRole==='store',
+      storeId:userStoreId||null,
+      storeName:userStoreName||null,
+
+      // Entidad / Ministerio
+      entityName:entityName||null,
+      entityWeb:entityWeb||null,
+      entityEmail:entityEmail||null,
+      tieneEntidad:userRole==='entity'||userRole==='ministry',
+      tieneMinisterio:userRole==='ministry',
+
+      // Configuración adicional
+      paymentMethods:selectedPaymentMethods,
+      docsRequeridos:selectedDocs,
+      horarios:selectedSchedules,
+      pasosTramite:pasosTramite||null,
+      tiempoRespuesta:tiempoResp||null,
+      telefonoFijo:telefonoFijo||null,
+
+      // Meta
+      plataforma:'compraya-web', version:'5.0'
+    };
+
+    const docRef = await addDoc(collection(db,'productos'), producto);
+    publishedId  = docRef.id;
+
+    // Update user stats (solo normales/premium tienen contador)
+    if (userRole === 'normal' || userRole === 'premium') {
+      const newPubs = (userData.ultimoResetMes===mesActual ? pubsThisMonth : 0) + 1;
+      await updateDoc(doc(db,'usuarios',currentUser.uid), {
+        publicacionesEsteMes:newPubs, ultimoResetMes:mesActual,
+        totalPublicaciones:(userData.totalPublicaciones||0)+1,
+        ultimaPublicacion:serverTimestamp()
+      }).catch(()=>{});
+      pubsThisMonth = newPubs;
+    }
+
+    sessionStorage.setItem('nuevoProductoId', publishedId);
+    setLoading(false);
+    document.getElementById('successScreen').classList.add('active');
+    document.getElementById('btnSeeProduct').onclick = () =>
+      window.location.href = `index-comprador.html?nuevo=1&id=${publishedId}`;
+
+  } catch(e) {
+    console.error('publicarProducto:', e);
+    setLoading(false);
+    showToast(`❌ Error al publicar: ${e.message.slice(0,80)}`, 'error');
+  }
+};
+
+/* ══════════════════════════════════════════
+   LOADING HELPERS
+══════════════════════════════════════════ */
+function setUploadProg(done, total) {
+  const pct   = total > 0 ? Math.round(done/total*100) : 0;
+  document.getElementById('uploadProgWrap').style.display = 'block';
+  document.getElementById('uploadProgFill').style.width   = pct+'%';
+  document.getElementById('uploadProgLabel').textContent  = done >= total
+    ? `✅ ${total} imagen${total>1?'es':''} subida${total>1?'s':''}`
+    : `Subiendo ${done+1} de ${total}…`;
+}
+
+function setLoading(show, title='', sub='', showProg=false) {
+  const ov = document.getElementById('loadingOverlay');
+  ov.classList.toggle('active', show);
+  if (title) document.getElementById('loadingTitle').textContent = title;
+  if (sub)   document.getElementById('loadingSub').textContent   = sub;
+  const pw = document.getElementById('uploadProgWrap');
+  if (!show) { pw.style.display='none'; document.getElementById('uploadProgFill').style.width='0%'; }
+  else       { pw.style.display=showProg?'block':'none'; }
+}
+
+/* ══════════════════════════════════════════
+   COUNTRIES
+══════════════════════════════════════════ */
+const COUNTRIES = [
+  {flag:'🇬🇶',name:'Guinea Ecuatorial',dial:'+240'},
+  {flag:'🇪🇸',name:'España',dial:'+34'},
+  {flag:'🇨🇲',name:'Camerún',dial:'+237'},
+  {flag:'🇬🇦',name:'Gabón',dial:'+241'},
+  {flag:'🇨🇬',name:'Congo',dial:'+242'},
+  {flag:'🇳🇬',name:'Nigeria',dial:'+234'},
+  {flag:'🇸🇳',name:'Senegal',dial:'+221'},
+  {flag:'🇨🇮',name:'Costa de Marfil',dial:'+225'},
+  {flag:'🇬🇭',name:'Ghana',dial:'+233'},
+  {flag:'🇫🇷',name:'Francia',dial:'+33'},
+  {flag:'🇵🇹',name:'Portugal',dial:'+351'},
+  {flag:'🇺🇸',name:'EE.UU.',dial:'+1'},
+  {flag:'🇬🇧',name:'Reino Unido',dial:'+44'},
+];
+
+function renderCountries(filter='') {
+  const list = document.getElementById('countryList');
+  const f = COUNTRIES.filter(c => c.name.toLowerCase().includes(filter.toLowerCase()) || c.dial.includes(filter));
+  list.innerHTML = f.map(c => `
+    <div class="country-item${c.dial===selectedDialCode?' selected':''}" onclick="selectCountry('${c.flag}','${c.dial}')">
+      <span class="c-flag">${c.flag}</span>
+      <span class="c-name">${c.name}</span>
+      <span class="c-dial">${c.dial}</span>
+    </div>`).join('');
+}
+
+window.filterCountries = v => renderCountries(v);
+window.toggleCountryDD = function() {
+  const dd = document.getElementById('countryDD');
+  dd.classList.toggle('open');
+  if (dd.classList.contains('open')) { renderCountries(); document.getElementById('countrySearch').focus(); }
+};
+window.selectCountry = function(flag, dial) {
+  selectedDialCode = dial;
+  document.getElementById('selFlag').textContent = flag;
+  document.getElementById('selCode').textContent = dial;
+  document.getElementById('countryDD').classList.remove('open');
+};
+document.addEventListener('click', e => {
+  const cs = document.querySelector('.country-sel');
+  if (cs && !cs.contains(e.target)) document.getElementById('countryDD')?.classList.remove('open');
+});
+
+/* ══════════════════════════════════════════
+   EMOJI PICKERS (no usados en esta versión, placeholder)
+══════════════════════════════════════════ */
+function buildEmojiPickers() { /* no emoji pickers en esta versión */ }
+
+window.addEventListener('beforeunload', () => { /* cleanup */ });
+window.addEventListener('storage', e => {
+  if (e.key==='cy_open_community'&&e.newValue) window.location.href='chats.html?id='+e.newValue;
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Política de Privacidad - Compra Ya</title>
+     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+<script>
+ import { firebaseConfig } from './js/config.js';
+
+  // Inicializar Firebase
+  firebase.initializeApp(firebaseConfig);
+</script>
+    <style>
+        :root {
+            --primary: #00bfff;
+            --dark: #121212;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background-color: #0a0a0a;
+            color: #e0e0e0;
+            line-height: 1.7;
+        }
+
+        header {
+            background: var(--dark);
+            padding: 20px 15px;
+            border-bottom: 1px solid #333;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            color: white;
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        h1 {
+            color: white;
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #00bfff;
+            margin-bottom: 40px;
+            font-size: 1.1rem;
+        }
+
+        .section {
+            background: #1a1a1a;
+            padding: 32px;
+            margin-bottom: 30px;
+            border-radius: 12px;
+            border: 1px solid #333;
+        }
+
+        h2 {
+            color: #ffffff;
+            margin-bottom: 20px;
+            font-size: 1.55rem;
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 12px;
+        }
+
+        h3 {
+            color: #00ff9d;
+            margin: 28px 0 14px 0;
+            font-size: 1.3rem;
+        }
+
+        p, li {
+            margin-bottom: 14px;
+            color: #ddd;
+        }
+
+        ul {
+            padding-left: 28px;
+        }
+
+        .highlight {
+            background: #222;
+            padding: 20px;
+            border-left: 4px solid var(--primary);
+            margin: 20px 0;
+        }
+
+        .last-updated {
+            text-align: center;
+            color: #888;
+            font-size: 0.95rem;
+            margin-bottom: 40px;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #333;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 30px;
+            text-decoration: none;
+            margin: 30px 0;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            background: var(--primary);
+            color: black;
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: #666;
+            font-size: 0.9rem;
+            border-top: 1px solid #333;
+            margin-top: 60px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div style="max-width: 1000px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center;">
+            <a href="index.html" class="logo">Compra Ya</a>
+            <a href="index.html" style="color: #00bfff; text-decoration: none;">Volver al inicio</a>
+        </div>
+    </header>
+
+    <div class="container">
+        <h1>Política de Privacidad</h1>
+        <p class="subtitle">COMPRA YA!!</p>
+        <p class="last-updated">Última actualización: 31 de marzo de 2026</p>
+
+        <div class="section">
+            <p>En <strong>COMPRA YA!!</strong>, valoramos la confianza que depositas en nosotros al elegirnos para tus compras tecnológicas. Esta Política de Privacidad describe cómo recopilamos, utilizamos y protegemos tu información personal.</p>
+        </div>
+
+        <div class="section">
+            <h2>1. Información que Recopilamos</h2>
+            <p>Para procesar tus pedidos de laptops, smartphones o electrodomésticos, solicitamos los siguientes datos:</p>
+            <ul>
+                <li><strong>Datos de Identificación:</strong> Nombre completo y número de identificación (si es necesario para la factura).</li>
+                <li><strong>Datos de Contacto:</strong> Dirección de correo electrónico, número de teléfono (WhatsApp) y dirección de entrega.</li>
+                <li><strong>Datos de Pago:</strong> Información necesaria para procesar transacciones de forma segura (no almacenamos números completos de tarjetas en nuestros servidores).</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>2. Uso de la Información</h2>
+            <p>Utilizamos tus datos exclusivamente para:</p>
+            <ul>
+                <li>Gestionar y enviar tus pedidos.</li>
+                <li>Validar y hacer efectiva la Garantía Limitada de 30 días.</li>
+                <li>Brindar soporte técnico y atención al cliente.</li>
+                <li>Enviar actualizaciones sobre el estado de tu compra o promociones (solo si has dado tu consentimiento).</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>3. Política de Garantía (30 Días)</h2>
+            <div class="highlight">
+                <p><strong>En COMPRA YA!!, todos nuestros productos electrónicos cuentan con una garantía de un (1) mes calendario</strong> a partir de la fecha de entrega.</p>
+            </div>
+            <ul>
+                <li><strong>Cobertura:</strong> La garantía cubre únicamente defectos de fábrica y fallos técnicos de hardware bajo condiciones de uso normal.</li>
+                <li><strong>Exclusiones:</strong> No se cubren daños por golpes, humedad, picos de tensión eléctrica, manipulación de software no oficial o sellos de garantía rotos.</li>
+                <li><strong>Procedimiento:</strong> Para activar la garantía, el usuario debe presentar el comprobante de compra digital enviado a su correo o número registrado.</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>4. Protección y Seguridad de Datos</h2>
+            <p>Implementamos medidas de seguridad técnicas y organizativas para evitar el acceso no autorizado, la pérdida o la alteración de tu información personal. Tus datos de contacto nunca serán vendidos ni compartidos con terceros con fines publicitarios ajenos a COMPRA YA!!.</p>
+        </div>
+
+        <div class="section">
+            <h2>5. Compartición de Datos con Terceros</h2>
+            <p>Solo compartimos información mínima necesaria con:</p>
+            <ul>
+                <li><strong>Empresas de Logística:</strong> Para que el repartidor pueda localizar tu dirección y entregarte el producto.</li>
+                <li><strong>Pasarelas de Pago:</strong> Para autorizar y procesar el cobro de tu compra de forma cifrada.</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>6. Derechos del Usuario</h2>
+            <p>Tienes derecho a:</p>
+            <ul>
+                <li>Acceder, rectificar o eliminar tus datos personales de nuestra base de datos.</li>
+                <li>Solicitar información sobre el estado de tu garantía vigente.</li>
+                <li>Darte de baja de nuestras comunicaciones de marketing en cualquier momento.</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>7. Uso de Cookies</h2>
+            <p>Nuestro sitio utiliza cookies esenciales para mantener tu carrito de compras activo y mejorar la velocidad de navegación. Puedes desactivarlas en la configuración de tu navegador, aunque esto podría afectar la funcionalidad del marketplace. Consulta nuestra <a href="cookies.html" style="color: var(--primary);">Política de Cookies</a> para más detalles.</p>
+        </div>
+
+        <div class="section">
+            <h2>8. Contacto</h2>
+            <p>Si tienes dudas sobre el manejo de tu privacidad o necesitas reportar un fallo técnico dentro de tu mes de garantía, contáctanos a través de nuestros canales oficiales de atención al cliente.</p>
+        </div>
+
+        <a href="index.html" class="back-btn">
+            <i class="fas fa-arrow-left"></i> Volver a la página principal
+        </a>
+    </div>
+
+  
+    <footer style="background: #0a0a0a; color: #ccc; padding: 70px 20px 40px; border-top: 1px solid #333; margin-top: 80px;">
+        <div style="max-width: 1280px; margin: 0 auto;">
+            
+            <!-- Grid de columnas -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 45px 30px; margin-bottom: 60px;">
+                
+                <!-- Columna Sobre Compra Ya -->
+                <div>
+                    <h3 style="color: #ffffff; margin-bottom: 18px; font-size: 1.4rem;">Compra Ya</h3>
+                    <p style="line-height: 1.7; max-width: 290px;">Tu marketplace local de tecnología en Guinea Ecuatorial. Compra y vende laptops, iPhones, accesorios y más con confianza.</p>
+                    <p style="margin-top: 20px; font-size: 0.9rem;">Publicación básica <strong>gratuita</strong> • Servicios Premium opcionales</p>
+                </div>
+    
+                
+            </div>
+    
+            <!-- Sección con toda la información legal resumida + enlaces -->
+            <div style="border-top: 1px solid #222; padding-top: 40px; font-size: 0.9rem; line-height: 1.8;">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 40px;">
+                    
+                    <!-- Términos y Condiciones (resumen) -->
+                    <div>
+                        <h5 style="color: #fff; margin-bottom: 12px;">Términos y Condiciones</h5>
+                        <p style="color: #aaa;">Al usar Compra Ya aceptas nuestros términos. Somos un marketplace que facilita la compraventa de tecnología. Última actualización: 31 de marzo de 2026. Lea los <a href="terminos.html" style="color: #00bfff; text-decoration: none;">términos completos</a>.</p>
+                    </div>
+    
+                    <!-- Política de Privacidad -->
+                    <div>
+                        <h5 style="color: #fff; margin-bottom: 12px;">Política de Privacidad</h5>
+                        <p style="color: #aaa;">Protegemos tus datos personales. Garantía de 30 días en productos electrónicos. Consulta cómo usamos tu información en nuestra <a href="privacidad.html" style="color: #00bfff; text-decoration: none;">Política de Privacidad</a>.</p>
+                    </div>
+    
+                    <!-- Condiciones de Venta y Servicios Premium -->
+                    <div>
+                        <h5 style="color: #fff; margin-bottom: 12px;">Servicios Premium</h5>
+                        <p style="color: #aaa;">La publicación es gratuita. Ofrecemos visibilidad extra, promociones y análisis de datos mediante servicios de pago. Ver <a href="condiciones-venta.html" style="color: #00bfff; text-decoration: none;">Condiciones de Venta y Servicios Premium</a>.</p>
+                    </div>
+    
+                    <!-- Política de Cookies -->
+                    <div>
+                        <h5 style="color: #fff; margin-bottom: 12px;">Cookies</h5>
+                        <p style="color: #aaa;">Utilizamos cookies para mejorar tu experiencia, analizar el tráfico y ofrecerte contenido relevante. Puedes gestionarlas en cualquier momento. Ver <a href="cookies.html" style="color: #00bfff; text-decoration: none;">Política de Cookies</a>.</p>
+                    </div>
+                </div>
+            </div>
+    
+            <!-- Línea final -->
+            <div style="border-top: 1px solid #222; margin-top: 50px; padding-top: 30px; text-align: center; font-size: 0.85rem; color: #777;">
+                <p>&copy; 2026 Compra Ya - Marketplace de Tecnología en Guinea Ecuatorial. Todos los derechos reservados.</p>
+                <p style="margin-top: 8px;">Malabo • Bata • Ebebiyín • Última actualización: 31 de marzo de 2026</p>
+                <p style="margin-top: 12px; font-size: 0.82rem;">Hecho con ❤️ para facilitar la compraventa tecnológica local</p>
+            </div>
+        </div>
+        <div> <!-- BOTÓN VOLVER -->
+            <a href="index.html" class="btn-home">
+                <i class="fas fa-arrow-left"></i>
+            </a>  </div>
+            <!-- BOTÓN VOLVER AL INICIO - ICONO -->
+<button onclick="window.location.href='index.html'" 
+style="
+position: fixed;
+bottom: 20px;
+left: 20px;
+z-index: 999;
+background: linear-gradient(135deg, #f59e0b, #d97706);
+border: none;
+width: 55px;
+height: 55px;
+border-radius: 50%;
+display: flex;
+align-items: center;
+justify-content: center;
+cursor: pointer;
+box-shadow: 0 6px 20px rgba(245, 158, 11, 0.5);
+transition: all 0.3s ease;
+"
+onmouseover="this.style.transform='scale(1.1) translateY(-3px)'; this.style.boxShadow='0 10px 25px rgba(245,158,11,0.7)'"
+onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 6px 20px rgba(245,158,11,0.5)'"
+onmousedown="this.style.transform='scale(0.9)'"
+onmouseup="this.style.transform='scale(1.1)'"
+>
+    <i class="fas fa-home" style="color:white; font-size: 1.5rem;"></i>
+</button>
+    </footer>
+
+<script src="api.js"></script>
+    <script>
+        // Ejemplo: Cargar productos cuando se abra la página
+        obtenerProductos().then(productos => {
+            console.log("¡Listo! Estos son tus productos:", productos);
+            // Aquí llamarías a la función que dibuja las tarjetas en tu web
+        });
+    </script>
+</body>
+</html>

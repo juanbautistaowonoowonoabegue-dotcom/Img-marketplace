@@ -1,0 +1,45 @@
+query ListPublicHabits @auth(level: PUBLIC, insecureReason: "This operation is safe to expose to the public as it only retrieves public habits.") {
+  habits(where: {isPublic: {eq: true}}) {
+    id
+    name
+    description
+    frequency
+    user {
+      displayName
+    }
+  }
+}
+
+query MyHabits @auth(level: USER, insecureReason: "This operation is safe to expose to all logged in users as it filters by auth.uid.") {
+  habits(where: {userId: {eq_expr: "auth.uid"}}) {
+    id
+    name
+    frequency
+    createdAt
+  }
+}
+
+mutation CreateHabit($name: String!, $frequency: String!, $isPublic: Boolean!, $description: String, $reminderTime: Timestamp) @auth(level: USER) {
+  habit_insert(data: {
+    userId_expr: "auth.uid",
+    name: $name,
+    frequency: $frequency,
+    isPublic: $isPublic,
+    description: $description,
+    reminderTime: $reminderTime,
+    createdAt_expr: "request.time"
+  }) {
+    id
+  }
+}
+
+mutation LogHabitCompletion($habitId: UUID!, $logDate: Date!) @auth(level: USER) {
+  habitLog_insert(data: {
+    habitId: $habitId,
+    userId_expr: "auth.uid",
+    logDate: $logDate,
+    createdAt_expr: "request.time"
+  }) {
+    id
+  }
+}

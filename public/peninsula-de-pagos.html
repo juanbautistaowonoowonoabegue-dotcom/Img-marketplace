@@ -1,0 +1,1586 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Pago Seguro — CompraYa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800;900&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+/* ══════════════════════════════════════
+   TOKENS
+══════════════════════════════════════ */
+:root {
+  --white:#FFFFFF; --off-white:#F8FAFF;
+  --blue-1:#0A84FF; --blue-2:#2563FF; --blue-3:#00BFFF; --blue-dark:#0047CC;
+  --ink:#0F172A; --ink-2:#1E293B;
+  --muted:#6B7280; --muted-light:#94A3B8;
+  --success:#10B981; --warning:#F59E0B; --danger:#EF4444; --lime:#00CC88;
+  --bg:var(--white); --surface:var(--off-white); --card:#FFFFFF;
+  --border:rgba(37,99,255,0.12); --border-strong:rgba(37,99,255,0.28);
+  --shadow-xs:0 1px 4px rgba(10,132,255,0.06),0 0 0 1px rgba(0,0,0,0.04);
+  --shadow-sm:0 4px 16px rgba(10,132,255,0.10),0 1px 4px rgba(0,0,0,0.05);
+  --shadow-md:0 8px 32px rgba(10,132,255,0.14),0 2px 8px rgba(0,0,0,0.06);
+  --shadow-lg:0 20px 60px rgba(10,132,255,0.18),0 4px 16px rgba(0,0,0,0.08);
+  --fh:'Syne',sans-serif; --fb:'DM Sans',sans-serif;
+  --r-xs:8px; --r-sm:12px; --r-md:16px; --r-lg:24px; --r-xl:32px; --r-full:9999px;
+}
+
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{height:100%;scroll-behavior:smooth}
+body{font-family:var(--fb);background:var(--bg);color:var(--ink);min-height:100%;overflow-x:hidden;position:relative}
+::-webkit-scrollbar{width:3px}
+::-webkit-scrollbar-track{background:var(--off-white)}
+::-webkit-scrollbar-thumb{background:rgba(37,99,255,0.2);border-radius:99px}
+
+/* ── HALFTONE AMBIENT ── */
+.halftone-canvas{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.halftone-canvas::before{
+  content:'';position:absolute;top:-80px;right:-80px;width:420px;height:420px;
+  background:radial-gradient(circle,rgba(10,132,255,0.55) 1.5px,transparent 1.5px),
+             radial-gradient(circle,rgba(0,191,255,0.35) 1px,transparent 1px);
+  background-size:22px 22px,11px 11px;
+  background-position:0 0,5.5px 5.5px;
+  mask-image:radial-gradient(ellipse 65% 65% at 80% 20%,#000 30%,transparent 100%);
+  -webkit-mask-image:radial-gradient(ellipse 65% 65% at 80% 20%,#000 30%,transparent 100%);
+  opacity:.55;animation:halftoneShift 12s ease-in-out infinite alternate;border-radius:50%;filter:blur(.4px)
+}
+.halftone-canvas::after{
+  content:'';position:absolute;bottom:-60px;left:-60px;width:360px;height:360px;
+  background:radial-gradient(circle,rgba(37,99,255,0.45) 1.5px,transparent 1.5px),
+             radial-gradient(circle,rgba(10,132,255,0.25) 1px,transparent 1px);
+  background-size:18px 18px,9px 9px;background-position:0 0,4.5px 4.5px;
+  mask-image:radial-gradient(ellipse 60% 60% at 20% 80%,#000 25%,transparent 100%);
+  -webkit-mask-image:radial-gradient(ellipse 60% 60% at 20% 80%,#000 25%,transparent 100%);
+  opacity:.45;animation:halftoneShift 15s ease-in-out infinite alternate-reverse;border-radius:50%;filter:blur(.3px)
+}
+.halftone-mid{position:absolute;top:35%;right:-40px;width:200px;height:300px;
+  background:radial-gradient(circle,rgba(0,191,255,0.4) 1.2px,transparent 1.2px);
+  background-size:16px 16px;
+  mask-image:radial-gradient(ellipse 50% 70% at 80% 50%,#000 20%,transparent 100%);
+  -webkit-mask-image:radial-gradient(ellipse 50% 70% at 80% 50%,#000 20%,transparent 100%);
+  opacity:.35;animation:halftoneShift 18s ease-in-out infinite alternate;pointer-events:none}
+.ambient{position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(ellipse 55% 40% at 92% 8%,rgba(10,132,255,0.07),transparent),
+             radial-gradient(ellipse 45% 35% at 8% 92%,rgba(37,99,255,0.06),transparent),
+             radial-gradient(ellipse 35% 30% at 50% 50%,rgba(0,191,255,0.03),transparent)}
+@keyframes halftoneShift{
+  0%{transform:scale(1) rotate(0deg) translateY(0);opacity:.45}
+  33%{transform:scale(1.06) rotate(3deg) translateY(-12px);opacity:.55}
+  66%{transform:scale(.97) rotate(-2deg) translateY(8px);opacity:.40}
+  100%{transform:scale(1.04) rotate(1.5deg) translateY(-6px);opacity:.50}
+}
+
+/* ── HEADER ── */
+.hdr{position:fixed;top:0;left:0;right:0;z-index:600;height:60px;
+  background:rgba(255,255,255,0.90);backdrop-filter:blur(24px) saturate(180%);
+  -webkit-backdrop-filter:blur(24px) saturate(180%);
+  border-bottom:1px solid rgba(37,99,255,0.10);
+  display:flex;align-items:center;gap:12px;padding:0 18px;
+  box-shadow:0 1px 0 rgba(37,99,255,0.08),0 2px 12px rgba(10,132,255,0.05)}
+.hdr-back{width:36px;height:36px;border-radius:50%;background:var(--off-white);
+  border:1.5px solid var(--border);color:var(--ink-2);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:all .22s;flex-shrink:0;text-decoration:none;box-shadow:var(--shadow-xs)}
+.hdr-back:hover{background:rgba(10,132,255,0.06);border-color:var(--border-strong);color:var(--blue-1);transform:translateX(-1px)}
+.hdr-back svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.hdr-title{font-family:var(--fh);font-size:.88rem;font-weight:700;color:var(--muted);flex:1;letter-spacing:.2px}
+.hdr-logo{font-family:var(--fh);font-size:1.15rem;font-weight:900;color:var(--ink);text-decoration:none;letter-spacing:-.5px}
+.hdr-logo span{color:var(--blue-1)}
+.hdr-secure{display:flex;align-items:center;gap:5px;font-size:.62rem;font-weight:700;font-family:var(--fh);
+  color:var(--success);letter-spacing:.8px;text-transform:uppercase;
+  background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.2);padding:4px 9px;border-radius:var(--r-full)}
+.hdr-secure svg{width:10px;height:10px;stroke:var(--success);fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+
+/* ── LAYERS ── */
+.layer{display:none;position:relative;z-index:2;min-height:calc(100vh - 60px);padding-top:60px}
+.layer.active{display:block}
+
+/* ═══════════════════════════════
+   SET PIN
+═══════════════════════════════ */
+#layer-setpin{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:80px 20px 40px;position:relative;z-index:2}
+.setpin-card{width:100%;max-width:360px;background:var(--card);border:1.5px solid var(--border);border-radius:var(--r-xl);overflow:hidden;position:relative;box-shadow:var(--shadow-lg)}
+.setpin-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--blue-1),var(--blue-3),var(--blue-2))}
+.setpin-head{padding:28px 24px 0;text-align:center}
+.setpin-icon{width:60px;height:60px;border-radius:var(--r-md);background:rgba(10,132,255,0.07);border:1.5px solid rgba(10,132,255,0.18);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;box-shadow:0 4px 16px rgba(10,132,255,0.12)}
+.setpin-icon svg{width:26px;height:26px;stroke:var(--blue-1);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.setpin-title{font-family:var(--fh);font-size:1.15rem;font-weight:900;color:var(--ink);margin-bottom:8px;letter-spacing:-.3px}
+.setpin-sub{font-size:.78rem;color:var(--muted);line-height:1.6;margin-bottom:20px}
+.setpin-step-indicator{display:flex;gap:6px;justify-content:center;margin-bottom:20px}
+.spi-dot{width:32px;height:4px;border-radius:var(--r-full);background:rgba(10,132,255,0.12);transition:all .35s}
+.spi-dot.active{background:var(--blue-1)} .spi-dot.done{background:var(--success)}
+.setpin-label{font-size:.68rem;font-family:var(--fh);font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--blue-1);text-align:center;margin-bottom:14px}
+.setpin-body{padding:0 24px 28px}
+
+/* ── PIN DOTS ── */
+.pin-dots{display:flex;gap:18px;align-items:center;justify-content:center;height:56px}
+.pin-dot{width:14px;height:14px;border-radius:50%;border:2px solid rgba(10,132,255,0.25);background:transparent;transition:all .3s cubic-bezier(.34,1.56,.64,1)}
+.pin-dot.filled{background:var(--blue-1);border-color:var(--blue-1);box-shadow:0 0 14px rgba(10,132,255,0.5),0 0 28px rgba(10,132,255,0.2);animation:dotPop .3s cubic-bezier(.34,1.56,.64,1)}
+.pin-dot.error{border-color:var(--danger);background:var(--danger);box-shadow:0 0 12px rgba(239,68,68,.5)}
+.pin-dot.success{border-color:var(--success);background:var(--success);box-shadow:0 0 12px rgba(16,185,129,.5)}
+@keyframes dotPop{0%{transform:scale(.5)}60%{transform:scale(1.3)}100%{transform:scale(1)}}
+.pin-error-msg,.pin-success-msg{font-size:.75rem;font-weight:600;font-family:var(--fh);text-align:center;min-height:18px;letter-spacing:.2px;opacity:0;transition:opacity .3s;margin:6px 0}
+.pin-error-msg{color:var(--danger)} .pin-success-msg{color:var(--success)}
+.pin-error-msg.show,.pin-success-msg.show{opacity:1}
+
+/* ── KEYPAD ── */
+.pin-keypad{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(4,72px);gap:10px;margin:8px auto 0;max-width:240px}
+.pin-key{width:100%;height:72px;border-radius:50%;background:var(--off-white);border:1.5px solid var(--border);cursor:pointer;font-family:var(--fh);font-size:1.3rem;font-weight:700;color:var(--ink);display:flex;align-items:center;justify-content:center;flex-direction:column;transition:all .18s cubic-bezier(.34,1.56,.64,1);position:relative;overflow:hidden;user-select:none;box-shadow:var(--shadow-xs)}
+.pin-key:hover{background:rgba(10,132,255,0.06);border-color:var(--border-strong);color:var(--blue-1);transform:scale(1.05);box-shadow:var(--shadow-sm)}
+.pin-key:active{transform:scale(.93)}
+.pin-key-sub{font-size:.48rem;color:var(--muted-light);letter-spacing:1.5px;text-transform:uppercase;margin-top:1px}
+.pin-key.key-del{background:rgba(239,68,68,.06);border-color:rgba(239,68,68,.15);color:var(--danger)}
+.pin-key.key-del:hover{background:rgba(239,68,68,.12)}
+.pin-key.key-bio{background:rgba(16,185,129,.06);border-color:rgba(16,185,129,.15);color:var(--success)}
+.pin-key.key-bio:hover{background:rgba(16,185,129,.12)}
+.pin-key.key-empty{background:transparent;box-shadow:none;border-color:transparent;cursor:default}
+.pin-key.key-empty:hover{transform:none}
+.pin-attempts{font-size:.7rem;color:var(--muted);text-align:center;margin-top:8px}
+.pin-attempts strong{color:var(--danger)}
+
+/* ═══════════════════════════════
+   PIN LOGIN
+═══════════════════════════════ */
+#layer-pin{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:80px 24px 40px;position:relative;z-index:2}
+.pin-brand{text-align:center;margin-bottom:40px}
+.pin-brand-logo{font-family:var(--fh);font-size:1.8rem;font-weight:900;color:var(--ink);margin-bottom:8px;letter-spacing:-1px}
+.pin-brand-logo span{color:var(--blue-1)}
+.pin-brand-sub{font-size:.8rem;color:var(--muted);letter-spacing:.2px}
+.pin-arena{width:100%;max-width:340px;display:flex;flex-direction:column;align-items:center;gap:28px}
+
+/* ═══════════════════════════════
+   MAIN LAYER
+═══════════════════════════════ */
+#layer-main{padding-bottom:130px}
+.greeting-strip{padding:22px 18px 0;position:relative;z-index:2}
+.greeting-hello{font-size:.68rem;color:var(--muted);font-family:var(--fh);text-transform:uppercase;letter-spacing:2px;margin-bottom:4px}
+.greeting-name{font-family:var(--fh);font-size:1.55rem;font-weight:900;color:var(--ink);line-height:1.1;margin-bottom:4px;letter-spacing:-.6px}
+.greeting-amount{font-size:.82rem;color:var(--muted)}
+.greeting-amount strong{color:var(--blue-1);font-family:var(--fh);font-size:1rem;font-weight:800}
+
+.sec-badges{display:flex;gap:8px;padding:14px 16px;overflow-x:auto;scrollbar-width:none}
+.sec-badges::-webkit-scrollbar{display:none}
+.sec-badge{display:flex;align-items:center;gap:6px;background:var(--white);border-radius:var(--r-full);padding:6px 12px;flex-shrink:0;box-shadow:var(--shadow-xs);border:1.5px solid var(--border)}
+.sec-badge svg{width:11px;height:11px;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.sec-badge span{font-size:.62rem;font-weight:700;white-space:nowrap;font-family:var(--fh);letter-spacing:.3px}
+.sb-ssl{border-color:rgba(16,185,129,.2)}.sb-ssl svg{stroke:var(--success)}.sb-ssl span{color:var(--success)}
+.sb-enc{border-color:rgba(10,132,255,.2)}.sb-enc svg{stroke:var(--blue-1)}.sb-enc span{color:var(--blue-1)}
+.sb-local{border-color:rgba(245,158,11,.2)}.sb-local svg{stroke:var(--warning)}.sb-local span{color:var(--warning)}
+
+.order-card{margin:14px 16px 0;border-radius:var(--r-lg);background:var(--card);border:1.5px solid var(--border);overflow:hidden;position:relative;box-shadow:var(--shadow-sm)}
+.order-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--blue-1),var(--blue-3))}
+.order-card::after{content:'';position:absolute;bottom:0;right:0;width:120px;height:120px;border-radius:0 0 var(--r-lg) 0;background:radial-gradient(circle,rgba(10,132,255,0.18) 1px,transparent 1px);background-size:10px 10px;mask-image:radial-gradient(ellipse at 90% 90%,#000 20%,transparent 75%);-webkit-mask-image:radial-gradient(ellipse at 90% 90%,#000 20%,transparent 75%);pointer-events:none;opacity:.6}
+.order-card-head{padding:16px 18px 12px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(37,99,255,0.07)}
+.order-card-label{font-family:var(--fh);font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--blue-1)}
+.order-card-items-count{font-size:.7rem;color:var(--muted);background:var(--off-white);border-radius:var(--r-full);padding:3px 10px;border:1px solid var(--border)}
+.order-items{padding:6px 18px;max-height:180px;overflow-y:auto}
+.order-item{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid rgba(37,99,255,0.05)}
+.order-item:last-child{border-bottom:none}
+.oi-img{width:42px;height:42px;border-radius:var(--r-xs);object-fit:cover;flex-shrink:0;border:1px solid var(--border);background:var(--off-white)}
+.oi-info{flex:1;min-width:0}
+.oi-name{font-size:.8rem;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:2px}
+.oi-qty{font-size:.66rem;color:var(--muted)}
+.oi-price{font-family:var(--fh);font-size:.82rem;font-weight:800;color:var(--blue-1);flex-shrink:0}
+.order-totals{padding:12px 18px;background:var(--off-white);border-top:1px solid rgba(37,99,255,0.07)}
+.ot-row{display:flex;justify-content:space-between;font-size:.78rem;margin-bottom:5px}
+.ot-label{color:var(--muted)} .ot-val{font-weight:600;color:var(--ink-2)}
+.ot-final{display:flex;justify-content:space-between;align-items:center;border-top:1px solid rgba(37,99,255,0.1);padding-top:10px;margin-top:4px}
+.ot-final-label{font-family:var(--fh);font-weight:800;font-size:.88rem;color:var(--ink)}
+.ot-final-val{font-family:var(--fh);font-size:1.5rem;font-weight:900;color:var(--blue-2)}
+
+.sec-hdr{padding:22px 18px 10px;display:flex;align-items:center;justify-content:space-between}
+.sec-title{font-family:var(--fh);font-size:.66rem;font-weight:800;text-transform:uppercase;letter-spacing:2.5px;color:var(--muted);display:flex;align-items:center;gap:8px}
+.sec-title::before{content:'';width:14px;height:2px;background:var(--blue-1);border-radius:2px;flex-shrink:0}
+
+.pay-tabs{display:flex;gap:6px;padding:0 16px 12px;overflow-x:auto;scrollbar-width:none}
+.pay-tabs::-webkit-scrollbar{display:none}
+.pay-tab{flex-shrink:0;padding:8px 18px;border-radius:var(--r-full);font-family:var(--fh);font-size:.68rem;font-weight:700;border:1.5px solid var(--border);background:var(--white);color:var(--muted);cursor:pointer;transition:all .22s;letter-spacing:.5px;text-transform:uppercase;box-shadow:var(--shadow-xs)}
+.pay-tab.active{background:var(--blue-1);border-color:var(--blue-1);color:#fff;box-shadow:0 4px 16px rgba(10,132,255,0.35)}
+
+.pay-carousel-wrap{padding:0 16px 4px}
+.pay-carousel{display:flex;gap:10px;overflow-x:auto;scrollbar-width:none;padding:6px 0 16px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch}
+.pay-carousel::-webkit-scrollbar{display:none}
+
+.pay-card{flex-shrink:0;width:98px;border-radius:var(--r-lg);background:var(--white);border:1.5px solid var(--border);padding:14px 6px 12px;display:flex;flex-direction:column;align-items:center;gap:7px;cursor:pointer;scroll-snap-align:start;transition:all .3s cubic-bezier(.34,1.56,.64,1);position:relative;overflow:hidden;box-shadow:var(--shadow-xs);user-select:none;animation:cardEntry .5s cubic-bezier(.34,1.56,.64,1) both}
+.pay-card:nth-child(1){animation-delay:.05s} .pay-card:nth-child(2){animation-delay:.10s} .pay-card:nth-child(3){animation-delay:.15s}
+.pay-card:nth-child(4){animation-delay:.20s} .pay-card:nth-child(5){animation-delay:.25s} .pay-card:nth-child(6){animation-delay:.30s}
+@keyframes cardEntry{from{opacity:0;transform:translateY(12px) scale(.95)}to{opacity:1;transform:none}}
+.pay-card::before{content:'';position:absolute;inset:0;border-radius:var(--r-lg);opacity:0;transition:opacity .3s;pointer-events:none}
+.pay-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-md);border-color:var(--border-strong)}
+.pay-card.active{transform:translateY(-5px) scale(1.03);border-color:var(--accent,var(--blue-1));box-shadow:0 0 0 2px var(--accent,var(--blue-1)),var(--shadow-md)}
+.pay-card.active::before{opacity:1;background:radial-gradient(ellipse at 50% 0%,color-mix(in srgb,var(--accent,var(--blue-1)) 10%,transparent),transparent 70%)}
+.pay-icon-wrap{width:48px;height:48px;border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;overflow:hidden;transition:transform .3s cubic-bezier(.34,1.56,.64,1);border:1px solid var(--border)}
+.pay-icon-wrap img{width:100%;height:100%;object-fit:contain;border-radius:var(--r-sm)}
+.pay-card:hover .pay-icon-wrap,.pay-card.active .pay-icon-wrap{transform:scale(1.1)}
+.pay-name{font-family:var(--fh);font-size:.6rem;font-weight:800;text-align:center;color:var(--ink);line-height:1.2}
+.pay-type{font-size:.54rem;color:var(--muted);text-align:center}
+.pay-card.active .pay-name{color:var(--accent,var(--blue-1))}
+.pay-check{position:absolute;top:7px;right:7px;width:18px;height:18px;border-radius:50%;background:var(--accent,var(--blue-1));display:none;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(10,132,255,0.4)}
+.pay-check svg{width:9px;height:9px;stroke:#fff;fill:none;stroke-width:2.8;stroke-linecap:round;stroke-linejoin:round}
+.pay-card.active .pay-check{display:flex}
+
+/* ── METHOD DETAIL ── */
+.method-detail{margin:4px 16px 0;border-radius:var(--r-lg);background:var(--white);border:1.5px solid var(--border);overflow:hidden;display:none;box-shadow:var(--shadow-sm)}
+.method-detail.visible{display:block;animation:revealUp .4s cubic-bezier(.34,1.56,.64,1)}
+@keyframes revealUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.md-head{padding:14px 16px;border-bottom:1px solid rgba(37,99,255,0.07);display:flex;align-items:center;gap:10px}
+.md-head-ico{width:40px;height:40px;border-radius:var(--r-xs);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;border:1px solid var(--border)}
+.md-head-ico img{width:100%;height:100%;object-fit:contain}
+.md-head-info{flex:1}
+.md-head-name{font-family:var(--fh);font-size:.88rem;font-weight:800;margin-bottom:2px}
+.md-head-sub{font-size:.68rem;color:var(--muted)}
+.md-badge{font-size:.58rem;font-weight:800;font-family:var(--fh);letter-spacing:.5px;padding:4px 9px;border-radius:var(--r-full);text-transform:uppercase;flex-shrink:0}
+.md-body{padding:14px 16px}
+
+/* ── REQUISITOS PREVIOS ── */
+.req-box{background:rgba(10,132,255,0.04);border:1.5px solid rgba(10,132,255,0.14);border-radius:var(--r-sm);padding:12px 14px;margin-bottom:14px}
+.req-box-title{display:flex;align-items:center;gap:7px;font-family:var(--fh);font-size:.68rem;font-weight:800;color:var(--blue-1);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+.req-box-title svg{width:14px;height:14px;stroke:var(--blue-1);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.req-item{display:flex;align-items:flex-start;gap:8px;font-size:.76rem;color:var(--ink-2);line-height:1.5;margin-bottom:5px}
+.req-item:last-child{margin-bottom:0}
+.req-item svg{width:13px;height:13px;stroke:var(--success);fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;margin-top:2px}
+
+.md-steps{display:flex;flex-direction:column;gap:9px;margin-bottom:14px}
+.md-step{display:flex;align-items:flex-start;gap:10px;font-size:.78rem;color:var(--muted);line-height:1.5}
+.md-step-n{width:21px;height:21px;border-radius:50%;background:rgba(10,132,255,0.08);display:flex;align-items:center;justify-content:center;font-family:var(--fh);font-size:.6rem;font-weight:800;color:var(--blue-1);flex-shrink:0;margin-top:1px;border:1px solid rgba(10,132,255,0.15)}
+
+.md-clipboard{display:flex;align-items:center;justify-content:space-between;background:var(--off-white);border:1.5px solid var(--border);border-radius:var(--r-sm);padding:10px 13px;margin-bottom:10px;cursor:pointer;transition:all .2s}
+.md-clipboard:hover{border-color:var(--border-strong);box-shadow:var(--shadow-xs)}
+.mc-left{flex:1;min-width:0}
+.mc-label{font-size:.6rem;color:var(--blue-1);font-family:var(--fh);text-transform:uppercase;letter-spacing:1px;margin-bottom:3px}
+.mc-value{font-family:var(--fh);font-size:.8rem;font-weight:700;color:var(--ink);word-break:break-all}
+.mc-copy-btn{display:flex;align-items:center;gap:5px;background:var(--blue-1);border:none;color:#fff;border-radius:var(--r-xs);padding:6px 11px;font-family:var(--fh);font-size:.64rem;font-weight:700;cursor:pointer;transition:all .2s;white-space:nowrap;flex-shrink:0;box-shadow:0 2px 8px rgba(10,132,255,0.3)}
+.mc-copy-btn svg{width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.mc-copy-btn:hover{background:var(--blue-2);transform:translateY(-1px)}
+.mc-copy-btn.copied{background:var(--success)}
+
+/* ── BOTÓN ABRIR APP ── */
+.btn-open-app{width:100%;height:48px;display:flex;align-items:center;justify-content:center;gap:9px;border-radius:var(--r-md);font-family:var(--fh);font-size:.86rem;font-weight:900;border:none;cursor:pointer;transition:all .28s cubic-bezier(.34,1.56,.64,1);margin-bottom:10px;position:relative;overflow:hidden;color:#fff}
+.btn-open-app::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.14),transparent);transition:left .55s}
+.btn-open-app:hover{transform:translateY(-2px)}.btn-open-app:hover::before{left:100%}
+.btn-open-app svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+
+.store-btns{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.btn-store{flex:1;min-width:120px;height:42px;display:flex;align-items:center;justify-content:center;gap:7px;border-radius:var(--r-sm);border:none;font-family:var(--fh);font-size:.68rem;font-weight:800;cursor:pointer;transition:all .25s;text-decoration:none;box-shadow:var(--shadow-xs)}
+.btn-store svg{width:16px;height:16px;flex-shrink:0}
+.btn-store-ios{background:var(--ink);color:#fff}
+.btn-store-android{background:#01875f;color:#fff}
+.btn-store:hover{transform:translateY(-2px);box-shadow:var(--shadow-md)}
+
+/* QR section */
+.or-divider{display:flex;align-items:center;gap:10px;padding:14px 18px;font-size:.68rem;color:var(--muted-light)}
+.or-divider::before,.or-divider::after{content:'';flex:1;height:1px;background:var(--border)}
+.qr-section{margin:0 16px;border-radius:var(--r-lg);background:var(--white);border:1.5px solid var(--border);padding:16px;box-shadow:var(--shadow-xs)}
+.qr-row{display:flex;align-items:center;gap:14px}
+#qrCanvas{width:88px!important;height:88px!important;border-radius:var(--r-xs);overflow:hidden;flex-shrink:0;background:#fff;padding:4px;border:1px solid var(--border)}
+#qrCanvas canvas,#qrCanvas img{width:80px!important;height:80px!important;border-radius:4px}
+.qr-info{flex:1;min-width:0}
+.qr-title{font-family:var(--fh);font-size:.85rem;font-weight:800;margin-bottom:4px;color:var(--ink)}
+.qr-sub{font-size:.72rem;color:var(--muted);line-height:1.5;margin-bottom:10px}
+.btn-qr{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:var(--r-xs);font-family:var(--fh);font-size:.7rem;font-weight:700;background:rgba(10,132,255,0.07);border:1.5px solid rgba(10,132,255,0.2);color:var(--blue-1);cursor:pointer;transition:all .2s}
+.btn-qr svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.btn-qr:hover{background:rgba(10,132,255,0.12);border-color:var(--border-strong)}
+
+.confirm-zone{padding:20px 16px 16px}
+.btn-confirm{width:100%;height:54px;background:linear-gradient(135deg,var(--blue-1) 0%,var(--blue-2) 100%);color:#fff;border:none;border-radius:var(--r-md);font-family:var(--fh);font-size:.9rem;font-weight:900;cursor:pointer;transition:all .3s cubic-bezier(.34,1.56,.64,1);display:flex;align-items:center;justify-content:center;gap:9px;box-shadow:0 8px 28px rgba(10,132,255,0.35),0 2px 8px rgba(10,132,255,0.2);letter-spacing:.2px;position:relative;overflow:hidden}
+.btn-confirm::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.12),transparent);transition:left .6s}
+.btn-confirm:hover{transform:translateY(-2px);box-shadow:0 14px 40px rgba(10,132,255,0.45)}.btn-confirm:hover::before{left:100%}
+.btn-confirm:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:0 4px 12px rgba(10,132,255,0.15)}
+.btn-confirm svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.confirm-note{text-align:center;margin-top:10px;font-size:.68rem;color:var(--muted);line-height:1.55}
+
+/* ── FLOAT NAV ── */
+.float-nav{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);display:flex;gap:2px;background:rgba(255,255,255,0.92);backdrop-filter:blur(28px) saturate(180%);-webkit-backdrop-filter:blur(28px) saturate(180%);border-radius:var(--r-full);padding:6px 10px;border:1.5px solid var(--border);box-shadow:0 12px 40px rgba(10,132,255,0.15),0 4px 16px rgba(0,0,0,0.06);z-index:600}
+.fn-btn{display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 16px;border-radius:var(--r-full);cursor:pointer;background:none;border:none;color:var(--muted-light);font-family:var(--fh);font-size:.55rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;transition:all .22s cubic-bezier(.34,1.56,.64,1);text-decoration:none}
+.fn-btn svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;transition:transform .22s}
+.fn-btn.active,.fn-btn:hover{color:var(--blue-1);background:rgba(10,132,255,0.07)}
+.fn-btn.active svg,.fn-btn:hover svg{transform:translateY(-2px)}
+
+/* ── GASOLINERA ── */
+.pay-section-panel{margin:0 16px 16px;border-radius:var(--r-lg);background:var(--white);border:1.5px solid var(--border);overflow:hidden;display:none;box-shadow:var(--shadow-sm)}
+.pay-section-panel.visible{display:block;animation:revealUp .4s cubic-bezier(.34,1.56,.64,1)}
+.psp-head{padding:16px;border-bottom:1px solid rgba(37,99,255,0.07);display:flex;align-items:center;gap:10px;background:var(--off-white)}
+.psp-ico{width:42px;height:42px;border-radius:var(--r-xs);display:flex;align-items:center;justify-content:center;flex-shrink:0;border:1px solid var(--border)}
+.psp-ico svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.psp-info{flex:1}
+.psp-title{font-family:var(--fh);font-size:.86rem;font-weight:800;margin-bottom:2px;color:var(--ink)}
+.psp-sub{font-size:.7rem;color:var(--muted)}
+.psp-body{padding:16px}
+.psp-amount-row{display:flex;gap:8px;margin-bottom:14px;align-items:flex-end}
+.psp-input-wrap{flex:1}
+.psp-input-label{font-size:.62rem;font-family:var(--fh);font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--blue-1);margin-bottom:6px}
+.psp-input{width:100%;background:var(--off-white);border:1.5px solid var(--border);border-radius:var(--r-sm);padding:11px 13px;font-family:var(--fh);font-size:.95rem;font-weight:700;color:var(--ink);outline:none;transition:border .2s}
+.psp-input:focus{border-color:var(--blue-1);box-shadow:0 0 0 3px rgba(10,132,255,0.08)}
+.psp-input::placeholder{color:var(--muted-light);font-weight:400;font-size:.85rem}
+.psp-currency{padding:11px 13px;background:var(--off-white);border:1.5px solid var(--border);border-radius:var(--r-sm);font-family:var(--fh);font-size:.78rem;font-weight:700;color:var(--blue-1)}
+.psp-qr-wrap{display:flex;flex-direction:column;align-items:center;gap:12px;padding:12px 0}
+.psp-qr-box{background:#fff;border-radius:var(--r-sm);padding:8px;display:inline-flex;border:1px solid var(--border);box-shadow:var(--shadow-xs)}
+.psp-desc{font-size:.75rem;color:var(--muted);text-align:center;line-height:1.6;max-width:260px}
+.btn-gen-qr{width:100%;height:48px;background:linear-gradient(135deg,var(--blue-1),var(--blue-2));color:#fff;border:none;border-radius:var(--r-md);font-family:var(--fh);font-size:.86rem;font-weight:900;cursor:pointer;transition:all .25s;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 6px 20px rgba(10,132,255,0.3)}
+.btn-gen-qr:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(10,132,255,0.42)}
+.btn-gen-qr svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+/* ── COBRAR ── */
+.cobrar-bank-list{display:flex;flex-direction:column;gap:10px}
+.cobrar-bank-item{border-radius:var(--r-md);border:1.5px solid var(--border);overflow:hidden;background:var(--white);cursor:pointer;transition:border .22s,box-shadow .22s;box-shadow:var(--shadow-xs)}
+.cobrar-bank-item:hover{border-color:var(--border-strong);box-shadow:var(--shadow-sm)}
+.cbi-head{display:flex;align-items:center;gap:10px;padding:12px 14px}
+.cbi-logo{width:36px;height:36px;border-radius:var(--r-xs);overflow:hidden;flex-shrink:0;border:1px solid var(--border)}
+.cbi-logo img{width:100%;height:100%;object-fit:contain}
+.cbi-name{font-family:var(--fh);font-size:.82rem;font-weight:800;flex:1}
+.cbi-arrow{width:24px;height:24px;border-radius:50%;background:var(--off-white);display:flex;align-items:center;justify-content:center;transition:transform .3s;border:1px solid var(--border)}
+.cbi-arrow svg{width:12px;height:12px;stroke:var(--muted);fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.cobrar-bank-item.open .cbi-arrow{transform:rotate(90deg)}
+.cbi-body{display:none;padding:0 14px 14px;border-top:1px solid rgba(37,99,255,0.07)}
+.cobrar-bank-item.open .cbi-body{display:block}
+.cbi-field-label{font-size:.62rem;font-family:var(--fh);font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--blue-1);margin-bottom:4px;margin-top:12px}
+.cbi-field-val{font-family:var(--fh);font-size:.84rem;font-weight:700;color:var(--ink)}
+.cbi-copy-row{display:flex;align-items:center;justify-content:space-between;background:var(--off-white);border:1.5px solid var(--border);border-radius:var(--r-xs);padding:8px 12px;cursor:pointer;transition:border .2s;margin-top:4px}
+.cbi-copy-row:hover{border-color:var(--border-strong)}
+.cbi-copy-val{font-family:var(--fh);font-size:.78rem;font-weight:700;color:var(--ink);word-break:break-all}
+.cbi-copy-btn2{flex-shrink:0;margin-left:8px;background:var(--blue-1);border:none;color:#fff;border-radius:6px;padding:5px 9px;font-family:var(--fh);font-size:.6rem;font-weight:700;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:4px;box-shadow:0 2px 6px rgba(10,132,255,0.3)}
+.cbi-copy-btn2 svg{width:10px;height:10px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.cbi-copy-btn2:hover{background:var(--blue-2)}
+.cbi-qr-row{display:flex;justify-content:center;padding:10px 0}
+.cbi-qr-box{background:#fff;border-radius:var(--r-xs);padding:6px;display:inline-flex;border:1px solid var(--border)}
+.btn-cobrar-share{width:100%;height:42px;background:rgba(10,132,255,0.06);border:1.5px solid rgba(10,132,255,0.2);color:var(--blue-1);border-radius:var(--r-sm);font-family:var(--fh);font-size:.78rem;font-weight:800;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:7px;margin-top:10px}
+.btn-cobrar-share svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.btn-cobrar-share:hover{background:rgba(10,132,255,0.12);transform:translateY(-1px)}
+
+/* ══════════════════════════════════════
+   MODAL — PREPARANDO PAGO / QR
+══════════════════════════════════════ */
+.modal-overlay{position:fixed;inset:0;background:rgba(15,23,42,0.55);z-index:800;display:flex;align-items:flex-end;justify-content:center;padding:0;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);opacity:0;pointer-events:none;transition:opacity .3s}
+.modal-overlay.open{opacity:1;pointer-events:all}
+.modal-sheet{background:var(--white);border-radius:var(--r-xl) var(--r-xl) 0 0;width:100%;max-width:520px;padding:0 0 34px;transform:translateY(100%);transition:transform .4s cubic-bezier(.34,1.56,.64,1);overflow:hidden;position:relative}
+.modal-overlay.open .modal-sheet{transform:translateY(0)}
+.modal-sheet::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--blue-1),var(--blue-3),var(--blue-2))}
+.modal-handle{width:36px;height:4px;background:rgba(0,0,0,0.12);border-radius:var(--r-full);margin:12px auto 0}
+.modal-inner{padding:20px 22px 0}
+.modal-stage{display:none}
+.modal-stage.active{display:block;animation:fadeIn .35s ease}
+
+/* Loading stage */
+.modal-loading{display:flex;flex-direction:column;align-items:center;text-align:center;padding:12px 0 20px}
+.loading-ring{width:64px;height:64px;border-radius:50%;border:3px solid rgba(10,132,255,0.12);border-top-color:var(--blue-1);animation:spin .8s linear infinite;margin:0 auto 18px}
+.modal-loading-title{font-family:var(--fh);font-size:1rem;font-weight:900;color:var(--ink);margin-bottom:6px;letter-spacing:-.3px}
+.modal-loading-sub{font-size:.78rem;color:var(--muted);line-height:1.55}
+
+/* No-app stage */
+.modal-noapp{padding:8px 0 16px}
+.noapp-icon{width:56px;height:56px;border-radius:var(--r-md);background:rgba(245,158,11,0.08);border:1.5px solid rgba(245,158,11,0.2);display:flex;align-items:center;justify-content:center;margin:0 auto 14px}
+.noapp-icon svg{width:26px;height:26px;stroke:var(--warning);fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.noapp-title{font-family:var(--fh);font-size:.98rem;font-weight:900;color:var(--ink);text-align:center;margin-bottom:6px}
+.noapp-sub{font-size:.78rem;color:var(--muted);text-align:center;line-height:1.6;margin-bottom:18px}
+.noapp-store-btns{display:flex;gap:8px}
+.noapp-store-btn{flex:1;height:46px;display:flex;align-items:center;justify-content:center;gap:8px;border-radius:var(--r-sm);font-family:var(--fh);font-size:.72rem;font-weight:800;text-decoration:none;border:none;cursor:pointer;transition:all .22s;box-shadow:var(--shadow-xs)}
+.noapp-store-btn svg{width:18px;height:18px;flex-shrink:0}
+.noapp-store-btn-ios{background:var(--ink);color:#fff}
+.noapp-store-btn-android{background:#01875f;color:#fff}
+.noapp-store-btn:hover{transform:translateY(-2px);box-shadow:var(--shadow-md)}
+
+/* QR stage */
+.modal-qr-stage{padding:4px 0 10px}
+.modal-qr-header{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+.modal-qr-bank-ico{width:38px;height:38px;border-radius:var(--r-xs);overflow:hidden;border:1px solid var(--border);flex-shrink:0}
+.modal-qr-bank-ico img{width:100%;height:100%;object-fit:contain}
+.modal-qr-bank-info{flex:1}
+.modal-qr-bank-name{font-family:var(--fh);font-size:.86rem;font-weight:800;color:var(--ink);margin-bottom:1px}
+.modal-qr-bank-sub{font-size:.68rem;color:var(--muted)}
+.modal-qr-box{display:flex;flex-direction:column;align-items:center;gap:10px;background:var(--off-white);border-radius:var(--r-md);padding:16px;border:1px solid var(--border);margin-bottom:14px;position:relative}
+.modal-qr-box::after{content:'';position:absolute;bottom:0;right:0;width:80px;height:80px;border-radius:0 0 var(--r-md) 0;background:radial-gradient(circle,rgba(10,132,255,0.18) 1px,transparent 1px);background-size:8px 8px;mask-image:radial-gradient(ellipse at 90% 90%,#000 15%,transparent 70%);-webkit-mask-image:radial-gradient(ellipse at 90% 90%,#000 15%,transparent 70%);pointer-events:none;opacity:.7}
+.modal-qr-canvas-wrap{background:#fff;border-radius:var(--r-sm);padding:8px;box-shadow:var(--shadow-xs);border:1px solid var(--border)}
+.modal-qr-amount{font-family:var(--fh);font-size:1.35rem;font-weight:900;color:var(--blue-2);letter-spacing:-.5px}
+.modal-qr-ref{font-size:.7rem;color:var(--muted);font-family:var(--fh);letter-spacing:.5px}
+
+/* Instruction steps */
+.modal-instructions{display:flex;flex-direction:column;gap:7px;margin-bottom:16px}
+.instr-item{display:flex;align-items:flex-start;gap:9px;font-size:.76rem;color:var(--ink-2);line-height:1.5;background:var(--off-white);border-radius:var(--r-xs);padding:9px 11px;border:1px solid var(--border)}
+.instr-num{width:20px;height:20px;border-radius:50%;background:var(--blue-1);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--fh);font-size:.6rem;font-weight:800;flex-shrink:0}
+
+.modal-cta{display:flex;flex-direction:column;gap:8px}
+.btn-modal-primary{width:100%;height:50px;display:flex;align-items:center;justify-content:center;gap:9px;border-radius:var(--r-md);font-family:var(--fh);font-size:.88rem;font-weight:900;border:none;cursor:pointer;transition:all .28s;color:#fff;position:relative;overflow:hidden}
+.btn-modal-primary svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.btn-modal-secondary{width:100%;height:44px;background:transparent;border:1.5px solid var(--border);color:var(--muted);border-radius:var(--r-md);font-family:var(--fh);font-size:.82rem;font-weight:600;cursor:pointer;transition:all .2s}
+.btn-modal-secondary:hover{border-color:var(--border-strong);color:var(--blue-1)}
+
+/* Clipboard copy row inside modal */
+.modal-clipboard{display:flex;align-items:center;gap:10px;background:var(--off-white);border:1.5px solid var(--border);border-radius:var(--r-sm);padding:10px 13px;margin-bottom:12px;cursor:pointer;transition:all .2s}
+.modal-clipboard:hover{border-color:var(--border-strong)}
+.modal-clip-text{flex:1;min-width:0}
+.modal-clip-label{font-size:.6rem;color:var(--blue-1);font-family:var(--fh);text-transform:uppercase;letter-spacing:1px;margin-bottom:2px}
+.modal-clip-value{font-family:var(--fh);font-size:.82rem;font-weight:700;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.modal-clip-btn{background:var(--blue-1);color:#fff;border:none;border-radius:var(--r-xs);padding:6px 11px;font-family:var(--fh);font-size:.64rem;font-weight:700;cursor:pointer;transition:all .2s;flex-shrink:0;display:flex;align-items:center;gap:4px;box-shadow:0 2px 8px rgba(10,132,255,0.3)}
+.modal-clip-btn svg{width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.modal-clip-btn:hover{background:var(--blue-2)}
+.modal-clip-btn.copied{background:var(--success)}
+
+/* ══════════════════════════════════════
+   SUCCESS
+══════════════════════════════════════ */
+#layer-success{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:80px 24px 40px;text-align:center;position:relative;z-index:2}
+.success-ring{width:110px;height:110px;border-radius:50%;background:rgba(10,132,255,0.06);border:2px solid rgba(10,132,255,0.25);display:flex;align-items:center;justify-content:center;margin:0 auto 24px;animation:pulseBlue 2.5s ease-in-out infinite;position:relative}
+.success-ring::before{content:'';position:absolute;inset:-8px;border-radius:50%;border:1px solid rgba(10,132,255,0.12);animation:expandOut 2.5s ease-in-out infinite}
+@keyframes pulseBlue{0%,100%{box-shadow:0 0 20px rgba(10,132,255,0.18)}50%{box-shadow:0 0 50px rgba(10,132,255,0.40)}}
+@keyframes expandOut{0%{transform:scale(1);opacity:.6}100%{transform:scale(1.4);opacity:0}}
+.success-ring svg{width:44px;height:44px;stroke:var(--blue-1);fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.success-title{font-family:var(--fh);font-size:1.7rem;font-weight:900;color:var(--ink);margin-bottom:8px;letter-spacing:-.6px}
+.success-sub{font-size:.82rem;color:var(--muted);max-width:280px;line-height:1.65;margin-bottom:32px}
+.success-ref{background:rgba(10,132,255,0.04);border:1.5px solid rgba(10,132,255,0.18);border-radius:var(--r-md);padding:16px 20px;margin-bottom:28px;width:100%;max-width:320px}
+.sr-label{font-size:.62rem;color:var(--blue-1);font-family:var(--fh);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:5px}
+.sr-code{font-family:var(--fh);font-size:1rem;font-weight:800;color:var(--ink);letter-spacing:2px}
+.success-actions{display:flex;flex-direction:column;gap:10px;width:100%;max-width:320px}
+.btn-home{height:50px;background:linear-gradient(135deg,var(--blue-1),var(--blue-2));color:#fff;border:none;border-radius:var(--r-md);font-family:var(--fh);font-weight:800;font-size:.9rem;cursor:pointer;transition:all .25s;display:flex;align-items:center;justify-content:center;gap:7px;box-shadow:0 8px 28px rgba(10,132,255,0.35)}
+.btn-home svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.btn-home:hover{transform:translateY(-2px);box-shadow:0 14px 38px rgba(10,132,255,0.45)}
+.btn-receipt{height:46px;background:transparent;color:var(--muted);border:1.5px solid var(--border);border-radius:var(--r-md);font-family:var(--fh);font-weight:600;font-size:.82rem;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:7px}
+.btn-receipt svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.btn-receipt:hover{border-color:var(--border-strong);color:var(--blue-1)}
+
+/* ── TOAST ── */
+#toast{position:fixed;bottom:88px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--white);color:var(--ink);border-radius:var(--r-sm);padding:12px 20px;font-size:.82rem;font-weight:600;box-shadow:var(--shadow-lg);border:1.5px solid var(--border);z-index:900;opacity:0;pointer-events:none;transition:all .35s cubic-bezier(.34,1.56,.64,1);max-width:300px;text-align:center;display:flex;align-items:center;gap:8px}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+#toast.ok{border-color:rgba(16,185,129,.3);color:var(--success)}
+#toast.err{border-color:rgba(239,68,68,.3);color:var(--danger)}
+#toast.info{border-color:rgba(10,132,255,.25);color:var(--blue-1)}
+
+/* ── MODAL QR (full-screen) ── */
+.modal-overlay-classic{position:fixed;inset:0;background:rgba(15,23,42,0.6);z-index:800;display:flex;align-items:center;justify-content:center;padding:24px;backdrop-filter:blur(16px);opacity:0;pointer-events:none;transition:opacity .3s}
+.modal-overlay-classic.open{opacity:1;pointer-events:all}
+.modal-box-classic{background:var(--white);border:1.5px solid var(--border);border-radius:var(--r-xl);padding:28px;width:100%;max-width:320px;text-align:center;box-shadow:var(--shadow-lg);transform:scale(.92);transition:transform .3s cubic-bezier(.34,1.56,.64,1)}
+.modal-overlay-classic.open .modal-box-classic{transform:scale(1)}
+.modal-title{font-family:var(--fh);font-size:1.05rem;font-weight:900;margin-bottom:6px;color:var(--ink)}
+.modal-sub{font-size:.75rem;color:var(--muted);margin-bottom:20px;line-height:1.5}
+.modal-qr-wrap{background:#fff;border-radius:var(--r-sm);padding:12px;display:inline-flex;margin-bottom:20px;border:1px solid var(--border)}
+.btn-modal-close{width:100%;height:46px;background:var(--off-white);border:1.5px solid var(--border);color:var(--muted);border-radius:var(--r-sm);font-family:var(--fh);font-size:.84rem;font-weight:700;cursor:pointer;transition:all .2s}
+.btn-modal-close:hover{border-color:var(--border-strong);color:var(--blue-1);background:rgba(10,132,255,0.05)}
+
+/* ── ANIMATIONS ── */
+.fade-in{animation:fadeIn .5s ease}
+.slide-up{animation:slideUp .45s cubic-bezier(.34,1.56,.64,1)}
+.shake{animation:shakeX .5s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes slideUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+@keyframes shakeX{0%,100%{transform:translateX(0)}20%{transform:translateX(-9px)}40%{transform:translateX(9px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+
+<div class="ambient"></div>
+<div class="halftone-canvas"><div class="halftone-mid"></div></div>
+
+<!-- ══ HEADER ══ -->
+<header class="hdr" id="mainHdr">
+  <a href="caritodecompras.html" class="hdr-back">
+    <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+  </a>
+  <span class="hdr-title">Pago Seguro</span>
+  <a href="index.html" class="hdr-logo">Compra<span>Ya</span></a>
+  <div class="hdr-secure">
+    <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+    SSL 256
+  </div>
+</header>
+
+<!-- ══ LAYER 0 — SET PIN ══ -->
+<div id="layer-setpin" style="display:none">
+  <div class="setpin-card">
+    <div class="setpin-head">
+      <div class="setpin-icon"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div>
+      <div class="setpin-title" id="setPinTitle">Crea tu PIN de seguridad</div>
+      <div class="setpin-sub" id="setPinSub">Este PIN protege tus pagos en CompraYa.<br>Elige 4 dígitos que recuerdes bien.</div>
+      <div class="setpin-step-indicator">
+        <div class="spi-dot active" id="spi0"></div>
+        <div class="spi-dot" id="spi1"></div>
+      </div>
+      <div class="setpin-label" id="setPinLabel">Nuevo PIN</div>
+    </div>
+    <div class="setpin-body">
+      <div class="pin-dots" id="setPinDots">
+        <div class="pin-dot" id="sd0"></div><div class="pin-dot" id="sd1"></div>
+        <div class="pin-dot" id="sd2"></div><div class="pin-dot" id="sd3"></div>
+      </div>
+      <div class="pin-error-msg" id="setPinError"></div>
+      <div class="pin-success-msg" id="setPinSuccess"></div>
+      <div class="pin-keypad">
+        <button class="pin-key" onclick="setPinPress(1)"><div>1</div></button>
+        <button class="pin-key" onclick="setPinPress(2)"><div>2</div><div class="pin-key-sub">ABC</div></button>
+        <button class="pin-key" onclick="setPinPress(3)"><div>3</div><div class="pin-key-sub">DEF</div></button>
+        <button class="pin-key" onclick="setPinPress(4)"><div>4</div><div class="pin-key-sub">GHI</div></button>
+        <button class="pin-key" onclick="setPinPress(5)"><div>5</div><div class="pin-key-sub">JKL</div></button>
+        <button class="pin-key" onclick="setPinPress(6)"><div>6</div><div class="pin-key-sub">MNO</div></button>
+        <button class="pin-key" onclick="setPinPress(7)"><div>7</div><div class="pin-key-sub">PRS</div></button>
+        <button class="pin-key" onclick="setPinPress(8)"><div>8</div><div class="pin-key-sub">TUV</div></button>
+        <button class="pin-key" onclick="setPinPress(9)"><div>9</div><div class="pin-key-sub">WXY</div></button>
+        <button class="pin-key key-empty"></button>
+        <button class="pin-key" onclick="setPinPress(0)"><div>0</div></button>
+        <button class="pin-key key-del" onclick="setPinDel()">
+          <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 4H8l-7 8 7 8h13a2 2 0 002-2V6a2 2 0 00-2-2z"/><line x1="18" y1="9" x2="12" y2="15"/><line x1="12" y1="9" x2="18" y2="15"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ LAYER 1 — PIN LOGIN ══ -->
+<div id="layer-pin" style="display:none">
+  <div class="pin-brand">
+    <div class="pin-brand-logo">Compra<span>Ya</span></div>
+    <div class="pin-brand-sub">Introduce tu PIN de seguridad para continuar</div>
+  </div>
+  <div class="pin-arena">
+    <div class="pin-dots" id="pinDots">
+      <div class="pin-dot" id="d0"></div><div class="pin-dot" id="d1"></div>
+      <div class="pin-dot" id="d2"></div><div class="pin-dot" id="d3"></div>
+    </div>
+    <div class="pin-error-msg" id="pinError">PIN incorrecto. Inténtalo de nuevo.</div>
+    <div class="pin-keypad" id="pinKeypad">
+      <button class="pin-key" onclick="pinPress(1)"><div>1</div></button>
+      <button class="pin-key" onclick="pinPress(2)"><div>2</div><div class="pin-key-sub">ABC</div></button>
+      <button class="pin-key" onclick="pinPress(3)"><div>3</div><div class="pin-key-sub">DEF</div></button>
+      <button class="pin-key" onclick="pinPress(4)"><div>4</div><div class="pin-key-sub">GHI</div></button>
+      <button class="pin-key" onclick="pinPress(5)"><div>5</div><div class="pin-key-sub">JKL</div></button>
+      <button class="pin-key" onclick="pinPress(6)"><div>6</div><div class="pin-key-sub">MNO</div></button>
+      <button class="pin-key" onclick="pinPress(7)"><div>7</div><div class="pin-key-sub">PRS</div></button>
+      <button class="pin-key" onclick="pinPress(8)"><div>8</div><div class="pin-key-sub">TUV</div></button>
+      <button class="pin-key" onclick="pinPress(9)"><div>9</div><div class="pin-key-sub">WXY</div></button>
+      <button class="pin-key key-bio" onclick="bioPIN()">
+        <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s-8-4-8-10V5l8-3 8 3v7c0 6-8 10-8 10z"/></svg>
+      </button>
+      <button class="pin-key" onclick="pinPress(0)"><div>0</div></button>
+      <button class="pin-key key-del" onclick="pinDel()">
+        <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 4H8l-7 8 7 8h13a2 2 0 002-2V6a2 2 0 00-2-2z"/><line x1="18" y1="9" x2="12" y2="15"/><line x1="12" y1="9" x2="18" y2="15"/></svg>
+      </button>
+    </div>
+    <div class="pin-attempts" id="pinAttempts"></div>
+    <button style="background:none;border:none;color:var(--muted);font-size:.7rem;font-family:var(--fh);cursor:pointer;text-decoration:underline" onclick="resetPIN()">¿Olvidaste tu PIN? Restablecer</button>
+  </div>
+</div>
+
+<!-- ══ LAYER 2 — MAIN ══ -->
+<div id="layer-main" style="display:none;padding-bottom:130px">
+  <div class="greeting-strip slide-up">
+    <div class="greeting-hello">Hola de nuevo</div>
+    <div class="greeting-name" id="greetName">Comprador</div>
+    <div class="greeting-amount">Total a pagar: <strong id="greetTotal">0 FCFA</strong></div>
+  </div>
+
+  <div class="sec-badges">
+    <div class="sec-badge sb-ssl">
+      <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+      <span>Cifrado SSL</span>
+    </div>
+    <div class="sec-badge sb-enc">
+      <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+      <span>PIN protegido</span>
+    </div>
+    <div class="sec-badge sb-local">
+      <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+      <span>100% local GE</span>
+    </div>
+  </div>
+
+  <div class="order-card slide-up">
+    <div class="order-card-head">
+      <span class="order-card-label">Resumen del pedido</span>
+      <span class="order-card-items-count" id="orderCount">0 artículos</span>
+    </div>
+    <div class="order-items" id="orderItems"></div>
+    <div class="order-totals">
+      <div class="ot-row"><span class="ot-label">Subtotal</span><span class="ot-val" id="otSubtotal">0 FCFA</span></div>
+      <div class="ot-row"><span class="ot-label">Envío</span><span class="ot-val" style="color:var(--success)">Acordar con vendedor</span></div>
+      <div class="ot-final">
+        <span class="ot-final-label">Total</span>
+        <span class="ot-final-val" id="otTotal">0 FCFA</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec-hdr"><span class="sec-title">Tipo de pago</span></div>
+  <div class="pay-tabs">
+    <div class="pay-tab active" onclick="switchTab('banca',this)">Banca online</div>
+    <div class="pay-tab" onclick="switchTab('gasolinera',this)">Gasolinera / Tienda</div>
+    <div class="pay-tab" onclick="switchTab('cobrar',this)">Cobrar</div>
+  </div>
+
+  <!-- BANCA ONLINE -->
+  <div id="tab-banca">
+    <div class="sec-hdr"><span class="sec-title">Método de pago</span></div>
+    <div class="pay-carousel-wrap">
+      <div class="pay-carousel" id="payCarousel">
+        <div class="pay-card" data-bank="ecobank" style="--accent:#0099ff" onclick="selectBank(this)">
+          <div class="pay-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <div class="pay-icon-wrap"><img src="https://raw.githubusercontent.com/juanbautistaowonoowonoabegue-dotcom/Img-marketplace/refs/heads/main/IMG_4139.jpeg" alt="Ecobank" loading="lazy"></div>
+          <div class="pay-name">Ecobank</div><div class="pay-type">Banca Móvil</div>
+        </div>
+        <div class="pay-card" data-bank="ccei" style="--accent:#00c853" onclick="selectBank(this)">
+          <div class="pay-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <div class="pay-icon-wrap"><img src="https://raw.githubusercontent.com/juanbautistaowonoowonoabegue-dotcom/Img-marketplace/refs/heads/main/IMG_4142.jpeg" alt="CCEI" loading="lazy"></div>
+          <div class="pay-name">CCEI Bank</div><div class="pay-type">Transferencia</div>
+        </div>
+        <div class="pay-card" data-bank="bange" style="--accent:#ff6d00" onclick="selectBank(this)">
+          <div class="pay-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <div class="pay-icon-wrap"><img src="https://raw.githubusercontent.com/juanbautistaowonoowonoabegue-dotcom/Img-marketplace/refs/heads/main/IMG_4144.jpeg" alt="BANGE" loading="lazy"></div>
+          <div class="pay-name">BANGE</div><div class="pay-type">Banca Digital</div>
+        </div>
+        <div class="pay-card" data-bank="muni" style="--accent:#00d4aa" onclick="selectBank(this)">
+          <div class="pay-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <div class="pay-icon-wrap"><img src="https://raw.githubusercontent.com/juanbautistaowonoowonoabegue-dotcom/Img-marketplace/refs/heads/main/IMG_4141.jpeg" alt="Muni" loading="lazy"></div>
+          <div class="pay-name">MUNI Dinero</div><div class="pay-type">Monedero Digital</div>
+        </div>
+        <div class="pay-card" data-bank="bmori" style="--accent:#a855f7" onclick="selectBank(this)">
+          <div class="pay-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <div class="pay-icon-wrap"><img src="https://raw.githubusercontent.com/juanbautistaowonoowonoabegue-dotcom/Img-marketplace/refs/heads/main/IMG_4140.jpeg" alt="B-Mori" loading="lazy"></div>
+          <div class="pay-name">B-Móri</div><div class="pay-type">Monedero Digital</div>
+        </div>
+        <div class="pay-card" data-bank="bgfi" style="--accent:#ffd700" onclick="selectBank(this)">
+          <div class="pay-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <div class="pay-icon-wrap"><img src="https://raw.githubusercontent.com/juanbautistaowonoowonoabegue-dotcom/Img-marketplace/refs/heads/main/IMG_4143.jpeg" alt="BGFI" loading="lazy"></div>
+          <div class="pay-name">BGFI Bank</div><div class="pay-type">Banca Clásica</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="method-detail" id="methodDetail"></div>
+
+    <div class="or-divider">o paga escaneando</div>
+    <div class="qr-section">
+      <div class="qr-row">
+        <div id="qrCanvas"></div>
+        <div class="qr-info">
+          <div class="qr-title">Código QR de pago</div>
+          <div class="qr-sub">Muestra este QR al vendedor para confirmar la transacción.</div>
+          <button class="btn-qr" onclick="showQRModal()">
+            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="3" height="3"/></svg>
+            Ver QR completo
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="confirm-zone">
+      <button class="btn-confirm" id="btnConfirm" onclick="confirmPayment()" disabled>
+        <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+        Confirmar — Ya realicé el pago
+      </button>
+      <div class="confirm-note">Al confirmar, notificamos al vendedor y generamos tu recibo digital.</div>
+    </div>
+  </div>
+
+  <!-- GASOLINERA -->
+  <div id="tab-gasolinera" style="display:none">
+    <div style="padding:0 16px">
+      <div class="pay-section-panel visible" style="margin:16px 0 0">
+        <div class="psp-head">
+          <div class="psp-ico" style="background:rgba(245,158,11,.08);color:var(--warning)">
+            <svg viewBox="0 0 24 24"><path d="M3 3h18v18H3z" rx="2"/><path d="M7 18V9l5-3 5 3v9"/><rect x="9" y="14" width="6" height="4" rx="1"/><path d="M9 10h6"/></svg>
+          </div>
+          <div class="psp-info">
+            <div class="psp-title">Pago en gasolinera, tienda o supermercado</div>
+            <div class="psp-sub">Genera un QR con el importe y tu referencia</div>
+          </div>
+        </div>
+        <div class="psp-body">
+          <div class="psp-amount-row">
+            <div class="psp-input-wrap">
+              <div class="psp-input-label">Importe</div>
+              <input type="number" class="psp-input" id="storeAmount" placeholder="Ej: 5000" oninput="updateStoreQR()">
+            </div>
+            <div class="psp-currency">FCFA</div>
+          </div>
+          <div class="psp-input-wrap" style="margin-bottom:14px">
+            <div class="psp-input-label">Concepto / Referencia</div>
+            <input type="text" class="psp-input" id="storeConcept" placeholder="Ej: Gasolina 20L" oninput="updateStoreQR()">
+          </div>
+          <div class="psp-input-wrap" style="margin-bottom:14px">
+            <div class="psp-input-label">Selecciona el banco</div>
+            <select class="psp-input" id="storeBank" onchange="updateStoreQR()" style="cursor:pointer">
+              <option value="">-- Banco --</option>
+              <option value="ecobank">Ecobank</option>
+              <option value="ccei">CCEI Bank</option>
+              <option value="bange">BANGE</option>
+              <option value="muni">MUNI Dinero</option>
+              <option value="bmori">B-Móri</option>
+              <option value="bgfi">BGFI Bank</option>
+            </select>
+          </div>
+          <div class="psp-qr-wrap" id="storeQrWrap" style="display:none">
+            <div class="psp-qr-box" id="storeQrCanvas"></div>
+            <div class="psp-desc" id="storeQrDesc"></div>
+          </div>
+          <div id="storeQrPlaceholder" style="text-align:center;padding:20px;font-size:.78rem;color:var(--muted)">Rellena el importe y la referencia para generar el QR</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COBRAR -->
+  <div id="tab-cobrar" style="display:none">
+    <div style="padding:0 16px">
+      <div style="margin:16px 0 12px;background:rgba(10,132,255,0.04);border:1.5px solid rgba(10,132,255,0.14);border-radius:var(--r-sm);padding:12px 14px">
+        <div style="display:flex;align-items:center;gap:8px;font-family:var(--fh);font-size:.72rem;font-weight:800;color:var(--blue-1);margin-bottom:6px;text-transform:uppercase;letter-spacing:1px">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>
+          Para funcionarios y empleados
+        </div>
+        <div style="font-size:.76rem;color:var(--muted);line-height:1.6">Comparte tus datos bancarios de forma rápida y segura. El QR permite que el pagador escanee y complete la transferencia desde su app.</div>
+      </div>
+      <div class="cobrar-bank-list" id="cobrarList"></div>
+    </div>
+  </div>
+
+  <nav class="float-nav">
+    <a href="index.html" class="fn-btn">
+      <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      Inicio
+    </a>
+    <a href="index.html#explore" class="fn-btn">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      Explorar
+    </a>
+    <a href="caritodecompras.html" class="fn-btn active">
+      <svg viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 001.95-1.57L23 6H6"/></svg>
+      Carrito
+    </a>
+    <a href="perfildelvendedor.html" class="fn-btn">
+      <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      Perfil
+    </a>
+  </nav>
+</div>
+
+<!-- ══ LAYER 3 — SUCCESS ══ -->
+<div id="layer-success" style="display:none;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:80px 24px 40px;text-align:center;position:relative;z-index:2">
+  <div class="success-ring"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg></div>
+  <div class="success-title">Pago notificado</div>
+  <div class="success-sub">Hemos enviado una notificación al vendedor. Recibirás confirmación por WhatsApp en breve.</div>
+  <div class="success-ref">
+    <div class="sr-label">Referencia de la transacción</div>
+    <div class="sr-code" id="txRef">CY-000000</div>
+  </div>
+  <div class="success-actions">
+    <button class="btn-home" onclick="window.location.href='index.html'">
+      <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      Volver al marketplace
+    </button>
+    <button class="btn-receipt" onclick="shareReceipt()">
+      <svg viewBox="0 0 24 24"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+      Compartir recibo
+    </button>
+  </div>
+</div>
+
+<!-- ══ MODAL — BOTTOM SHEET (flujo bancario) ══ -->
+<div class="modal-overlay" id="bankModal" onclick="closeBankModal(event)">
+  <div class="modal-sheet" id="bankModalSheet">
+    <div class="modal-handle"></div>
+    <div class="modal-inner" id="bankModalInner">
+      <!-- contenido dinámico -->
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODAL QR CLÁSICO ══ -->
+<div class="modal-overlay-classic" id="qrModal" onclick="closeQRModal(event)">
+  <div class="modal-box-classic">
+    <div class="modal-title">Código QR de pago</div>
+    <div class="modal-sub" id="modalQrSub">Muéstralo al vendedor para verificar tu pedido</div>
+    <div class="modal-qr-wrap"><div id="modalQrCanvas"></div></div>
+    <button class="btn-modal-close" onclick="document.getElementById('qrModal').classList.remove('open')">Cerrar</button>
+  </div>
+</div>
+<div id="toast"></div>
+
+<script>
+/* ══════════════════════════════════════════════
+   DATOS DE BANCOS
+══════════════════════════════════════════════ */
+const BANKS = {
+  ecobank:{
+    name:'Ecobank', fullName:'Ecobank Mobile Banking', type:'Banca Móvil', accent:'#0099ff',
+    account:'GQ1240010000036897223100211', merchant:'COMPRA YA GE SARL',
+    phone:'240222700100',
+    ios:'https://apps.apple.com/app/id1017658759',
+    android:'https://play.google.com/store/apps/details?id=com.ecobank.mobile',
+    androidPkg:'com.ecobank.mobile',
+    iosScheme:'ecobank://',
+    logo:'https://raw.githubusercontent.com/juanbautistaowonoowonoabegue-dotcom/Img-marketplace/refs/heads/main/IMG_4139.jpeg',
+    useQR: true,
+    requisitos:[
+      'Tener una cuenta activa en Ecobank Guinea Ecuatorial.',
+      'Haber descargado e iniciado sesión en la app Ecobank Mobile al menos una vez.',
+      'Tu app debe estar actualizada a la versión más reciente.'
+    ],
+    instrucciones:[
+      'El QR de tu pedido se guarda automáticamente en tu galería de fotos.',
+      'Abre la app Ecobank y ve a la sección <strong>EcobankPay</strong>.',
+      'Pulsa "Importar QR desde Galería", selecciona la imagen guardada.',
+      'Los datos se rellenan solos. Confirma con tu PIN o biometría.'
+    ],
+    badge:{label:'QR · Banca Móvil'},
+    bg:'rgba(0,153,255,0.05)', border:'rgba(0,153,255,0.2)',
+    appOpenMsg:'Abre Ecobank y Paga'
+  },
+  ccei:{
+    name:'CCEI Bank', fullName:'CCEI Mobile', type:'Transferencia', accent:'#00c853',
+    account:'GQ1206000100092143700100003', merchant:'COMPRA YA GE SARL',
+    phone:'240222701200',
+    ios:'https://apps.apple.com/es/app/ccei-mobile/id6738341597',
+    android:'https://play.google.com/store/apps/details?id=net.cceibank.mobile',
+    androidPkg:'net.cceibank.mobile',
+    iosScheme:'ccei://',
+    logo:'https://raw.githubusercontent.com/juanbautistaowonoowonoabegue-dotcom/Img-marketplace/refs/heads/main/IMG_4142.jpeg',
+    useQR: true,
+    requisitos:[
+      'Tener una cuenta activa en CCEI Bank Guinea Ecuatorial.',
+      'Estar registrado en la app CCEI Mobile con tu número de cliente.',
+      'Tener activada la opción de pagos móviles en tu perfil.'
+    ],
+    instrucciones:[
+      'El QR del pedido se guarda en tu galería de fotos automáticamente.',
+      'Abre CCEI Mobile y ve al módulo de <strong>Leer QR / Pagar</strong>.',
+      'Pulsa "Cargar desde galería", selecciona el QR guardado.',
+      'Confirma el importe y aprueba con tu clave o huella digital.'
+    ],
+    badge:{label:'QR · Banco local GE'},
+    bg:'rgba(0,200,83,0.05)', border:'rgba(0,200,83,0.2)',
+    appOpenMsg:'Abrir CCEI Mobile'
+  },
+  bange:{
+    name:'BANGE', fullName:'BANGE Mobile GE', type:'Banca Digital', accent:'#ff6d00',
+    account:'GQ1204600000029874510000112', merchant:'COMPRA YA GE SARL',
+    phone:'240222702300',
+    ios:'https://apps.apple.com/app/id6723895020',
+    android:'https://play.google.com/store/apps/details?id=com.bange.mobile',
+    androidPkg:'com.bange.mobile',
+    iosScheme:'bange://',
+    logo:'https://raw.githubusercontent.com/juanbautistaowonoowonoabegue-dotcom/Img-marketplace/refs/heads/main/IMG_4144.jpeg',
+    useQR: true,
+    requisitos:[
+      'Tener una cuenta bancaria activa en BANGE Guinea Ecuatorial.',
+      'Haberte registrado previamente en la app BANGE Mobile (requiere visita a la sucursal para activar el servicio digital).',
+      'Haber activado el servicio "Pagar en Comercios" desde la oficina o atención al cliente.'
+    ],
+    instrucciones:[
+      'El QR del pedido se guarda en tu galería como <em>Pago_BANGE.png</em>.',
+      'Abre la app BANGE y ve a <strong>"Pagar en Comercios"</strong>.',
+      'Importa el QR desde tu galería de fotos.',
+      'Los datos se rellenan solos. Confirma con tu PIN o Face ID.'
+    ],
+    badge:{label:'QR · Digital CEMAC'},
+    bg:'rgba(255,109,0,0.05)', border:'rgba(255,109,0,0.2)',
+    appOpenMsg:'Abrir BANGE'
+  },
+  muni:{
+    name:'MUNI Dinero', fullName:'MUNI Dinero GE', type:'Monedero Digital', accent:'#00d4aa',
+    account:'+240 555 100 200', merchant:'CompraYa GE',
+    phone:'240555100200',
+    ios:'https://apps.apple.com/app/id6723895020',
+    android:'https://play.google.com/store/apps/details?id=com.muni.dinero',
+    androidPkg:'com.muni.dinero',
+    iosScheme:'munidinero://',
+    logo:'https://raw.githubusercontent.com/juanbautistaowonoowonoabegue-dotcom/Img-marketplace/refs/heads/main/IMG_4141.jpeg',
+    useQR: true,
+    requisitos:[
+      'Tener instalada y activa la app de MUNI Dinero en tu teléfono.',
+      'Haber completado el registro con tu número de teléfono local.',
+      'Tener saldo suficiente en tu monedero MUNI.'
+    ],
+    instrucciones:[
+      'El QR se guarda en tu galería como <em>Pago_Muni_Dinero.png</em>.',
+      'Abre MUNI Dinero y ve a <strong>"Pagar / Escanear QR"</strong>.',
+      'Pulsa "Cargar desde Galería / Fotos" y selecciona el QR.',
+      'El monto se rellena solo. Introduce tu PIN de transacción y confirma.'
+    ],
+    badge:{label:'QR · Monedero móvil'},
+    bg:'rgba(0,212,170,0.05)', border:'rgba(0,212,170,0.2)',
+    appOpenMsg:'Abrir MUNI Dinero'
+  },
+  bmori:{
+    name:'B-Móri', fullName:'B-Morï Wallet', type:'Monedero Digital', accent:'#a855f7',
+    account:'+240 555 300 400', merchant:'CompraYa GE',
+    phone:'240555300400',
+    ios:'https://apps.apple.com/app/id6476767430',
+    android:'https://play.google.com/store/apps/details?id=com.bmori.wallet',
+    androidPkg:'com.bmori.wallet',
+    iosScheme:'bmori://',
+    logo:'https://raw.githubusercontent.com/juanbautistaowonoowonoabegue-dotcom/Img-marketplace/refs/heads/main/IMG_4140.jpeg',
+    useQR: true,
+    requisitos:[
+      'Tener la app B-Morï instalada (disponible en Android e iOS).',
+      'Haber completado el registro con tu número de teléfono y contraseña.',
+      'Tener saldo disponible en tu monedero B-Morï.'
+    ],
+    instrucciones:[
+      'El QR se guarda en tu galería como <em>Pago_BMori.png</em>.',
+      'Abre B-Morï y pulsa <strong>B-PAY</strong> en el menú principal.',
+      'Elige "Importar QR guardado" y selecciona el archivo de tu galería.',
+      'Los datos se rellenan solos. Confirma con tu PIN de transacciones.'
+    ],
+    badge:{label:'QR · Fintech local'},
+    bg:'rgba(168,85,247,0.05)', border:'rgba(168,85,247,0.2)',
+    appOpenMsg:'Abrir B-Móri'
+  },
+  bgfi:{
+    name:'BGFI Bank', fullName:'BGFI Mobile GE', type:'Banca Clásica', accent:'#ffd700',
+    account:'GQ1240900000012354780000099', merchant:'COMPRA YA GE SARL',
+    phone:'240222703400',
+    ios:'https://apps.apple.com/app/id1229091673',
+    android:'https://play.google.com/store/apps/details?id=com.bgfi.mobile',
+    androidPkg:'com.bgfi.mobile',
+    iosScheme:'bgfi://',
+    logo:'https://raw.githubusercontent.com/juanbautistaowonoowonoabegue-dotcom/Img-marketplace/refs/heads/main/IMG_4143.jpeg',
+    useQR: true,
+    requisitos:[
+      'Tener una cuenta activa en BGFI Bank Guinea Ecuatorial.',
+      'Estar registrado en la app BGFI Mobile con tus credenciales bancarias.',
+      'Tener activada la función de transferencias online en tu cuenta.'
+    ],
+    instrucciones:[
+      'El QR se guarda automáticamente en tu galería de fotos.',
+      'Abre la app BGFI Bank y ve a <strong>"Nueva transferencia / Pagar QR"</strong>.',
+      'Importa el QR desde tu galería.',
+      'Añade tu número de pedido como concepto y confirma la operación.'
+    ],
+    badge:{label:'QR · Banco internacional'},
+    bg:'rgba(255,215,0,0.05)', border:'rgba(255,215,0,0.2)',
+    appOpenMsg:'Abrir BGFI Bank'
+  }
+};
+
+/* ══════════════════════════════════════════════
+   UTILIDADES
+══════════════════════════════════════════════ */
+function getPINHash(pin){let h=0;for(let i=0;i<pin.length;i++)h=(h<<5)-h+pin.charCodeAt(i);return h.toString(16)}
+
+function detectDevice(){
+  const ua=navigator.userAgent;
+  if(/android/i.test(ua))return'android';
+  if(/iphone|ipad|ipod/i.test(ua))return'ios';
+  return'unknown';
+}
+
+async function tryOpenApp(bank){
+  const device=detectDevice();
+  const isAndroid=device==='android';
+  const isIOS=device==='ios';
+
+  if(isAndroid){
+    const intent=`intent://#Intent;package=${bank.androidPkg};end`;
+    window.location.href=intent;
+    return true;
+  }
+  if(isIOS){
+    const scheme=bank.iosScheme;
+    const start=Date.now();
+    window.location.href=scheme;
+    await new Promise(r=>setTimeout(r,1200));
+    if(Date.now()-start<1400){
+      return true; // app opened
+    }
+    return false;
+  }
+  return false;
+}
+
+function openStore(bank){
+  const device=detectDevice();
+  if(device==='ios') window.open(bank.ios,'_blank');
+  else window.open(bank.android,'_blank');
+}
+
+function fallbackCopy(text){
+  const el=document.createElement('textarea');
+  el.value=text;el.style.position='fixed';el.style.opacity='0';
+  document.body.appendChild(el);el.select();
+  document.execCommand('copy');document.body.removeChild(el);
+}
+
+let toastTimer;
+function showToast(msg,type='info'){
+  const el=document.getElementById('toast');
+  el.textContent=msg;el.className='show '+type;
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>{el.className='';},3800);
+}
+
+function copyToClipboard(text,btn){
+  const doIt=()=>{
+    if(btn){
+      btn.classList.add('copied');
+      const prev=btn.innerHTML;
+      btn.innerHTML=`<svg viewBox="0 0 24 24" width="11" height="11" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Copiado`;
+      setTimeout(()=>{btn.classList.remove('copied');btn.innerHTML=prev;},2500);
+    }
+    showToast('Copiado al portapapeles','ok');
+  };
+  if(navigator.clipboard){navigator.clipboard.writeText(text).then(doIt).catch(()=>{fallbackCopy(text);doIt();});}
+  else{fallbackCopy(text);doIt();}
+}
+
+/* ══════════════════════════════════════════════
+   QR GENERATION
+══════════════════════════════════════════════ */
+function makeQR(container,text,size=80){
+  if(!container)return;
+  container.innerHTML='';
+  try{
+    new QRCode(container,{text,width:size,height:size,colorDark:'#000000',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M});
+  }catch(e){
+    container.innerHTML=`<div style="width:${size}px;height:${size}px;background:#f1f5ff;display:flex;align-items:center;justify-content:center;font-size:.55rem;color:var(--muted);text-align:center;border-radius:6px">QR disponible al pagar</div>`;
+  }
+}
+
+function buildQRData(bankKey){
+  const cart=JSON.parse(localStorage.getItem('cy_cart')||'[]');
+  const total=cart.reduce((s,i)=>s+Number(i.precio||0)*(i.qty||1),0);
+  const user=localStorage.getItem('cy_user_name')||'Comprador';
+  const ref='CY-'+Date.now().toString(36).toUpperCase().slice(-6);
+  const bank=BANKS[bankKey];
+  return JSON.stringify({
+    app:'CompraYa',ref,buyer:user,total,currency:'FCFA',
+    merchant:bank.merchant,account:bank.account,bank:bank.name
+  });
+}
+
+/* ══════════════════════════════════════════════
+   PIN SYSTEM — SET PIN
+══════════════════════════════════════════════ */
+let newPinBuffer='',confirmPinBuffer='',setPinPhase='new';
+
+function setPinPress(n){
+  if(setPinPhase==='new'){
+    if(newPinBuffer.length>=4)return;
+    newPinBuffer+=String(n); updateSetPinDots();
+    if(newPinBuffer.length===4)setTimeout(()=>moveToConfirm(),200);
+  }else{
+    if(confirmPinBuffer.length>=4)return;
+    confirmPinBuffer+=String(n); updateSetPinDots();
+    if(confirmPinBuffer.length===4)setTimeout(()=>finalizeSetPin(),200);
+  }
+}
+function setPinDel(){
+  if(setPinPhase==='new')newPinBuffer=newPinBuffer.slice(0,-1);
+  else confirmPinBuffer=confirmPinBuffer.slice(0,-1);
+  updateSetPinDots();
+}
+function updateSetPinDots(){
+  const buf=setPinPhase==='new'?newPinBuffer:confirmPinBuffer;
+  for(let i=0;i<4;i++){const d=document.getElementById('sd'+i);d.classList.remove('error','success');d.classList.toggle('filled',i<buf.length);}
+}
+function moveToConfirm(){
+  setPinPhase='confirm';confirmPinBuffer='';
+  document.getElementById('setPinLabel').textContent='Confirma tu PIN';
+  document.getElementById('setPinTitle').textContent='Confirma tu nuevo PIN';
+  document.getElementById('setPinSub').textContent='Vuelve a introducir el mismo PIN.';
+  document.getElementById('spi0').classList.remove('active');document.getElementById('spi0').classList.add('done');
+  document.getElementById('spi1').classList.add('active');
+  for(let i=0;i<4;i++)document.getElementById('sd'+i).classList.remove('filled','error','success');
+}
+function finalizeSetPin(){
+  if(newPinBuffer===confirmPinBuffer){
+    for(let i=0;i<4;i++)document.getElementById('sd'+i).classList.add('success');
+    document.getElementById('setPinSuccess').textContent='✓ PIN creado correctamente';
+    document.getElementById('setPinSuccess').classList.add('show');
+    localStorage.setItem('cy_pin_hash',getPINHash(newPinBuffer));
+    localStorage.setItem('cy_pin_ok',Date.now());
+    setTimeout(()=>{showLayer('main');buildOrderSummary();buildMainQR();buildCobrarSection();},900);
+  }else{
+    for(let i=0;i<4;i++)document.getElementById('sd'+i).classList.add('error');
+    document.getElementById('setPinError').textContent='Los PINs no coinciden. Inténtalo de nuevo.';
+    document.getElementById('setPinError').classList.add('show');
+    setTimeout(()=>{
+      document.getElementById('setPinError').classList.remove('show');
+      for(let i=0;i<4;i++)document.getElementById('sd'+i).classList.remove('error','filled');
+      setPinPhase='new';newPinBuffer='';confirmPinBuffer='';
+      document.getElementById('setPinLabel').textContent='Nuevo PIN';
+      document.getElementById('setPinTitle').textContent='Crea tu PIN de seguridad';
+      document.getElementById('setPinSub').textContent='Este PIN protege tus pagos en CompraYa.';
+      document.getElementById('spi0').classList.remove('done');document.getElementById('spi0').classList.add('active');
+      document.getElementById('spi1').classList.remove('active');
+    },1500);
+  }
+}
+
+/* ══════════════════════════════════════════════
+   PIN SYSTEM — LOGIN
+══════════════════════════════════════════════ */
+const MAX_ATTEMPTS=3,LOCK_DURATION=30;
+let pinBuffer='',pinAttempts=0,isLocked=false,lockTimer=null;
+
+function pinPress(n){if(isLocked||pinBuffer.length>=4)return;pinBuffer+=String(n);updateDots();if(pinBuffer.length===4)setTimeout(validatePIN,180);}
+function pinDel(){if(isLocked)return;pinBuffer=pinBuffer.slice(0,-1);updateDots();document.getElementById('pinError').classList.remove('show');}
+function bioPIN(){const saved=localStorage.getItem('cy_pin_hash');if(!saved)return;document.getElementById('pinError').classList.remove('show');for(let i=0;i<4;i++)document.getElementById('d'+i).classList.add('filled');setTimeout(()=>{pinBuffer='____';validatePINBio();},200);}
+function validatePINBio(){pinBuffer='';localStorage.setItem('cy_pin_ok',Date.now());showLayer('main');buildOrderSummary();buildMainQR();buildCobrarSection();}
+function updateDots(){for(let i=0;i<4;i++){const d=document.getElementById('d'+i);d.classList.remove('error');d.classList.toggle('filled',i<pinBuffer.length);}}
+function validatePIN(){
+  const saved=localStorage.getItem('cy_pin_hash');
+  if(getPINHash(pinBuffer)===saved){
+    pinBuffer='';pinAttempts=0;localStorage.setItem('cy_pin_ok',Date.now());
+    showLayer('main');buildOrderSummary();buildMainQR();buildCobrarSection();
+  }else{
+    pinAttempts++;pinBuffer='';shakeDots();
+    document.getElementById('pinError').classList.add('show');
+    updateAttemptsLabel();if(pinAttempts>=MAX_ATTEMPTS)triggerLock();
+  }
+}
+function shakeDots(){const el=document.getElementById('pinDots');el.style.animation='shakeX .45s ease';for(let i=0;i<4;i++)document.getElementById('d'+i).classList.add('error');setTimeout(()=>{el.style.animation='';for(let i=0;i<4;i++)document.getElementById('d'+i).classList.remove('error','filled');},500);}
+function updateAttemptsLabel(){const rem=MAX_ATTEMPTS-pinAttempts;if(rem>0)document.getElementById('pinAttempts').innerHTML=`Intentos restantes: <strong>${rem}</strong>`;}
+function triggerLock(){isLocked=true;const kp=document.getElementById('pinKeypad');kp.style.opacity='.3';kp.style.pointerEvents='none';let secs=LOCK_DURATION;document.getElementById('pinError').textContent=`Bloqueado. Espera ${secs}s.`;document.getElementById('pinError').classList.add('show');document.getElementById('pinAttempts').innerHTML='';lockTimer=setInterval(()=>{secs--;document.getElementById('pinError').textContent=`Bloqueado. Espera ${secs}s.`;if(secs<=0){clearInterval(lockTimer);isLocked=false;pinAttempts=0;kp.style.opacity='';kp.style.pointerEvents='';document.getElementById('pinError').classList.remove('show');document.getElementById('pinAttempts').innerHTML='';}},1000);}
+function resetPIN(){if(confirm('¿Restablecer tu PIN? Deberás crear uno nuevo.')){localStorage.removeItem('cy_pin_hash');localStorage.removeItem('cy_pin_ok');location.reload();}}
+document.addEventListener('keydown',e=>{
+  const pinVisible=document.getElementById('layer-pin').style.display!=='none';
+  const setVisible=document.getElementById('layer-setpin').style.display!=='none';
+  if(pinVisible){if(e.key>='0'&&e.key<='9')pinPress(parseInt(e.key));if(e.key==='Backspace')pinDel();}
+  if(setVisible){if(e.key>='0'&&e.key<='9')setPinPress(parseInt(e.key));if(e.key==='Backspace')setPinDel();}
+});
+
+/* ══════════════════════════════════════════════
+   LAYER SWITCHER
+══════════════════════════════════════════════ */
+function showLayer(name){
+  ['layer-setpin','layer-pin','layer-main','layer-success'].forEach(id=>{
+    const el=document.getElementById(id);el.style.display='none';
+  });
+  if(name==='setpin'){const el=document.getElementById('layer-setpin');el.style.display='flex';el.style.flexDirection='column';el.style.alignItems='center';el.style.justifyContent='center';}
+  if(name==='pin'){const el=document.getElementById('layer-pin');el.style.display='flex';el.style.flexDirection='column';el.style.alignItems='center';el.style.justifyContent='center';}
+  if(name==='main')document.getElementById('layer-main').style.display='block';
+  if(name==='success'){const el=document.getElementById('layer-success');el.style.display='flex';const ref='CY-'+Date.now().toString(36).toUpperCase().slice(-6);document.getElementById('txRef').textContent=ref;localStorage.setItem('cy_last_tx',ref);}
+  window.scrollTo(0,0);
+}
+
+(function init(){
+  const hasPin=localStorage.getItem('cy_pin_hash');
+  const lastAuth=parseInt(localStorage.getItem('cy_pin_ok')||'0');
+  const sessionOk=Date.now()-lastAuth<5*60*1000;
+  if(!hasPin)showLayer('setpin');
+  else if(sessionOk){showLayer('main');buildOrderSummary();buildMainQR();buildCobrarSection();}
+  else showLayer('pin');
+})();
+
+/* ══════════════════════════════════════════════
+   ORDER SUMMARY
+══════════════════════════════════════════════ */
+function buildOrderSummary(){
+  const cart=JSON.parse(localStorage.getItem('cy_cart')||'[]');
+  const user=localStorage.getItem('cy_user_name')||'Comprador';
+  document.getElementById('greetName').textContent=user;
+  const total=cart.reduce((s,i)=>s+Number(i.precio||0)*(i.qty||1),0);
+  const fmt=total.toLocaleString('es-GQ')+' FCFA';
+  document.getElementById('greetTotal').textContent=fmt;
+  document.getElementById('otSubtotal').textContent=fmt;
+  document.getElementById('otTotal').textContent=fmt;
+  document.getElementById('orderCount').textContent=cart.length+(cart.length===1?' artículo':' artículos');
+  const grid=document.getElementById('orderItems');
+  if(!cart.length){grid.innerHTML='<p style="font-size:.78rem;color:var(--muted);padding:12px 0">Carrito vacío.</p>';return;}
+  grid.innerHTML=cart.map(it=>`
+    <div class="order-item">
+      <img class="oi-img" src="${it.imagen||'https://picsum.photos/seed/'+(it.id||'x')+'/80'}" onerror="this.src='https://picsum.photos/seed/fallback/80'" alt="${it.titulo}">
+      <div class="oi-info">
+        <div class="oi-name">${it.titulo}</div>
+        <div class="oi-qty">x${it.qty||1} · ${it.vendedor||'Vendedor'}</div>
+      </div>
+      <div class="oi-price">${(Number(it.precio||0)*(it.qty||1)).toLocaleString('es-GQ')} F</div>
+    </div>`).join('');
+}
+
+/* ══════════════════════════════════════════════
+   TABS
+══════════════════════════════════════════════ */
+function switchTab(tab,btn){
+  document.querySelectorAll('.pay-tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  ['tab-banca','tab-gasolinera','tab-cobrar'].forEach(id=>document.getElementById(id).style.display='none');
+  document.getElementById('tab-'+tab).style.display='block';
+}
+
+/* ══════════════════════════════════════════════
+   SELECT BANK + MÉTODO DETAIL
+══════════════════════════════════════════════ */
+let selectedBank=null;
+
+function selectBank(card){
+  document.querySelectorAll('.pay-card').forEach(c=>c.classList.remove('active'));
+  card.classList.add('active');
+  const bankKey=card.dataset.bank;
+  selectedBank=bankKey;
+  const bank=BANKS[bankKey];
+  card.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
+
+  const cart=JSON.parse(localStorage.getItem('cy_cart')||'[]');
+  const total=cart.reduce((s,i)=>s+Number(i.precio||0)*(i.qty||1),0);
+  const totalFmt=total.toLocaleString('es-GQ')+' FCFA';
+  const isWallet=['muni','bmori'].includes(bankKey);
+  const clipLabel=isWallet?'Número del comercio':'Cuenta IBAN de CompraYa';
+
+  // Requisitos HTML
+  const reqHTML=bank.requisitos.map(r=>`
+    <div class="req-item">
+      <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+      <span>${r}</span>
+    </div>`).join('');
+
+  document.getElementById('methodDetail').innerHTML=`
+    <div class="md-head" style="border-color:${bank.border}">
+      <div class="md-head-ico" style="background:${bank.bg};border-color:${bank.border}">
+        <img src="${bank.logo}" alt="${bank.name}">
+      </div>
+      <div class="md-head-info">
+        <div class="md-head-name" style="color:${bank.accent}">${bank.fullName}</div>
+        <div class="md-head-sub">${bank.type} · ${bank.merchant}</div>
+      </div>
+      <span class="md-badge" style="background:${bank.bg};border:1px solid ${bank.border};color:${bank.accent}">${bank.badge.label}</span>
+    </div>
+    <div class="md-body">
+      <div class="req-box">
+        <div class="req-box-title">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          Requisitos previos
+        </div>
+        ${reqHTML}
+      </div>
+      <div class="md-clipboard" onclick="copyToClipboard('${bank.account}',this.querySelector('.mc-copy-btn'))">
+        <div class="mc-left">
+          <div class="mc-label">${clipLabel}</div>
+          <div class="mc-value">${bank.account}</div>
+        </div>
+        <button class="mc-copy-btn">
+          <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+          Copiar
+        </button>
+      </div>
+      <div class="md-clipboard" onclick="copyToClipboard('${totalFmt}',this.querySelector('.mc-copy-btn'))">
+        <div class="mc-left">
+          <div class="mc-label">Importe exacto</div>
+          <div class="mc-value" style="color:var(--blue-2)">${totalFmt}</div>
+        </div>
+        <button class="mc-copy-btn">
+          <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+          Copiar
+        </button>
+      </div>
+      <div class="store-btns">
+        <a href="${bank.ios}" target="_blank" class="btn-store btn-store-ios">
+          <svg viewBox="0 0 24 24" fill="white" stroke="none"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+          App Store
+        </a>
+        <a href="${bank.android}" target="_blank" class="btn-store btn-store-android">
+          <svg viewBox="0 0 24 24" fill="white" stroke="none"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.7 9.05 7.4c1.4.07 2.38.79 3.19.78.96-.03 2.77-.98 4.64-.83 2.07.17 3.55 1.34 4.26 3.14-3.74 2.21-3.13 7.06.5 8.75-.47 1.12-.96 2.22-1.59 3.04zM12 5c-.23 2.85 2.41 5 5 5 .21-2.85-2.44-5-5-5z"/></svg>
+          Play Store
+        </a>
+      </div>
+      <button class="btn-open-app" style="background:linear-gradient(135deg,${bank.accent},${bank.accent}cc);box-shadow:0 8px 24px ${bank.accent}55"
+        onclick="iniciarFlujoBancario('${bankKey}')">
+        <svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+        ${bank.appOpenMsg}
+      </button>
+    </div>`;
+
+  document.getElementById('methodDetail').classList.add('visible');
+  document.getElementById('methodDetail').style.display='block';
+  document.getElementById('btnConfirm').disabled=false;
+  setTimeout(()=>document.getElementById('methodDetail').scrollIntoView({behavior:'smooth',block:'nearest'}),350);
+}
+
+/* ══════════════════════════════════════════════
+   FLUJO BANCARIO — POP-UP COMPLETO
+══════════════════════════════════════════════ */
+function iniciarFlujoBancario(bankKey){
+  const bank=BANKS[bankKey];
+  const cart=JSON.parse(localStorage.getItem('cy_cart')||'[]');
+  const total=cart.reduce((s,i)=>s+Number(i.precio||0)*(i.qty||1),0);
+  const totalFmt=total.toLocaleString('es-GQ')+' FCFA';
+  const ref='CY-'+Date.now().toString(36).toUpperCase().slice(-6);
+
+  // STAGE 1 — Loading
+  showBankModal(`
+    <div class="modal-stage active" id="stage-loading">
+      <div class="modal-loading">
+        <div class="loading-ring"></div>
+        <div class="modal-loading-title">Preparando tu pago seguro con ${bank.name}...</div>
+        <div class="modal-loading-sub">Verificando si tienes la app instalada en tu teléfono.</div>
+      </div>
+    </div>`);
+
+  // Simular verificación (1.5s) → mostrar QR si "instalada"
+  setTimeout(()=>{
+    mostrarStageQR(bankKey, totalFmt, ref, total);
+  }, 1500);
+}
+
+function mostrarStageQR(bankKey, totalFmt, ref, total){
+  const bank=BANKS[bankKey];
+  const qrData=buildQRData(bankKey);
+  const instrHTML=bank.instrucciones.map((s,i)=>`
+    <div class="instr-item">
+      <div class="instr-num">${i+1}</div>
+      <span>${s}</span>
+    </div>`).join('');
+
+  document.getElementById('bankModalInner').innerHTML=`
+    <div class="modal-stage active" id="stage-qr">
+      <div class="modal-qr-stage">
+        <div class="modal-qr-header">
+          <div class="modal-qr-bank-ico"><img src="${bank.logo}" alt="${bank.name}"></div>
+          <div class="modal-qr-bank-info">
+            <div class="modal-qr-bank-name">${bank.fullName}</div>
+            <div class="modal-qr-bank-sub">Pago seguro · CompraYa GE</div>
+          </div>
+        </div>
+        <div class="modal-qr-box">
+          <div class="modal-qr-canvas-wrap" id="modalBankQR"></div>
+          <div class="modal-qr-amount">${totalFmt}</div>
+          <div class="modal-qr-ref">Ref: ${ref}</div>
+        </div>
+        <div class="modal-clipboard" onclick="copyToClipboard('${bank.account}',this.querySelector('.modal-clip-btn'))">
+          <div class="modal-clip-text">
+            <div class="modal-clip-label">${['muni','bmori'].includes(bankKey)?'Número del comercio':'IBAN de CompraYa'}</div>
+            <div class="modal-clip-value">${bank.account}</div>
+          </div>
+          <button class="modal-clip-btn">
+            <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+            Copiar
+          </button>
+        </div>
+        <div class="modal-instructions">${instrHTML}</div>
+        <div class="modal-cta">
+          <button class="btn-modal-primary" style="background:linear-gradient(135deg,${bank.accent},${bank.accent}cc);box-shadow:0 8px 24px ${bank.accent}44"
+            onclick="abrirAppBancaria('${bankKey}')">
+            <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            ${bank.appOpenMsg}
+          </button>
+          <button class="btn-modal-secondary" onclick="closeBankModal()">Cancelar</button>
+        </div>
+      </div>
+    </div>`;
+
+  // Generar QR real
+  setTimeout(()=>makeQR(document.getElementById('modalBankQR'), qrData, 130), 100);
+}
+
+function mostrarStageNoApp(bankKey){
+  const bank=BANKS[bankKey];
+  document.getElementById('bankModalInner').innerHTML=`
+    <div class="modal-stage active" id="stage-noapp">
+      <div class="modal-noapp">
+        <div class="noapp-icon">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        </div>
+        <div class="noapp-title">Necesitas la app de ${bank.name}</div>
+        <div class="noapp-sub">Para pagar con ${bank.name} necesitas tener su aplicación instalada. Es gratis y solo tarda un momento.</div>
+        <div class="noapp-store-btns">
+          <a href="${bank.ios}" target="_blank" class="noapp-store-btn noapp-store-btn-ios">
+            <svg viewBox="0 0 24 24" fill="white" stroke="none" width="18" height="18"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+            App Store (iOS)
+          </a>
+          <a href="${bank.android}" target="_blank" class="noapp-store-btn noapp-store-btn-android">
+            <svg viewBox="0 0 24 24" fill="white" stroke="none" width="18" height="18"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.7 9.05 7.4c1.4.07 2.38.79 3.19.78.96-.03 2.77-.98 4.64-.83 2.07.17 3.55 1.34 4.26 3.14-3.74 2.21-3.13 7.06.5 8.75-.47 1.12-.96 2.22-1.59 3.04zM12 5c-.23 2.85 2.41 5 5 5 .21-2.85-2.44-5-5-5z"/></svg>
+            Play Store
+          </a>
+        </div>
+        <button class="btn-modal-secondary" onclick="closeBankModal()" style="margin-top:8px;width:100%;height:42px">Cancelar</button>
+      </div>
+    </div>`;
+}
+
+async function abrirAppBancaria(bankKey){
+  const bank=BANKS[bankKey];
+  const device=detectDevice();
+
+  if(device==='unknown'){
+    // Desktop — sólo mostrar instrucciones
+    showToast('Abre la app en tu móvil y sigue los pasos indicados','info');
+    return;
+  }
+
+  showToast(`Abriendo ${bank.name}...`,'info');
+
+  if(device==='android'){
+    const intent=`intent://#Intent;package=${bank.androidPkg};scheme=https;end`;
+    window.location.href=intent;
+    // Si no abre en 2s, mostrar pantalla de descarga
+    setTimeout(()=>mostrarStageNoApp(bankKey), 2000);
+    return;
+  }
+
+  if(device==='ios'){
+    const t0=Date.now();
+    window.location.href=bank.iosScheme;
+    await new Promise(r=>setTimeout(r,1500));
+    if(document.hidden||Date.now()-t0>1400){
+      // App abierta
+    }else{
+      mostrarStageNoApp(bankKey);
+    }
+  }
+}
+
+/* ══════════════════════════════════════════════
+   MODAL HELPERS
+══════════════════════════════════════════════ */
+function showBankModal(html){
+  document.getElementById('bankModalInner').innerHTML=html;
+  document.getElementById('bankModal').classList.add('open');
+}
+function closeBankModal(e){
+  if(!e||e.target===document.getElementById('bankModal')){
+    document.getElementById('bankModal').classList.remove('open');
+  }
+}
+
+/* ══════════════════════════════════════════════
+   MAIN QR
+══════════════════════════════════════════════ */
+function buildMainQR(){
+  const cart=JSON.parse(localStorage.getItem('cy_cart')||'[]');
+  const total=cart.reduce((s,i)=>s+Number(i.precio||0)*(i.qty||1),0);
+  const user=localStorage.getItem('cy_user_name')||'Comprador';
+  const ref='CY-'+Date.now().toString(36).toUpperCase().slice(-6);
+  const qrData=JSON.stringify({app:'CompraYa',ref,buyer:user,total,currency:'FCFA'});
+  const wrap=document.getElementById('qrCanvas');
+  wrap.innerHTML='';
+  wrap.style.background='#fff';wrap.style.borderRadius='10px';wrap.style.padding='4px';
+  makeQR(wrap, qrData, 80);
+}
+
+function showQRModal(){
+  const cart=JSON.parse(localStorage.getItem('cy_cart')||'[]');
+  const total=cart.reduce((s,i)=>s+Number(i.precio||0)*(i.qty||1),0);
+  const user=localStorage.getItem('cy_user_name')||'Comprador';
+  const ref='CY-'+Date.now().toString(36).toUpperCase().slice(-6);
+  const bank=selectedBank?BANKS[selectedBank].name:'CompraYa';
+  const qrData=JSON.stringify({app:'CompraYa',ref,buyer:user,total,currency:'FCFA',bank});
+  document.getElementById('modalQrSub').textContent=`${user} · ${total.toLocaleString('es-GQ')} FCFA · ${bank}`;
+  makeQR(document.getElementById('modalQrCanvas'), qrData, 180);
+  document.getElementById('qrModal').classList.add('open');
+}
+function closeQRModal(e){if(e.target===document.getElementById('qrModal'))document.getElementById('qrModal').classList.remove('open');}
+
+/* ══════════════════════════════════════════════
+   GASOLINERA QR
+══════════════════════════════════════════════ */
+function updateStoreQR(){
+  const amount=document.getElementById('storeAmount').value;
+  const concept=document.getElementById('storeConcept').value;
+  const bank=document.getElementById('storeBank').value;
+  if(!amount||!concept||!bank){
+    document.getElementById('storeQrWrap').style.display='none';
+    document.getElementById('storeQrPlaceholder').style.display='block';return;
+  }
+  const bData=BANKS[bank];
+  const qrData=JSON.stringify({app:'CompraYa',type:'store_payment',merchant:'CompraYa GE',account:bData.account,amount:parseInt(amount),currency:'FCFA',concept,bank:bData.name});
+  document.getElementById('storeQrPlaceholder').style.display='none';
+  document.getElementById('storeQrWrap').style.display='flex';
+  const wrap=document.getElementById('storeQrCanvas');
+  makeQR(wrap, qrData, 160);
+  document.getElementById('storeQrDesc').textContent=`${parseInt(amount).toLocaleString('es-GQ')} FCFA · ${concept} · ${bData.name}`;
+}
+
+/* ══════════════════════════════════════════════
+   COBRAR
+══════════════════════════════════════════════ */
+function buildCobrarSection(){
+  const list=document.getElementById('cobrarList');
+  list.innerHTML=Object.entries(BANKS).map(([key,bank])=>`
+    <div class="cobrar-bank-item" id="cbi-${key}">
+      <div class="cbi-head" onclick="toggleCobrar('${key}')">
+        <div class="cbi-logo"><img src="${bank.logo}" alt="${bank.name}"></div>
+        <div class="cbi-name" style="color:${bank.accent}">${bank.name}</div>
+        <div class="cbi-arrow"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
+      </div>
+      <div class="cbi-body" id="cbibody-${key}">
+        <div class="cbi-field-label">Banco / Servicio</div>
+        <div class="cbi-field-val">${bank.fullName}</div>
+        <div class="cbi-field-label">${['muni','bmori'].includes(key)?'Teléfono del comercio':'Cuenta IBAN'}</div>
+        <div class="cbi-copy-row" onclick="copyText('${bank.account}',this)">
+          <div class="cbi-copy-val">${bank.account}</div>
+          <button class="cbi-copy-btn2"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Copiar</button>
+        </div>
+        <div class="cbi-field-label">Titular</div>
+        <div class="cbi-field-val">${bank.merchant}</div>
+        <div class="cbi-field-label">Teléfono</div>
+        <div class="cbi-copy-row" onclick="copyText('+${bank.phone}',this)">
+          <div class="cbi-copy-val">+${bank.phone}</div>
+          <button class="cbi-copy-btn2"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Copiar</button>
+        </div>
+        <div class="cbi-field-label">QR de cobro</div>
+        <div class="cbi-qr-row"><div class="cbi-qr-box" id="cobrar-qr-${key}"></div></div>
+        <button class="btn-cobrar-share" onclick="shareCobrarData('${key}')">
+          <svg viewBox="0 0 24 24"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+          Compartir mis datos de cobro
+        </button>
+      </div>
+    </div>`).join('');
+}
+
+function toggleCobrar(key){
+  const item=document.getElementById('cbi-'+key);
+  const isOpen=item.classList.contains('open');
+  document.querySelectorAll('.cobrar-bank-item').forEach(el=>el.classList.remove('open'));
+  if(!isOpen){
+    item.classList.add('open');
+    const qrWrap=document.getElementById('cobrar-qr-'+key);
+    if(!qrWrap.innerHTML){
+      const bank=BANKS[key];
+      const qrData=JSON.stringify({app:'CompraYa',type:'collect',bank:bank.name,account:bank.account,merchant:bank.merchant,phone:bank.phone});
+      makeQR(qrWrap, qrData, 120);
+    }
+  }
+}
+
+function copyText(text,ctx){
+  const btn=ctx.querySelector('.cbi-copy-btn2');
+  if(navigator.clipboard)navigator.clipboard.writeText(text).catch(()=>fallbackCopy(text));
+  else fallbackCopy(text);
+  if(btn){btn.textContent='✓ Copiado';setTimeout(()=>{btn.innerHTML=`<svg viewBox="0 0 24 24" width="10" height="10" stroke="currentColor" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> Copiar`;},2000);}
+  showToast('Copiado al portapapeles','ok');
+}
+
+function shareCobrarData(key){
+  const bank=BANKS[key];
+  const text=`Mis datos de cobro — ${bank.name}\nTitular: ${bank.merchant}\n${['muni','bmori'].includes(key)?'Teléfono':'IBAN'}: ${bank.account}\nTeléfono: +${bank.phone}\n\nVía CompraYa GE`;
+  if(navigator.share)navigator.share({title:'Datos de cobro',text}).catch(()=>{});
+  else{fallbackCopy(text);showToast('Datos copiados','ok');}
+}
+
+/* ══════════════════════════════════════════════
+   CONFIRM PAYMENT
+══════════════════════════════════════════════ */
+async function confirmPayment(){
+  if(!selectedBank){showToast('Selecciona un método de pago primero','err');return;}
+  const btn=document.getElementById('btnConfirm');
+  btn.disabled=true;
+  btn.innerHTML=`<svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="animation:spin .7s linear infinite"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg> Notificando al vendedor...`;
+  const cart=JSON.parse(localStorage.getItem('cy_cart')||'[]');
+  const total=cart.reduce((s,i)=>s+Number(i.precio||0)*(i.qty||1),0);
+  const bank=BANKS[selectedBank];
+  const ref='CY-'+Date.now().toString(36).toUpperCase().slice(-6);
+  const user=localStorage.getItem('cy_user_name')||'Comprador';
+  try{
+    const {initializeApp,getApps}=await import('https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js');
+    const {getFirestore,collection,addDoc,serverTimestamp}=await import('https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js');
+    const {firebaseConfig}=await import('./js/config.js');
+    const fbApp=getApps().length?getApps()[0]:initializeApp(firebaseConfig);
+    const db=getFirestore(fbApp);
+    await addDoc(collection(db,'pagos'),{ref,buyer:user,method:bank.name,total,items:cart,status:'pendiente_verificacion',timestamp:serverTimestamp()});
+  }catch(e){
+    const pending=JSON.parse(localStorage.getItem('cy_pending_payments')||'[]');
+    pending.push({ref,buyer:user,method:bank.name,total,items:cart,ts:Date.now()});
+    localStorage.setItem('cy_pending_payments',JSON.stringify(pending));
+  }
+  localStorage.setItem('cy_cart','[]');
+  localStorage.setItem('cy_last_tx',ref);
+  setTimeout(()=>{showLayer('success');document.getElementById('txRef').textContent=ref;},1200);
+}
+
+function shareReceipt(){
+  const ref=document.getElementById('txRef').textContent;
+  const text=`Pago realizado a través de CompraYa GE.\nReferencia: ${ref}\n\nVerifica tu pedido en comprayage.com`;
+  if(navigator.share)navigator.share({title:'Recibo CompraYa',text}).catch(()=>{});
+  else{fallbackCopy(text);showToast('Recibo copiado','ok');}
+}
+</script>
+</body>
+</html>

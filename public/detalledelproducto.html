@@ -1,0 +1,1070 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Detalle del Producto | Compra Ya</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+  <style>
+    :root {
+      --primary:  #00f5ff;
+      --teal:     #00d4aa;
+      --accent:   #00ff9d;
+      --orange:   #ff9d00;
+      --red:      #ff3b5c;
+      --bg:       #0a0f1c;
+      --card:     #111827;
+      --card2:    #161f33;
+      --border:   rgba(0,245,255,0.14);
+      --text:     #f0f4f8;
+      --muted:    rgba(255,255,255,0.52);
+    }
+
+    * { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── HEADER ── */
+    header {
+      position: sticky;
+      top: 0; z-index: 1000;
+      background: rgba(10,15,28,0.97);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .logo-img {
+      height: 40px;
+      cursor: pointer;
+      object-fit: contain;
+    }
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-icon {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid var(--border);
+      color: var(--text);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.95rem;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.3s;
+      position: relative;
+    }
+    .btn-icon:hover { background: rgba(0,245,255,0.15); color: var(--primary); }
+    .btn-share { background: rgba(0,245,255,0.1); border-color: rgba(0,245,255,0.3); color: var(--primary); }
+
+    /* Cart badge on header */
+    .cart-badge {
+      position: absolute;
+      top: -3px; right: -3px;
+      min-width: 17px; height: 17px;
+      background: var(--red);
+      color: #fff;
+      font-size: 0.6rem; font-weight: 700;
+      border-radius: 99px;
+      display: none;
+      align-items: center; justify-content: center;
+      border: 2px solid var(--bg);
+    }
+    .cart-badge.visible { display: flex; }
+
+    /* ── BREADCRUMB ── */
+    .breadcrumb {
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.78rem;
+      color: var(--muted);
+      overflow-x: auto;
+      scrollbar-width: none;
+      white-space: nowrap;
+    }
+    .breadcrumb::-webkit-scrollbar { display: none; }
+    .bc-link {
+      color: var(--primary);
+      text-decoration: none;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .bc-link:hover { opacity: 0.7; }
+    .bc-sep { opacity: 0.4; }
+    .bc-current { color: var(--muted); }
+
+    /* ── LOADING ── */
+    #loadingScreen {
+      position: fixed; inset: 0;
+      background: var(--bg);
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 18px;
+      transition: opacity 0.5s;
+    }
+    #loadingScreen.hidden { opacity: 0; pointer-events: none; }
+    .spinner-ring {
+      width: 56px; height: 56px;
+      border: 4px solid rgba(0,245,255,0.15);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 0.9s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading-label { font-size: 0.95rem; color: var(--muted); }
+
+    /* ── ERROR ── */
+    #errorScreen { display: none; text-align: center; padding: 80px 30px; }
+    #errorScreen.visible { display: block; }
+
+    /* ── MAIN LAYOUT ── */
+    #productWrap {
+      display: none;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 12px 16px 110px;
+      animation: fadeUp 0.6s ease forwards;
+    }
+    #productWrap.visible { display: block; }
+    @keyframes fadeUp {
+      from { opacity:0; transform:translateY(24px); }
+      to   { opacity:1; transform:translateY(0); }
+    }
+
+    /* ── GALLERY ── */
+    .gallery { position: relative; margin-bottom: 20px; }
+    .main-img-wrap {
+      border-radius: 20px;
+      overflow: hidden;
+      background: var(--card);
+      aspect-ratio: 4/3;
+      position: relative;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+    }
+    #mainImg {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.5s cubic-bezier(0.4,0,0.2,1), opacity 0.3s;
+    }
+    @media (hover: hover) { .main-img-wrap:hover #mainImg { transform: scale(1.05); } }
+
+    .gallery-arrow {
+      position: absolute;
+      top: 50%; transform: translateY(-50%);
+      width: 42px; height: 42px;
+      border-radius: 50%;
+      background: rgba(10,15,28,0.75);
+      border: 1px solid var(--border);
+      color: white;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.9rem;
+      cursor: pointer;
+      z-index: 10;
+      transition: background 0.3s;
+      backdrop-filter: blur(8px);
+    }
+    .gallery-arrow:hover { background: rgba(0,245,255,0.25); }
+    .gallery-arrow.left  { left: 12px; }
+    .gallery-arrow.right { right: 12px; }
+
+    .img-counter {
+      position: absolute;
+      bottom: 12px; right: 12px;
+      background: rgba(0,0,0,0.65);
+      color: white;
+      font-size: 0.75rem; font-weight: 600;
+      padding: 4px 11px;
+      border-radius: 20px;
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .status-badge {
+      position: absolute;
+      top: 12px; left: 12px;
+      padding: 5px 13px;
+      border-radius: 20px;
+      font-size: 0.72rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 1px;
+      backdrop-filter: blur(8px);
+    }
+    .status-activo    { background: rgba(0,255,157,0.2); color: var(--accent); border: 1px solid rgba(0,255,157,0.4); }
+    .status-vendido   { background: rgba(255,59,92,0.2); color: #ff3b5c; border: 1px solid rgba(255,59,92,0.4); }
+    .status-reservado { background: rgba(255,157,0,0.2); color: var(--orange); border: 1px solid rgba(255,157,0,0.4); }
+
+    .thumbnails {
+      display: flex;
+      gap: 9px;
+      overflow-x: auto;
+      padding: 6px 2px 8px;
+      scrollbar-width: none;
+      margin-top: 11px;
+    }
+    .thumbnails::-webkit-scrollbar { display: none; }
+    .thumb {
+      flex-shrink: 0;
+      width: 72px; height: 72px;
+      border-radius: 11px;
+      overflow: hidden;
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: all 0.3s;
+      opacity: 0.65;
+    }
+    .thumb:hover  { opacity: 1; border-color: rgba(0,245,255,0.4); }
+    .thumb.active { border-color: var(--primary); opacity: 1; box-shadow: 0 0 12px rgba(0,245,255,0.4); transform: scale(1.06); }
+    .thumb img    { width:100%; height:100%; object-fit:cover; display:block; }
+
+    /* ── PRODUCT INFO ── */
+    .product-info { margin-top: 8px; }
+
+    .badges-row { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 13px; }
+    .badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 0.75rem; font-weight: 600;
+    }
+    .badge-cat  { background: rgba(0,245,255,0.1); color: var(--primary); border: 1px solid rgba(0,245,255,0.25); cursor: pointer; transition: background 0.2s; }
+    .badge-cat:hover { background: rgba(0,245,255,0.2); }
+    .badge-cond { background: rgba(0,212,170,0.1); color: var(--teal); border: 1px solid rgba(0,212,170,0.25); }
+    .badge-loc  { background: rgba(255,255,255,0.06); color: var(--muted); border: 1px solid rgba(255,255,255,0.1); }
+
+    .product-title {
+      font-size: 1.6rem; font-weight: 800;
+      line-height: 1.22; margin-bottom: 13px;
+      letter-spacing: -0.3px;
+    }
+    .price-row { display: flex; align-items: baseline; gap: 11px; margin-bottom: 18px; }
+    .price-main { font-size: 2.1rem; font-weight: 900; color: var(--accent); letter-spacing: -1px; }
+    .price-old  { font-size: 1rem; text-decoration: line-through; color: rgba(255,255,255,0.3); }
+    .price-saving {
+      font-size: 0.8rem;
+      background: rgba(0,255,157,0.12); color: var(--accent);
+      border: 1px solid rgba(0,255,157,0.3);
+      padding: 3px 9px; border-radius: 20px; font-weight: 700;
+    }
+
+    /* ── STATS ── */
+    .stats-row { display: flex; gap: 7px; margin-bottom: 18px; flex-wrap: wrap; }
+    .stat-pill {
+      display: flex; align-items: center; gap: 6px;
+      background: var(--card);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 11px;
+      padding: 7px 13px;
+      font-size: 0.82rem; color: var(--muted);
+    }
+    .stat-pill i { color: var(--primary); }
+
+    /* ── DESCRIPTION ── */
+    .section-label {
+      font-size: 0.7rem; text-transform: uppercase;
+      letter-spacing: 2.5px; color: var(--primary);
+      font-weight: 700; margin-bottom: 9px;
+    }
+    .description-box {
+      background: var(--card);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 16px;
+      padding: 18px;
+      font-size: 0.95rem; line-height: 1.75;
+      color: rgba(255,255,255,0.82);
+      white-space: pre-wrap;
+      margin-bottom: 16px;
+      position: relative;
+      max-height: 160px;
+      overflow: hidden;
+      transition: max-height 0.5s ease;
+    }
+    .description-box.expanded { max-height: 2000px; }
+    .desc-fade {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 55px;
+      background: linear-gradient(transparent, var(--card));
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+    .description-box.expanded .desc-fade { opacity: 0; }
+    .btn-read-more {
+      background: none; border: none;
+      color: var(--primary); font-size: 0.88rem; font-weight: 600;
+      cursor: pointer; padding: 0 0 14px;
+      display: flex; align-items: center; gap: 6px;
+    }
+
+    /* ── SELLER CARD — CLICKABLE ── */
+    .seller-card {
+      background: var(--card);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-decoration: none;
+    }
+    .seller-card:hover {
+      border-color: rgba(0,245,255,0.3);
+      background: rgba(0,245,255,0.04);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    }
+    .seller-avatar {
+      width: 50px; height: 50px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), var(--teal));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem; font-weight: 800;
+      color: #000;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+    .seller-avatar img { width:100%; height:100%; object-fit:cover; }
+    .seller-info { flex: 1; }
+    .seller-name { font-weight: 700; font-size: 0.97rem; margin-bottom: 3px; }
+    .seller-meta { font-size: 0.8rem; color: var(--muted); display: flex; gap: 10px; flex-wrap: wrap; }
+    .seller-meta span { display: flex; align-items: center; gap: 4px; }
+    .seller-verified {
+      font-size: 0.7rem;
+      background: rgba(0,255,157,0.12); color: var(--accent);
+      border: 1px solid rgba(0,255,157,0.3);
+      padding: 3px 9px; border-radius: 20px; font-weight: 600;
+      flex-shrink: 0;
+    }
+    .seller-arrow { color: var(--muted); font-size: 0.85rem; }
+
+    /* ── VER MÁS DE ESTA CATEGORÍA ── */
+    .more-cat-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      padding: 14px;
+      background: rgba(0,245,255,0.06);
+      border: 1.5px solid rgba(0,245,255,0.2);
+      border-radius: 14px;
+      color: var(--primary);
+      font-size: 0.88rem; font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      margin-bottom: 18px;
+      transition: all 0.3s;
+    }
+    .more-cat-btn:hover { background: rgba(0,245,255,0.14); transform: translateY(-1px); }
+
+    /* ── SECURITY ── */
+    .security-box {
+      background: rgba(0,245,255,0.04);
+      border: 1px solid rgba(0,245,255,0.14);
+      border-radius: 16px;
+      padding: 15px;
+      margin-bottom: 18px;
+    }
+    .sec-tip {
+      display: flex; gap: 9px; align-items: flex-start;
+      font-size: 0.83rem; color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .sec-tip:last-child { margin-bottom: 0; }
+    .sec-tip i { color: var(--teal); flex-shrink: 0; margin-top: 2px; }
+
+    /* ── CTA BUTTONS ── */
+    .cta-stack { display: flex; flex-direction: column; gap: 11px; margin-bottom: 18px; }
+    .btn-cta {
+      width: 100%; padding: 16px;
+      border: none; border-radius: 14px;
+      font-size: 1rem; font-weight: 700;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 9px;
+      transition: all 0.3s;
+      text-decoration: none;
+    }
+    .btn-cta:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(0,0,0,0.4); }
+    .btn-cta:active { transform: scale(0.98); }
+
+    .btn-whatsapp { background: #25D366; color: white; box-shadow: 0 6px 22px rgba(37,211,102,0.3); }
+    .btn-whatsapp:hover { background: #20c15a; }
+    .btn-call    { background: linear-gradient(135deg, var(--primary), var(--teal)); color: #000; box-shadow: 0 6px 22px rgba(0,245,255,0.25); }
+
+    /* ── ADD TO CART BUTTON ── */
+    .btn-cart {
+      background: linear-gradient(135deg, var(--orange), #d97700);
+      color: white;
+      box-shadow: 0 6px 22px rgba(255,157,0,0.3);
+      font-size: 1.02rem;
+    }
+    .btn-cart:hover { box-shadow: 0 10px 30px rgba(255,157,0,0.45); }
+    .btn-cart.added {
+      background: linear-gradient(135deg, var(--accent), var(--teal));
+      color: #000;
+    }
+
+    .btn-secondary {
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: var(--text);
+    }
+    .btn-secondary:hover { background: rgba(255,255,255,0.12); }
+
+    /* ── CART MINI PREVIEW ── */
+    .cart-preview {
+      background: var(--card2);
+      border: 1px solid rgba(255,157,0,0.3);
+      border-radius: 14px;
+      padding: 14px 16px;
+      margin-bottom: 18px;
+      display: none;
+      align-items: center;
+      gap: 12px;
+      animation: slideIn 0.4s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .cart-preview.visible { display: flex; }
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .cart-preview-icon { font-size: 1.4rem; flex-shrink: 0; }
+    .cart-preview-info { flex: 1; }
+    .cart-preview-info strong { display: block; font-size: 0.88rem; color: var(--accent); }
+    .cart-preview-info span { font-size: 0.78rem; color: var(--muted); }
+    .btn-go-cart {
+      padding: 8px 14px;
+      background: var(--orange);
+      color: white;
+      border: none; border-radius: 10px;
+      font-size: 0.8rem; font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.2s;
+    }
+    .btn-go-cart:hover { background: #d97700; }
+
+    /* ── STICKY BOTTOM ── */
+    .sticky-bottom {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      background: rgba(10,15,28,0.97);
+      backdrop-filter: blur(16px);
+      border-top: 1px solid var(--border);
+      padding: 10px 14px;
+      display: none;
+      gap: 8px;
+      z-index: 999;
+      align-items: center;
+    }
+    .sticky-bottom.visible { display: flex; }
+
+    @media (max-width: 768px) {
+      .sticky-bottom { display: flex; }
+      #productWrap { padding-bottom: 88px; }
+    }
+
+    .sticky-price {
+      display: flex; flex-direction: column; justify-content: center;
+      flex-shrink: 0;
+    }
+    .sticky-price-val { font-size: 1.15rem; font-weight: 900; color: var(--accent); line-height: 1; }
+    .sticky-price-label { font-size: 0.68rem; color: var(--muted); }
+
+    .sticky-btns { flex: 1; display: flex; gap: 6px; }
+    .sticky-btn {
+      flex: 1; padding: 11px 8px;
+      border: none; border-radius: 11px;
+      font-size: 0.82rem; font-weight: 700;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 5px;
+      transition: all 0.3s;
+    }
+    .sticky-btn-wa   { background: #25D366; color: white; }
+    .sticky-btn-call { background: linear-gradient(135deg,var(--primary),var(--teal)); color:#000; }
+    .sticky-btn-cart { background: var(--orange); color: white; }
+    .sticky-btn-cart.added { background: linear-gradient(135deg, var(--accent), var(--teal)); color: #000; }
+
+    /* ── TOAST ── */
+    #toast {
+      position: fixed;
+      bottom: 88px; left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--card2);
+      color: white;
+      border-radius: 13px;
+      padding: 10px 20px;
+      font-size: 0.9rem; font-weight: 600;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+      border: 1px solid rgba(255,255,255,0.1);
+      z-index: 9999;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.4s cubic-bezier(0.34,1.56,0.64,1);
+      white-space: nowrap;
+    }
+    #toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
+    /* ── DESKTOP GRID ── */
+    @media (min-width: 769px) {
+      #productWrap {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 36px;
+        align-items: start;
+        padding-top: 24px;
+      }
+      #productWrap.visible { display: grid; }
+      .gallery { grid-column: 1; }
+      .product-info { grid-column: 2; }
+      .sticky-bottom { display: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <img src="logotipo.JPEG" alt="Compra Ya" class="logo-img" onclick="window.location.href='index-comprador.html'">
+  <div class="header-actions">
+    <a href="index-comprador.html" class="btn-icon" title="Inicio">
+      <i class="fas fa-home"></i>
+    </a>
+    <button class="btn-icon" onclick="history.back()" title="Volver">
+      <i class="fas fa-arrow-left"></i>
+    </button>
+    <button class="btn-icon btn-share" onclick="compartirProducto()" title="Compartir">
+      <i class="fas fa-share-alt"></i>
+    </button>
+    <button class="btn-icon" id="btnLike" onclick="toggleLike()" title="Guardar">
+      <i class="far fa-heart"></i>
+    </button>
+    <!-- Carrito con badge -->
+    <button class="btn-icon" onclick="irAlCarrito()" title="Ver carrito" style="position:relative">
+      <i class="fas fa-shopping-cart"></i>
+      <span class="cart-badge" id="headerCartBadge">0</span>
+    </button>
+  </div>
+</header>
+
+<!-- BREADCRUMB -->
+<div class="breadcrumb" id="breadcrumb">
+  <a class="bc-link" onclick="window.location.href='index-comprador.html'">
+    <i class="fas fa-home"></i> Inicio
+  </a>
+  <span class="bc-sep"><i class="fas fa-chevron-right" style="font-size:0.6rem"></i></span>
+  <span class="bc-current" id="bcCategory">Productos</span>
+  <span class="bc-sep"><i class="fas fa-chevron-right" style="font-size:0.6rem"></i></span>
+  <span class="bc-current" id="bcTitle" style="color:var(--text);max-width:180px;overflow:hidden;text-overflow:ellipsis;">Cargando...</span>
+</div>
+
+<!-- LOADING -->
+<div id="loadingScreen">
+  <div class="spinner-ring"></div>
+  <div class="loading-label">Cargando producto…</div>
+</div>
+
+<!-- ERROR -->
+<div id="errorScreen">
+  <div style="font-size:3rem;margin-bottom:16px">🔍</div>
+  <div style="font-size:1.4rem;font-weight:700;margin-bottom:8px">Producto no encontrado</div>
+  <div style="color:var(--muted);margin-bottom:24px">Este anuncio no existe o fue eliminado por el vendedor.</div>
+  <a href="index-comprador.html"
+     style="display:inline-block;background:linear-gradient(135deg,var(--primary),var(--teal));color:#000;padding:13px 30px;border-radius:50px;font-weight:700;text-decoration:none;">
+     Ver otros productos
+  </a>
+</div>
+
+<!-- PRODUCT WRAP -->
+<div id="productWrap">
+  <div class="gallery" id="gallerySection"></div>
+  <div class="product-info" id="infoSection"></div>
+</div>
+
+<!-- STICKY BOTTOM -->
+<div class="sticky-bottom" id="stickyBottom">
+  <div class="sticky-price">
+    <div class="sticky-price-val" id="stickyPrice">—</div>
+    <div class="sticky-price-label">FCFA</div>
+  </div>
+  <div class="sticky-btns">
+    <button class="sticky-btn sticky-btn-cart" id="stickyCart" onclick="addToCartAction()">
+      <i class="fas fa-cart-plus"></i> Carrito
+    </button>
+    <button class="sticky-btn sticky-btn-wa" id="stickyWa">
+      <i class="fab fa-whatsapp"></i> WA
+    </button>
+    <button class="sticky-btn sticky-btn-call" id="stickyCall">
+      <i class="fas fa-phone"></i> Llamar
+    </button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<!-- FOOTER -->
+<footer style="text-align:center;padding:36px 20px;color:rgba(255,255,255,0.22);font-size:0.83rem;background:rgba(0,0,0,0.25);margin-top:20px;border-top:1px solid rgba(255,255,255,0.05);">
+  ©️ 2026 Compra Ya · Marketplace líder en Guinea Ecuatorial<br>
+  <span style="color:rgba(255,255,255,0.13);">Malabo · Bata · Ebebiyín</span>
+</footer>
+
+<!-- ════════════════════════════════════════
+     FIREBASE + LÓGICA
+════════════════════════════════════════ -->
+<script type="module">
+import { initializeApp }   from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+import { getFirestore, doc, getDoc, updateDoc, increment }
+                           from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+import { firebaseConfig  } from "./public/js/config.js";
+
+const app = initializeApp(firebaseConfig);
+const db  = getFirestore(app);
+
+// ── GLOBALS ──
+let allImages   = [];
+let currentIdx  = 0;
+let liked       = false;
+let productData = null;
+let productId   = null;
+let cartInited  = false;
+
+// ── CART UTILS ──
+function getCart() {
+  return JSON.parse(localStorage.getItem('cy_cart') || '[]');
+}
+function saveCart(cart) {
+  localStorage.setItem('cy_cart', JSON.stringify(cart));
+}
+function updateCartBadge() {
+  const cart  = getCart();
+  const total = cart.reduce((s, i) => s + (i.qty || 1), 0);
+  const badge = document.getElementById('headerCartBadge');
+  if (total > 0) {
+    badge.textContent = total > 99 ? '99+' : total;
+    badge.classList.add('visible');
+  } else {
+    badge.classList.remove('visible');
+  }
+}
+
+// ── ADD TO CART ──
+window.addToCartAction = function() {
+  if (!productData) return;
+
+  const cart    = getCart();
+  const alreadyInCart = cart.find(i => i.id === productId);
+
+  if (alreadyInCart) {
+    // Ya en carrito → ir al carrito
+   window.location.href = 'caritodecompras.html';
+    return;
+  }
+
+  const titulo  = productData.titulo || productData.Título || 'Producto';
+  const precio  = parseInt(productData.precio || 0);
+  const imagen  = allImages[0] || '';
+
+  cart.push({ id: productId, titulo, precio, imagen, qty: 1 });
+  saveCart(cart);
+  updateCartBadge();
+
+  // Actualizar botones
+  markCartAdded();
+
+  // Mostrar preview
+  showCartPreview(titulo, precio);
+
+  toast('🛒 Añadido al carrito', 'success');
+};
+
+function markCartAdded() {
+  // Botón en info section
+  const btnCart = document.getElementById('btnAddCart');
+  if (btnCart) {
+    btnCart.classList.add('added');
+    btnCart.innerHTML = '<i class="fas fa-check"></i> En el carrito — Ver ahora';
+    btnCart.onclick = () =>   window.location.href = 'caritodecompras.html';
+  }
+  // Botón sticky
+  const stickyCart = document.getElementById('stickyCart');
+  if (stickyCart) {
+    stickyCart.classList.add('added');
+    stickyCart.innerHTML = '<i class="fas fa-check"></i> Ver carrito';
+  }
+}
+
+function showCartPreview(titulo, precio) {
+  const preview = document.getElementById('cartPreview');
+  if (!preview) return;
+  preview.querySelector('.cart-preview-info strong').textContent = '✅ Añadido al carrito';
+  preview.querySelector('.cart-preview-info span').textContent = `${titulo.slice(0,28)}… · ${precio.toLocaleString('es-ES')} FCFA`;
+  preview.classList.add('visible');
+}
+
+window.irAlCarrito = function() {
+  window.location.href = 'caritodecompras.html';
+};
+
+// ── LOAD PRODUCT ──
+async function cargarProducto() {
+  productId = new URLSearchParams(window.location.search).get('id');
+  if (!productId) { showError(); return; }
+
+  try {
+    let docSnap = await getDoc(doc(db, "productos", productId));
+    if (!docSnap.exists()) docSnap = await getDoc(doc(db, "Producto", productId));
+    if (!docSnap.exists()) { showError(); return; }
+
+    productData = docSnap.data();
+    renderProducto(productData);
+
+    try {
+      const col = productData.plataforma === 'compraya-web' ? 'productos' : 'Producto';
+      await updateDoc(doc(db, col, productId), { visitas: increment(1) });
+    } catch (_) {}
+
+  } catch (err) {
+    console.error("Error cargando producto:", err);
+    showError(err.message);
+  }
+}
+
+// ── RENDER ──
+function renderProducto(data) {
+  if (data.imagenes?.length)          allImages = data.imagenes;
+  else if (data.imagenesGitHub?.length) allImages = data.imagenesGitHub;
+  else if (data.imagen)               allImages = [data.imagen];
+  else if (data.url_imagen)           allImages = [data.url_imagen];
+  else allImages = ['https://via.placeholder.com/800x600/111827/00f5ff?text=Sin+Imagen'];
+
+  const titulo      = data.titulo       || data.Título     || 'Producto sin título';
+  const precio      = parseInt(data.precio || 0);
+  const precioAnt   = parseInt(data.precioAntiguo || 0);
+  const descripcion = data.descripcion  || 'Sin descripción.';
+  const categoria   = data.categoria    || '—';
+  const subcategoria= data.subcategoria || '';
+  const estado      = data.estado       || data.condicion  || '—';
+  const ubicacion   = data.ubicacion    || 'Guinea Ecuatorial';
+  const telefono    = data.telefono     || '';
+  const vendedor    = data.nombreVendedor || data.vendedorNombre || 'Vendedor particular';
+  const vendedorId  = data.vendedorId   || data.uid || '';
+  const vendedorFoto= data.vendedorFoto || data.photoURL || '';
+  const visitas     = (data.visitas || 0) + 1;
+  const status      = data.status || data.estado_anuncio || 'activo';
+
+  // Breadcrumb
+  document.getElementById('bcCategory').textContent = categoria.charAt(0).toUpperCase() + categoria.slice(1);
+  document.getElementById('bcTitle').textContent    = titulo;
+
+  // Título página
+  document.title = `${titulo} | Compra Ya`;
+
+  // Status badge
+  const statusClass = { activo:'status-activo', vendido:'status-vendido', reservado:'status-reservado' }[status] || 'status-activo';
+  const statusLabel = { activo:'Disponible', vendido:'Vendido', reservado:'Reservado' }[status] || 'Disponible';
+
+  // Fecha
+  let fechaStr = 'Reciente';
+  if (data.fechaPublicacion?.toDate) {
+    fechaStr = data.fechaPublicacion.toDate().toLocaleDateString('es-ES', { day:'numeric', month:'long', year:'numeric' });
+  }
+
+  // Ahorro
+  let savingHTML = '';
+  if (precioAnt > precio && precioAnt > 0) {
+    const pct = Math.round((1 - precio/precioAnt)*100);
+    savingHTML = `<span class="price-old">${precioAnt.toLocaleString('es-ES')} FCFA</span>
+                  <span class="price-saving">−${pct}%</span>`;
+  }
+
+  // Thumbnails
+  let thumbsHTML = '';
+  if (allImages.length > 1) {
+    allImages.forEach((src, i) => {
+      thumbsHTML += `<div class="thumb ${i===0?'active':''}" data-idx="${i}" onclick="changeImg(${i})">
+                       <img src="${src}" alt="foto ${i+1}" loading="lazy">
+                     </div>`;
+    });
+  }
+
+  // Check if already in cart
+  const cart = getCart();
+  const inCart = !!cart.find(i => i.id === productId);
+  const cartBtnText  = inCart ? '<i class="fas fa-check"></i> En el carrito — Ver ahora' : '<i class="fas fa-cart-plus"></i> Añadir al carrito';
+  const cartBtnClass = inCart ? 'btn-cta btn-cart added' : 'btn-cta btn-cart';
+  const stickyCartText  = inCart ? '<i class="fas fa-check"></i> Ver carrito' : '<i class="fas fa-cart-plus"></i> Carrito';
+
+  // ── GALERÍA ──
+  document.getElementById('gallerySection').innerHTML = `
+    <div class="main-img-wrap" id="mainWrap">
+      <img id="mainImg" src="${allImages[0]}" alt="${titulo}" loading="eager">
+      <div class="status-badge ${statusClass}">${statusLabel}</div>
+      <div class="img-counter" id="imgCounter">1 / ${allImages.length}</div>
+      ${allImages.length > 1 ? `
+        <button class="gallery-arrow left"  onclick="prevImg()"><i class="fas fa-chevron-left"></i></button>
+        <button class="gallery-arrow right" onclick="nextImg()"><i class="fas fa-chevron-right"></i></button>
+      ` : ''}
+    </div>
+    ${allImages.length > 1 ? `<div class="thumbnails" id="thumbsRow">${thumbsHTML}</div>` : ''}
+  `;
+
+  // Perfil vendedor URL
+  const perfilURL = vendedorId
+    ? `perfildelvendedor.html?uid=${vendedorId}`
+    : `index-comprador.html?vendedor=${encodeURIComponent(vendedor)}`;
+
+  // Avatar vendedor
+  const avatarContent = vendedorFoto
+    ? `<img src="${vendedorFoto}" alt="${vendedor}" onerror="this.style.display='none'">`
+    : vendedor.charAt(0).toUpperCase();
+
+  // ── INFO ──
+  document.getElementById('infoSection').innerHTML = `
+    <div class="badges-row">
+      <span class="badge badge-cat" onclick="irACategoriaIndex('${categoria}')">
+        <i class="fas fa-tag"></i> ${categoria}${subcategoria ? ' › '+subcategoria : ''}
+      </span>
+      ${estado !== '—' ? `<span class="badge badge-cond"><i class="fas fa-star"></i> ${estado}</span>` : ''}
+      <span class="badge badge-loc"><i class="fas fa-map-marker-alt"></i> ${ubicacion}</span>
+    </div>
+
+    <h1 class="product-title">${titulo}</h1>
+
+    <div class="price-row">
+      <span class="price-main">${precio.toLocaleString('es-ES')} FCFA</span>
+      ${savingHTML}
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-pill"><i class="fas fa-eye"></i> ${visitas} visitas</div>
+      <div class="stat-pill"><i class="fas fa-calendar-alt"></i> ${fechaStr}</div>
+      ${data.likes ? `<div class="stat-pill"><i class="fas fa-heart"></i> ${data.likes}</div>` : ''}
+    </div>
+
+    <div class="section-label">Descripción</div>
+    <div class="description-box" id="descBox">
+      ${descripcion}
+      <div class="desc-fade" id="descFade"></div>
+    </div>
+    <button class="btn-read-more" id="btnReadMore" onclick="toggleDesc()">
+      <i class="fas fa-chevron-down" id="readMoreIcon"></i> Ver más
+    </button>
+
+    <!-- VENDEDOR — Clickable → perfil -->
+    <div class="section-label">Vendedor</div>
+    <a class="seller-card" href="${perfilURL}" id="sellerCard">
+      <div class="seller-avatar">${avatarContent}</div>
+      <div class="seller-info">
+        <div class="seller-name">${vendedor}</div>
+        <div class="seller-meta">
+          <span><i class="fas fa-map-marker-alt"></i> ${ubicacion}</span>
+          ${telefono ? `<span><i class="fas fa-phone"></i> ${telefono}</span>` : ''}
+        </div>
+      </div>
+      <span class="seller-verified"><i class="fas fa-check"></i> Verificado</span>
+      <i class="fas fa-chevron-right seller-arrow"></i>
+    </a>
+
+    <!-- VER MÁS DE ESTA CATEGORÍA — vuelve al index con filtro -->
+    <a class="more-cat-btn" onclick="irACategoriaIndex('${categoria}')">
+      <i class="fas fa-th-large"></i>
+      Ver más en ${categoria.charAt(0).toUpperCase()+categoria.slice(1)}
+      <i class="fas fa-arrow-right"></i>
+    </a>
+
+    <!-- CART PREVIEW -->
+    <div class="cart-preview" id="cartPreview">
+      <div class="cart-preview-icon">🛒</div>
+      <div class="cart-preview-info">
+        <strong></strong>
+        <span></span>
+      </div>
+      <button class="btn-go-cart" onclick="window.location.href='carritoDeCompras.html'">
+        <i class="fas fa-arrow-right"></i> Ver carrito
+      </button>
+    </div>
+
+    <!-- CTAs -->
+    <div class="cta-stack">
+      <!-- AÑADIR AL CARRITO -->
+      <button id="btnAddCart" class="${cartBtnClass}" onclick="${inCart ? "window.location.href='carritoDeCompras.html'" : 'addToCartAction()'}">
+        ${cartBtnText}
+      </button>
+
+      ${telefono ? `
+        <a href="https://wa.me/${telefono.replace(/\s+/g,'')}?text=${encodeURIComponent('Hola, estoy interesado en: *'+titulo+'*\nLo vi en Compra Ya. ¿Está disponible?')}"
+           target="_blank" rel="noopener" class="btn-cta btn-whatsapp">
+          <i class="fab fa-whatsapp"></i> Contactar por WhatsApp
+        </a>
+        <a href="tel:${telefono.replace(/\s+/g,'')}" class="btn-cta btn-call">
+          <i class="fas fa-phone"></i> Llamar al vendedor
+        </a>
+      ` : `<div style="text-align:center;color:var(--muted);padding:14px;font-size:0.88rem">El vendedor no proporcionó teléfono.</div>`}
+
+      <button class="btn-cta btn-secondary" onclick="compartirProducto()">
+        <i class="fas fa-share-alt"></i> Compartir anuncio
+      </button>
+    </div>
+
+    <!-- SEGURIDAD -->
+    <div class="section-label">Consejos de seguridad</div>
+    <div class="security-box">
+      <div class="sec-tip"><i class="fas fa-map-marker-alt"></i><span>Queda siempre en un lugar público y concurrido para ver el artículo.</span></div>
+      <div class="sec-tip"><i class="fas fa-camera"></i><span>Inspecciona el producto antes de pagar. Pide demostración si aplica.</span></div>
+      <div class="sec-tip"><i class="fas fa-exclamation-triangle"></i><span>Desconfía de precios muy por debajo del mercado o pagos adelantados.</span></div>
+      <div class="sec-tip"><i class="fas fa-headset"></i><span>Ante dudas, contacta con nuestro soporte antes de cerrar el trato.</span></div>
+    </div>
+  `;
+
+  // STICKY BOTTOM
+  document.getElementById('stickyPrice').textContent = precio.toLocaleString('es-ES');
+
+  // Sticky cart state
+  if (inCart) {
+    const sc = document.getElementById('stickyCart');
+    sc.classList.add('added');
+    sc.innerHTML = '<i class="fas fa-check"></i> Ver carrito';
+  }
+
+  if (telefono) {
+    const wa = `https://wa.me/${telefono.replace(/\s+/g,'')}?text=${encodeURIComponent('Hola, estoy interesado en: *'+titulo+'*\nLo vi en Compra Ya. ¿Está disponible?')}`;
+    document.getElementById('stickyWa').onclick   = () => window.open(wa, '_blank');
+    document.getElementById('stickyCall').onclick = () => window.location.href = `tel:${telefono.replace(/\s+/g,'')}`;
+  } else {
+    document.getElementById('stickyWa').style.display   = 'none';
+    document.getElementById('stickyCall').style.display = 'none';
+  }
+  document.getElementById('stickyBottom').classList.add('visible');
+
+  setupSwipe();
+  updateCartBadge();
+  hideLoading();
+}
+
+// ── NAVEGAR A INDEX CON FILTRO DE CATEGORÍA ──
+window.irACategoriaIndex = function(categoria) {
+  window.location.href = `index-comprador.html?categoria=${encodeURIComponent(categoria)}`;
+};
+
+// ── GALLERY CONTROLS ──
+function changeImg(idx) {
+  if (idx < 0) idx = allImages.length - 1;
+  if (idx >= allImages.length) idx = 0;
+  currentIdx = idx;
+  const img = document.getElementById('mainImg');
+  img.style.opacity = '0';
+  setTimeout(() => { img.src = allImages[idx]; img.style.opacity = '1'; }, 200);
+  document.getElementById('imgCounter').textContent = `${idx+1} / ${allImages.length}`;
+  document.querySelectorAll('.thumb').forEach((t, i) => t.classList.toggle('active', i === idx));
+}
+
+window.nextImg = () => changeImg(currentIdx + 1);
+window.prevImg = () => changeImg(currentIdx - 1);
+window.changeImg = changeImg;
+
+function setupSwipe() {
+  const wrap = document.getElementById('mainWrap');
+  if (!wrap || allImages.length < 2) return;
+  let sx = 0;
+  wrap.addEventListener('touchstart', e => { sx = e.changedTouches[0].clientX; }, { passive: true });
+  wrap.addEventListener('touchend',   e => {
+    const dx = sx - e.changedTouches[0].clientX;
+    if (Math.abs(dx) > 40) dx > 0 ? window.nextImg() : window.prevImg();
+  });
+}
+
+// ── DESCRIPTION TOGGLE ──
+window.toggleDesc = () => {
+  const box  = document.getElementById('descBox');
+  const expanded = box.classList.toggle('expanded');
+  document.getElementById('btnReadMore').innerHTML = expanded
+    ? `<i class="fas fa-chevron-up"></i> Ver menos`
+    : `<i class="fas fa-chevron-down"></i> Ver más`;
+};
+
+// ── LIKE ──
+window.toggleLike = () => {
+  liked = !liked;
+  const btn = document.getElementById('btnLike');
+  btn.innerHTML = liked ? '<i class="fas fa-heart" style="color:#ff3b5c"></i>' : '<i class="far fa-heart"></i>';
+  // Guardar en favoritos localStorage
+  const favs = JSON.parse(localStorage.getItem('cy_favs') || '[]');
+  if (liked) { if (!favs.includes(productId)) favs.push(productId); }
+  else { const idx = favs.indexOf(productId); if (idx > -1) favs.splice(idx,1); }
+  localStorage.setItem('cy_favs', JSON.stringify(favs));
+  toast(liked ? '❤️ Guardado en favoritos' : '🤍 Eliminado de favoritos');
+};
+
+// ── SHARE ──
+window.compartirProducto = async () => {
+  const url   = window.location.href;
+  const titulo= productData?.titulo || productData?.Título || 'Mira este producto en Compra Ya';
+  if (navigator.share) {
+    try { await navigator.share({ title: titulo, url }); } catch (_) {}
+  } else {
+    await navigator.clipboard.writeText(url);
+    toast('🔗 Enlace copiado al portapapeles');
+  }
+};
+
+// ── UI HELPERS ──
+function hideLoading() {
+  const ls = document.getElementById('loadingScreen');
+  ls.classList.add('hidden');
+  setTimeout(() => { ls.style.display = 'none'; }, 500);
+  document.getElementById('productWrap').classList.add('visible');
+}
+
+function showError(msg) {
+  document.getElementById('loadingScreen').style.display = 'none';
+  document.getElementById('errorScreen').classList.add('visible');
+  if (msg) console.error('Error:', msg);
+}
+
+let toastTimer;
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className   = 'show';
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { el.className = ''; }, 3500);
+}
+
+// ── KEYBOARD NAV ──
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight') window.nextImg?.();
+  if (e.key === 'ArrowLeft')  window.prevImg?.();
+});
+
+// ── INIT ──
+updateCartBadge();
+cargarProducto();
+</script>
+
+<!-- SCRIPT ADICIONAL: leer filtro de categoría al volver al index -->
+<script>
+// Si la URL tiene ?volverCat=X, seleccionar esa categoría en index
+// (Este script aplica solo si el usuario vuelve a index-comprador.html)
+</script>
+
+</body>
+</htm

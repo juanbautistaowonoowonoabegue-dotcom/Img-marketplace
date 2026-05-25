@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sobre Nosotros - Compra Ya | Marketplace Guinea Ecuatorial</title>
+     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+<script>
+  const firebaseConfig = {
+    apiKey: "TU_API_KEY",
+    authDomain: "tu-proyecto.firebaseapp.com",
+    projectId: "tu-proyecto",
+    // ... copia el resto de tu consola
+  };
+  // Inicializar Firebase
+  firebase.initializeApp(firebaseConfig);
+</script>
+    <style>
+        :root {
+            --primary: #00bfff;
+            --dark: #0f0e0efc;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background-color: #0a0a0a;
+            color: #ffffff;
+        }
+
+        /* HEADER - Igual que en todas tus páginas */
+        .header-moderno {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background-color: var(--dark);
+            border-bottom: 1px solid #333;
+        }
+
+        .header-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 15px;
+        }
+
+        .menu-hamburguesa {
+            font-size: 1.8rem;
+            cursor: pointer;
+            padding: 8px;
+        }
+
+        .logo-mini {
+            height: 45px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn-premium-small {
+            padding: 8px 14px;
+            border-radius: 30px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: linear-gradient(135deg, #ffd700, #ffaa00);
+            color: #000;
+        }
+
+        .search-bar-container {
+            padding: 12px 15px;
+            background: var(--dark);
+        }
+
+        .search-wrapper {
+            display: flex;
+            align-items: center;
+            background: #1f1f1f;
+            border-radius: 50px;
+            padding: 8px 15px;
+            border: 1px solid #333;
+        }
+
+        #main-search {
+            flex: 1;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: white;
+            font-size: 1rem;
+        }
+
+        .btn-search-main {
+            background: var(--primary);
+            color: white;
+            border: none;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* CONTENIDO */
+        .sobre-container {
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 0 15px;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 50px 20px;
+            background: linear-gradient(135deg, #1a1a1a, #0f0e0e);
+            border-radius: 16px;
+            margin-bottom: 50px;
+        }
+
+        .hero h1 {
+            font-size: 2.4rem;
+            margin-bottom: 12px;
+            color: #ffd700;
+        }
+
+        .section {
+            margin-bottom: 60px;
+        }
+
+        .section h2 {
+            color: var(--primary);
+            font-size: 1.7rem;
+            margin-bottom: 20px;
+        }
+
+        .video-container {
+            margin: 40px 0;
+            background: #000;
+            border-radius: 16px;
+            overflow: hidden;
+            position: relative;
+            padding-top: 56.25%;
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            border: 0;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .card {
+            background: #1a1a1a;
+            padding: 28px;
+            border-radius: 16px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        .premium-card {
+            border: 2px solid #ffd700;
+            position: relative;
+        }
+
+        .badge {
+            position: absolute;
+            top: -12px;
+            right: 20px;
+            background: #ffd700;
+            color: #000;
+            padding: 6px 16px;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 0.85rem;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 14px 32px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 20px;
+            transition: all 0.3s;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            background: #00a8e6;
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px 15px;
+            background: #0a0a0a;
+            border-top: 1px solid #222;
+            color: #888;
+            margin-top: 80px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <header class="header-moderno">
+        <div class="header-top">
+            <div class="menu-hamburguesa" onclick="toggleMenuLateral()">
+                <i class="fas fa-bars"></i>
+            </div>
+            
+            <img src="logotipo.JPEG" class="logo-mini" alt="Compra Ya" onclick="window.location.href='index.html'">
+
+            <div class="header-actions">
+                <button class="btn-premium-small" onclick="window.location.href='perfildelusuario.html'">
+                    <i class="fas fa-user-circle"></i> Mi Cuenta
+                </button>
+            </div>
+        </div>
+
+        <div class="search-bar-container">
+            <div class="search-wrapper">
+                <input type="text" id="main-search" placeholder="Busca en Sobre Nosotros..." 
+                       onkeyup="if(event.key==='Enter') buscar()">
+                <button class="btn-search-main" onclick="buscar()">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+   
+    <div class="sobre-container">
+
+        <div class="hero">
+            <h1>Sobre Compra Ya</h1>
+            <p style="font-size: 1.2rem; max-width: 700px; margin: 0 auto; line-height: 1.7;">
+                Tu marketplace local de confianza en Guinea Ecuatorial. Conectamos compradores y vendedores con tecnología, electrodomésticos y mucho más.
+            </p>
+            <a href="index.html" style="color: #00bfff; text-decoration: none; margin-top: 20px; display: inline-block;">
+                ← Volver al Inicio
+            </a>
+        </div>
+
+        <section class="section">
+            <h2>Nuestra Evolución</h2>
+            <p style="font-size: 1.1rem; line-height: 1.8; max-width: 900px;">
+                Lo que comenzó como un canal de ventas directo ha evolucionado hacia un <strong>ecosistema digital completo</strong>. 
+                Hoy, COMPRA YA!! es un marketplace diseñado para conectar a compradores exigentes con vendedores que buscan eficiencia, 
+                seguridad y visibilidad en el mercado de Guinea Ecuatorial.
+            </p>
+        </section>
+
+        <section class="section">
+            <h2 style="text-align: center;">Conoce nuestra esencia</h2>
+            <div class="video-container">
+                <iframe src="https://www.instagram.com/p/DWKISl2DZyc/embed" 
+                        allowtransparency="true" allowfullscreen="true" frameborder="0" scrolling="no"></iframe>
+            </div>
+        </section>
+
+        <div class="grid">
+            <div class="card">
+                <h3>Servicios Gratuitos</h3>
+                <p>Creemos en el crecimiento compartido. Cualquier usuario puede comenzar sin costes ocultos:</p>
+                <ul style="margin-top: 15px; padding-left: 1.3rem; line-height: 1.8;">
+                    <li>Publicación de anuncios básicos</li>
+                    <li>Acceso a nuestra red de compradores</li>
+                    <li>Gestión de consultas mediante chat</li>
+                    <li>Panel de control de productos</li>
+                </ul>
+            </div>
+
+            <div class="card premium-card">
+                <span class="badge">Recomendado</span>
+                <h3 style="margin-top: 10px;">Servicios Premium</h3>
+                <p>Para vendedores que quieren escalar su negocio:</p>
+                <ul style="margin-top: 15px; padding-left: 1.3rem; line-height: 1.8;">
+                    <li><strong>Posicionamiento VIP</strong> — Aparece primero en búsquedas</li>
+                    <li><strong>Sello de Vendedor Verificado</strong></li>
+                    <li><strong>Marketing en redes sociales</strong></li>
+                    <li><strong>Soporte prioritario</strong></li>
+                </ul>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin: 50px 0;">
+            <a href="vendedores.html" class="cta-button">
+                <i class="fas fa-store"></i> Empieza a Vender Ahora
+            </a>
+        </div>
+
+    </div>
+<!-- BOTÓN VOLVER AL INICIO - ICONO -->
+<button onclick="window.location.href='index.html'" 
+style="
+position: fixed;
+bottom: 20px;
+left: 20px;
+z-index: 999;
+background: linear-gradient(135deg, #f59e0b, #d97706);
+border: none;
+width: 55px;
+height: 55px;
+border-radius: 50%;
+display: flex;
+align-items: center;
+justify-content: center;
+cursor: pointer;
+box-shadow: 0 6px 20px rgba(245, 158, 11, 0.5);
+transition: all 0.3s ease;
+"
+onmouseover="this.style.transform='scale(1.1) translateY(-3px)'; this.style.boxShadow='0 10px 25px rgba(245,158,11,0.7)'"
+onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 6px 20px rgba(245,158,11,0.5)'"
+onmousedown="this.style.transform='scale(0.9)'"
+onmouseup="this.style.transform='scale(1.1)'"
+>
+    <i class="fas fa-home" style="color:white; font-size: 1.5rem;"></i>
+</button>
+    <!-- FOOTER - Exactamente igual que en tus otras páginas -->
+    <footer>
+        <div style="max-width: 1280px; margin: 0 auto;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 45px 30px; margin-bottom: 60px;">
+                <div>
+                    <h3 style="color: #ffffff; margin-bottom: 18px; font-size: 1.4rem;">Compra Ya</h3>
+                    <p style="line-height: 1.7; max-width: 290px;">Tu marketplace local de tecnología en Guinea Ecuatorial. Compra y vende laptops, iPhones, accesorios y más con confianza.</p>
+                    <p style="margin-top: 20px; font-size: 0.9rem;">Publicación básica <strong>gratuita</strong> • Servicios Premium opcionales</p>
+                </div>
+            </div>
+
+            <!-- Información legal -->
+            <div style="border-top: 1px solid #222; padding-top: 40px; font-size: 0.9rem; line-height: 1.8;">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 40px;">
+                    <div>
+                        <h5 style="color: #fff; margin-bottom: 12px;">Términos y Condiciones</h5>
+                        <p style="color: #aaa;">Al usar Compra Ya aceptas nuestros términos. Somos un marketplace que facilita la compraventa. Última actualización: 31 de marzo de 2026.</p>
+                    </div>
+                    <div>
+                        <h5 style="color: #fff; margin-bottom: 12px;">Política de Privacidad</h5>
+                        <p style="color: #aaa;">Protegemos tus datos personales. Garantía de 30 días. Consulta nuestra <a href="privacidad.html" style="color: #00bfff; text-decoration: none;">Política de Privacidad</a>.</p>
+                    </div>
+                    <div>
+                        <h5 style="color: #fff; margin-bottom: 12px;">Servicios Premium</h5>
+                        <p style="color: #aaa;">La publicación es gratuita. Ofrecemos visibilidad extra y promociones. Ver <a href="condiciones-venta.html" style="color: #00bfff; text-decoration: none;">Condiciones de Venta</a>.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Línea final -->
+            <div style="border-top: 1px solid #222; margin-top: 50px; padding-top: 30px; text-align: center; font-size: 0.85rem; color: #777;">
+                <p>&copy; 2026 Compra Ya - Marketplace Guinea Ecuatorial. Todos los derechos reservados.</p>
+                <p style="margin-top: 8px;">Malabo • Bata • Ebebiyín • Última actualización: 31 de marzo de 2026</p>
+                <p style="margin-top: 12px; font-size: 0.82rem;">Hecho con ❤️ para facilitar la compraventa local</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function toggleMenuLateral() {
+            const menu = document.getElementById('menu-lateral');
+            menu.classList.toggle('active');
+        }
+     // ==================== FUNCIONES ====================
+
+        function crearTarjeta(producto) {
+            const div = document.createElement('div');
+            div.className = 'tarjeta-premium';
+            div.setAttribute('data-categoria', producto.categoria || 'otros');
+
+            let html = `
+                <div style="position: relative;">
+                    <img src="${producto.imagen || 'https://picsum.photos/id/180/300/200'}" 
+                         alt="${producto.titulo}" 
+                         onclick="verDetalle('${producto.docId || producto.id}')">
+            `;
+
+            if (producto.precioAntiguo) {
+                html += `<div class="badge-oferta">OFERTA</div>`;
+            }
+
+            html += `
+                </div>
+                <div class="tarjeta-info">
+                    <div class="tarjeta-titulo">${producto.titulo}</div>
+                    <div class="tarjeta-precio">
+                        ${producto.precio} FCFA
+                        ${producto.precioAntiguo ? `<span>${producto.precioAntiguo} FCFA</span>` : ''}
+                    </div>
+                </div>
+            `;
+
+            div.innerHTML = html;
+            return div;
+        }
+
+        // Redirigir al detalle del producto
+        function verDetalle(productoId) {
+            if (productoId) {
+                window.location.href = `detalledelproducto.html?id=${productoId}`;
+            }
+        }
+
+        // Cargar productos aceptados desde Firestore
+        async function cargarProductos() {
+            const contenedores = {
+                tendencias: document.getElementById('carrusel-tendencias'),
+                ofertas: document.getElementById('carrusel-ofertas'),
+                iphones: document.getElementById('carrusel-iphones'),
+                laptops: document.getElementById('carrusel-laptops')
+            };
+
+            // Limpiar contenedores
+            Object.values(contenedores).forEach(cont => cont.innerHTML = '');
+
+            try {
+                const querySnapshot = await db.collection("productos")
+                    .where("estado", "==", "aceptado")
+                    .orderBy("fechaPublicacion", "desc")
+                    .limit(30)
+                    .get();
+
+                if (querySnapshot.empty) {
+                    const mensaje = `<p style="color:#888; padding: 30px 10px; text-align:center;">No hay productos publicados todavía.<br>¡Sé el primero en vender!</p>`;
+                    Object.values(contenedores).forEach(cont => cont.innerHTML = mensaje);
+                    return;
+                }
+
+                querySnapshot.forEach((doc) => {
+                    const prod = doc.data();
+                    prod.docId = doc.id;
+
+                    const tarjeta = crearTarjeta(prod);
+
+                    // Tendencias (todos los aceptados)
+                    contenedores.tendencias.appendChild(tarjeta.cloneNode(true));
+
+                    // Ofertas
+                    if (prod.tipo === "ofertas" || prod.precioAntiguo) {
+                        contenedores.ofertas.appendChild(tarjeta.cloneNode(true));
+                    }
+
+                    // iPhones
+                    if (prod.categoria === "iphones") {
+                        contenedores.iphones.appendChild(tarjeta.cloneNode(true));
+                    }
+
+                    // Laptops
+                    if (prod.categoria === "laptops") {
+                        contenedores.laptops.appendChild(tarjeta.cloneNode(true));
+                    }
+                });
+
+            } catch (error) {
+                console.error("Error cargando productos:", error);
+                const errorMsg = `<p style="color:#ff6666; padding:20px;">Error al cargar los productos. Inténtalo más tarde.</p>`;
+                Object.values(contenedores).forEach(cont => cont.innerHTML = errorMsg);
+            }
+        }
+
+        // Funciones del header y menú
+        function toggleMenuLateral() {
+            document.getElementById('menu-lateral').classList.toggle('active');
+        }
+
+        function filtrar(categoria) {
+            document.querySelectorAll('.filtro-item').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            document.querySelectorAll('.tarjeta-premium').forEach(prod => {
+                if (categoria === 'todos' || prod.getAttribute('data-categoria') === categoria) {
+                    prod.style.display = 'block';
+                } else {
+                    prod.style.display = 'none';
+                }
+            });
+        }
+
+        function buscarPorImagen(input) {
+            if (input.files && input.files[0]) {
+                alert("🤖 Analizando imagen con IA de Compra Ya...\n\nBuscando equipos similares en Malabo.");
+            }
+        }
+
+        // Inicializar página
+        window.onload = () => {
+            cargarProductos();
+        };
+        function buscarTexto() {
+    const valor = document.getElementById("main-search").value.toLowerCase();
+
+    const resultados = productosDB.filter(p =>
+        p.titulo.toLowerCase().includes(valor) ||
+        p.descripcion.toLowerCase().includes(valor) ||
+        p.categoria.toLowerCase().includes(valor)
+    );
+
+    renderProductos(resultados);
+}
+async function buscarPorImagenIA(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    alert("🔍 Analizando imagen con IA...");
+
+    // 1. Convertir imagen a base64
+    const base64 = await convertirBase64(file);
+
+    // 2. SIMULACIÓN IA (luego conectar API real)
+    const etiquetaDetectada = await detectarObjetoIA(base64);
+
+    console.log("IA detectó:", etiquetaDetectada);
+
+    // 3. Filtrar productos según lo detectado
+    const resultados = productosDB.filter(p =>
+        p.titulo.toLowerCase().includes(etiquetaDetectada) ||
+        p.descripcion.toLowerCase().includes(etiquetaDetectada) ||
+        p.categoria.toLowerCase().includes(etiquetaDetectada)
+    );
+
+    if (resultados.length === 0) {
+        alert("❌ No se encontró ese producto en el catálogo");
+    } else {
+        alert("✅ Producto encontrado: " + etiquetaDetectada);
+    }
+
+    renderProductos(resultados);
+}
+function convertirBase64(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result.split(',')[1]);
+        reader.onerror = error => reject(error);
+    });
+}
+async function detectarObjetoIA(base64) {
+
+// ⚠️ SIMULACIÓN INTELIGENTE
+// Aquí luego conectas API real
+
+// Ejemplo simple:
+return "iphone"; 
+}
+
+        function buscar() {
+            const term = document.getElementById("main-search").value.trim();
+            if (term) alert("🔍 Buscando: " + term);
+        }
+    </script>
+<script src="api.js"></script>
+    <script>
+        // Ejemplo: Cargar productos cuando se abra la página
+        obtenerProductos().then(productos => {
+            console.log("¡Listo! Estos son tus productos:", productos);
+            // Aquí llamarías a la función que dibuja las tarjetas en tu web
+        });
+    </script>
+</body>
+</html>

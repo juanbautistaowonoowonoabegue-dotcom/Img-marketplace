@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: compra-ya-backend
+  datasource:
+    url: jdbc:postgresql://localhost:5432/compraya_db
+    username: postgres
+    password: tu_contraseña
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+firebase:
+  admin-sdk-path: classpath:firebase-service-account.json   # Coloca tu JSON aquí
+
+server:
+  port: 8080

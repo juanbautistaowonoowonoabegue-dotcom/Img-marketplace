@@ -1,0 +1,15 @@
+{
+  "projects": {
+    "default": "compraya-d0760"
+  },
+  "targets": {
+    "compraya-d0760": {
+      "hosting": {
+        "main": [
+          "compra-ya-guinea"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}

@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Configuración | Compra Ya</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+  <!-- ══ SEGURIDAD ══════════════════════════════════ -->
+
+  <!-- Evita que tu web se cargue dentro de un iframe (clickjacking) -->
+  <meta http-equiv="X-Frame-Options" content="DENY">
+
+  <!-- Fuerza HTTPS, no permite downgrade a HTTP -->
+  <meta http-equiv="Strict-Transport-Security" content="max-age=31536000; includeSubDomains">
+
+  <!-- Evita que el navegador adivine el tipo de archivo (MIME sniffing) -->
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+
+  <!-- Controla qué info se envía en el Referer al salir de tu web -->
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+
+  <!-- Desactiva funciones sensibles del navegador que no necesitas -->
+  <meta http-equiv="Permissions-Policy" content="
+    geolocation=(),
+    microphone=(),
+    camera=(),
+    payment=(),
+    usb=()
+  ">
+
+  <!-- XSS Protection (para navegadores viejos) -->
+  <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+
+  <!-- CSP adaptado para Firebase + Compra Ya -->
+  <meta http-equiv="Content-Security-Policy" content="
+    default-src 'self';
+    script-src 'self' 'unsafe-inline' 'unsafe-eval'
+      https://www.gstatic.com
+      https://cdnjs.cloudflare.com
+      https://generativelanguage.googleapis.com;
+    style-src 'self' 'unsafe-inline'
+      https://fonts.googleapis.com
+      https://cdnjs.cloudflare.com;
+    font-src 'self'
+      https://fonts.gstatic.com
+      https://cdnjs.cloudflare.com;
+    img-src 'self' data: blob: https:;
+    connect-src 'self'
+      https://*.googleapis.com
+      https://*.firebaseio.com
+      https://firestore.googleapis.com
+      https://identitytoolkit.googleapis.com
+      https://storage.googleapis.com;
+    media-src 'self' blob:;
+    frame-ancestors 'none';
+    upgrade-insecure-requests;
+  ">
+
+  <!-- ══ FIN SEGURIDAD ══════════════════════════════ -->
+<style>
+:root {
+  --sky: #0AAFFF;
+  --sky-d: #0088D4;
+  --mint: #00E5A0;
+  --gold: #F5C842;
+  --danger: #FF4757;
+  --ink: #080C12;
+  --ink2: #111827;
+  --ink3: #1E2D3D;
+  --slate: #4A5568;
+  --mist: #8A9BB0;
+  --cloud: #F0F6FB;
+  --white: #FFFFFF;
+  --border: #E5ECF6;
+  --r: 18px;
+  --r-sm: 12px;
+  --shadow-sm: 0 2px 10px rgba(0,0,0,0.07);
+  --font-d: 'Syne', sans-serif;
+  --font-b: 'DM Sans', sans-serif;
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+html { scroll-behavior: smooth; }
+
+body {
+font-family: var(–font-b);
+background: var(–cloud);
+color: var(–ink);
+min-height: 100vh;
+padding-bottom: 40px;
+overflow-x: hidden;
+}
+
+/* ── HEADER ── */
+.header {
+background: linear-gradient(150deg, #05131E 0%, #0A2340 55%, #0D3060 100%);
+padding: 52px 20px 28px;
+position: relative;
+overflow: hidden;
+}
+.header-orb {
+position: absolute; border-radius: 50%;
+filter: blur(60px); pointer-events: none;
+}
+.header-orb:nth-child(1) {
+width: 220px; height: 220px;
+background: var(–sky); opacity: 0.12;
+top: -70px; right: -50px;
+}
+.header-orb:nth-child(2) {
+width: 160px; height: 160px;
+background: var(–mint); opacity: 0.08;
+bottom: -40px; left: -30px;
+}
+.header-grid {
+position: absolute; inset: 0;
+background-image: radial-gradient(circle, rgba(255,255,255,0.03) 1px, transparent 1px);
+background-size: 26px 26px;
+}
+.header-inner {
+position: relative; z-index: 5;
+display: flex; align-items: center; gap: 14px;
+max-width: 500px; margin: 0 auto;
+}
+.back-btn {
+width: 38px; height: 38px; border-radius: 50%;
+background: rgba(255,255,255,0.12);
+border: 1px solid rgba(255,255,255,0.15);
+color: white; font-size: 0.95rem;
+display: flex; align-items: center; justify-content: center;
+cursor: pointer; transition: all 0.2s;
+backdrop-filter: blur(8px);
+text-decoration: none; flex-shrink: 0;
+}
+.back-btn:hover { background: rgba(255,255,255,0.2); }
+.header-titles { flex: 1; }
+.header-logo {
+font-family: var(–font-d);
+font-size: 0.78rem; font-weight: 600;
+color: rgba(255,255,255,0.5);
+margin-bottom: 2px;
+}
+.header-logo span { color: var(–sky); }
+.header-title {
+font-family: var(–font-d);
+font-size: 1.35rem; font-weight: 800;
+color: white;
+}
+
+/* ── CONTENT ── */
+.content {
+max-width: 500px;
+margin: 0 auto;
+padding: 22px 14px 0;
+}
+
+/* ── SECTION LABEL ── */
+.sec-label {
+font-size: 0.68rem; font-weight: 700;
+text-transform: uppercase; letter-spacing: 0.07em;
+color: var(–mist);
+padding: 0 4px;
+margin-bottom: 8px;
+margin-top: 22px;
+}
+.sec-label:first-child { margin-top: 0; }
+
+/* ── SETTING ROW ── */
+.settings-group {
+background: white;
+border-radius: var(–r);
+overflow: hidden;
+box-shadow: var(–shadow-sm);
+}
+.setting-row {
+display: flex; align-items: center; gap: 14px;
+padding: 16px 18px;
+border-bottom: 1px solid #F0F5FB;
+cursor: pointer;
+transition: background 0.18s;
+position: relative;
+}
+.setting-row:last-child { border-bottom: none; }
+.setting-row:hover { background: #FAFCFF; }
+.setting-row:active { background: #F0F5FB; }
+
+.setting-icon {
+width: 40px; height: 40px; border-radius: 11px;
+display: flex; align-items: center; justify-content: center;
+font-size: 1rem; flex-shrink: 0;
+}
+.ic-sky   { background: rgba(10,175,255,0.1);  color: var(–sky); }
+.ic-mint  { background: rgba(0,229,160,0.1);   color: #00B87F; }
+.ic-gold  { background: rgba(245,200,66,0.12); color: #C89400; }
+.ic-slate { background: rgba(74,85,104,0.09);  color: var(–slate); }
+.ic-red   { background: rgba(255,71,87,0.09);  color: var(–danger); }
+.ic-ink   { background: rgba(8,12,18,0.07);    color: var(–ink); }
+
+.setting-text { flex: 1; overflow: hidden; }
+.setting-title { font-weight: 600; font-size: 0.92rem; }
+.setting-sub { font-size: 0.75rem; color: var(–mist); margin-top: 1px; }
+
+.setting-chevron { color: #CBD5E0; font-size: 0.78rem; flex-shrink: 0; }
+.setting-value { font-size: 0.8rem; color: var(–mist); margin-right: 6px; flex-shrink: 0; }
+
+/* Toggle switch */
+.toggle-wrap { flex-shrink: 0; }
+.toggle {
+width: 46px; height: 26px;
+background: #E2E8F0; border-radius: 50px;
+position: relative; cursor: pointer;
+transition: background 0.25s;
+border: none; outline: none;
+display: block;
+}
+.toggle.on { background: var(–sky); }
+.toggle::after {
+content: ‘’;
+position: absolute; top: 3px; left: 3px;
+width: 20px; height: 20px; border-radius: 50%;
+background: white;
+box-shadow: 0 1px 5px rgba(0,0,0,0.18);
+transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1);
+}
+.toggle.on::after { transform: translateX(20px); }
+
+/* ── LANGUAGE PICKER (inline panel) ── */
+.lang-panel {
+display: none;
+background: #FAFCFF;
+border-top: 1px solid #F0F5FB;
+padding: 12px 14px;
+animation: panelIn 0.22s ease;
+}
+.lang-panel.open { display: block; }
+@keyframes panelIn {
+from { opacity:0; transform: translateY(-6px); }
+to   { opacity:1; transform: translateY(0); }
+}
+.lang-grid { display: flex; flex-wrap: wrap; gap: 8px; padding-top: 2px; }
+.lang-opt {
+padding: 7px 14px; border-radius: 20px;
+border: 1.5px solid var(–border);
+background: white; color: var(–ink);
+font-family: var(–font-b); font-size: 0.8rem; font-weight: 600;
+cursor: pointer; transition: all 0.2s;
+}
+.lang-opt:hover { border-color: var(–sky); color: var(–sky); }
+.lang-opt.selected { background: var(–sky); color: white; border-color: var(–sky); }
+
+/* ── THEME PICKER (inline panel) ── */
+.theme-panel {
+display: none;
+background: #FAFCFF;
+border-top: 1px solid #F0F5FB;
+padding: 12px 14px;
+animation: panelIn 0.22s ease;
+}
+.theme-panel.open { display: block; }
+.theme-opts { display: flex; gap: 10px; }
+.theme-opt {
+flex: 1; padding: 12px 8px;
+border-radius: 13px; border: 2px solid var(–border);
+background: white; cursor: pointer;
+text-align: center; transition: all 0.2s;
+}
+.theme-opt:hover { border-color: var(–sky); }
+.theme-opt.selected { border-color: var(–sky); background: rgba(10,175,255,0.05); }
+.theme-opt-icon { font-size: 1.4rem; display: block; margin-bottom: 4px; }
+.theme-opt-label { font-size: 0.73rem; font-weight: 600; color: var(–slate); }
+.theme-opt.selected .theme-opt-label { color: var(–sky); }
+
+/* ── LOGOUT ROW ── */
+.logout-row { margin-top: 22px; }
+.logout-btn {
+width: 100%; padding: 16px 18px;
+background: white; border-radius: var(–r);
+border: none; cursor: pointer;
+display: flex; align-items: center; gap: 14px;
+box-shadow: var(–shadow-sm);
+transition: all 0.2s;
+font-family: var(–font-b);
+}
+.logout-btn:hover { background: #FFF0F1; transform: translateY(-1px); }
+.logout-btn:active { transform: scale(0.98); }
+.logout-label { font-weight: 700; font-size: 0.92rem; color: var(–danger); }
+.logout-sub { font-size: 0.74rem; color: #FFA0A8; margin-top: 1px; text-align: left; }
+
+/* ── VERSION FOOTER ── */
+.version-note {
+text-align: center; padding: 28px 20px 0;
+color: #CBD5E0; font-size: 0.72rem;
+}
+.version-note strong { color: var(–sky); font-family: var(–font-d); }
+
+/* ── MODAL ── */
+.modal-backdrop {
+display: none; position: fixed; inset: 0; z-index: 500;
+background: rgba(8,12,18,0.65);
+backdrop-filter: blur(8px);
+align-items: flex-end; justify-content: center;
+}
+.modal-backdrop.open { display: flex; animation: fadeIn 0.22s ease; }
+@keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+.modal-sheet {
+background: white; border-radius: 28px 28px 0 0;
+width: 100%; max-width: 540px;
+padding: 24px 22px 48px;
+animation: sheetUp 0.3s cubic-bezier(0.34,1.56,0.64,1);
+}
+@keyframes sheetUp {
+from { transform: translateY(100%); }
+to   { transform: translateY(0); }
+}
+.modal-handle {
+width: 40px; height: 4px; background: #E5ECF6;
+border-radius: 4px; margin: 0 auto 20px;
+}
+.modal-icon-wrap {
+width: 64px; height: 64px; border-radius: 50%;
+display: flex; align-items: center; justify-content: center;
+margin: 0 auto 14px; font-size: 1.6rem;
+}
+.modal-title {
+font-family: var(–font-d); font-size: 1.15rem; font-weight: 800;
+text-align: center; margin-bottom: 6px;
+}
+.modal-sub { text-align:center; font-size:0.86rem; color:var(–mist); margin-bottom:22px; }
+.modal-btn {
+width: 100%; height: 50px; border: none; border-radius: 14px;
+font-family: var(–font-d); font-weight: 700; font-size: 0.92rem;
+cursor: pointer; margin-top: 8px; transition: all 0.22s;
+display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.modal-btn:hover { filter: brightness(1.07); transform: translateY(-1px); }
+.modal-btn-danger { background: var(–danger); color: white; }
+.modal-btn-ghost {
+background: #F4F6F9; color: var(–slate);
+border: 1.5px solid #E5ECF6;
+}
+.modal-btn-ghost:hover { background: #E5ECF6; filter: none; transform: none; }
+
+/* ── TOAST ── */
+.toast-stack {
+position: fixed; bottom: 28px; left: 50%;
+transform: translateX(-50%);
+display: flex; flex-direction: column; gap: 8px;
+align-items: center; z-index: 9999;
+pointer-events: none;
+}
+.toast-item {
+display: inline-flex; align-items: center; gap: 9px;
+padding: 11px 20px; background: var(–ink2); color: white;
+border-radius: 50px; font-size: 0.84rem; font-weight: 500;
+white-space: nowrap; max-width: calc(100vw - 40px);
+box-shadow: 0 8px 28px rgba(0,0,0,0.28);
+animation: toastIn 0.35s cubic-bezier(0.34,1.56,0.64,1) forwards;
+}
+.toast-item i { font-size: 0.84rem; }
+.toast-item.t-success i { color: var(–mint); }
+.toast-item.t-error i   { color: var(–danger); }
+.toast-item.t-info i    { color: var(–sky); }
+@keyframes toastIn {
+from { opacity:0; transform:translateY(14px) scale(0.9); }
+to   { opacity:1; transform:translateY(0) scale(1); }
+}
+@keyframes toastOut {
+from { opacity:1; transform:translateY(0) scale(1); }
+to   { opacity:0; transform:translateY(8px) scale(0.94); }
+}
+</style>
+
+</head>
+<body>
+
+<!-- HEADER -->
+
+<div class="header">
+  <div class="header-orb"></div>
+  <div class="header-orb"></div>
+  <div class="header-grid"></div>
+  <div class="header-inner">
+    <a href="perfildelvendedor.html" class="back-btn" title="Volver">
+      <i class="fas fa-arrow-left"></i>
+    </a>
+    <div class="header-titles">
+      <div class="header-logo"><span>Compra</span>Ya</div>
+      <div class="header-title">Configuración</div>
+    </div>
+  </div>
+</div>
+
+<!-- CONTENT -->
+
+<div class="content">
+
+  <!-- APARIENCIA -->
+
+  <div class="sec-label">Apariencia</div>
+  <div class="settings-group">
+
+```
+<!-- Tema -->
+<div class="setting-row" onclick="toggleThemePanel()">
+  <div class="setting-icon ic-ink"><i class="fas fa-circle-half-stroke"></i></div>
+  <div class="setting-text">
+    <div class="setting-title">Tema</div>
+    <div class="setting-sub">Elige cómo se ve la app</div>
+  </div>
+  <span class="setting-value" id="theme-label">Claro</span>
+  <i class="fas fa-chevron-right setting-chevron" id="theme-chev"></i>
+</div>
+<div class="theme-panel" id="theme-panel">
+  <div class="theme-opts">
+    <div class="theme-opt selected" data-theme="light" onclick="setTheme('light', this)">
+      <span class="theme-opt-icon">☀️</span>
+      <div class="theme-opt-label">Claro</div>
+    </div>
+    <div class="theme-opt" data-theme="dark" onclick="setTheme('dark', this)">
+      <span class="theme-opt-icon">🌙</span>
+      <div class="theme-opt-label">Oscuro</div>
+    </div>
+    <div class="theme-opt" data-theme="system" onclick="setTheme('system', this)">
+      <span class="theme-opt-icon">⚙️</span>
+      <div class="theme-opt-label">Sistema</div>
+    </div>
+  </div>
+</div>
+
+<!-- Tamaño fuente -->
+<div class="setting-row" onclick="toggleFontPanel()">
+  <div class="setting-icon ic-slate"><i class="fas fa-text-height"></i></div>
+  <div class="setting-text">
+    <div class="setting-title">Tamaño de texto</div>
+    <div class="setting-sub">Ajusta la legibilidad</div>
+  </div>
+  <span class="setting-value" id="font-label">Normal</span>
+  <i class="fas fa-chevron-right setting-chevron"></i>
+</div>
+<div class="lang-panel" id="font-panel">
+  <div class="lang-grid">
+    <button class="lang-opt" data-size="small"  onclick="setFontSize('small','Pequeño',this)">Pequeño</button>
+    <button class="lang-opt selected" data-size="normal" onclick="setFontSize('normal','Normal',this)">Normal</button>
+    <button class="lang-opt" data-size="large"  onclick="setFontSize('large','Grande',this)">Grande</button>
+  </div>
+</div>
+```
+
+  </div>
+
+  <!-- IDIOMA Y REGIÓN -->
+
+  <div class="sec-label">Idioma y Región</div>
+  <div class="settings-group">
+
+```
+<div class="setting-row" onclick="toggleLangPanel()">
+  <div class="setting-icon ic-sky"><i class="fas fa-language"></i></div>
+  <div class="setting-text">
+    <div class="setting-title">Idioma de la app</div>
+    <div class="setting-sub">Elige tu idioma preferido</div>
+  </div>
+  <span class="setting-value" id="lang-label">Español</span>
+  <i class="fas fa-chevron-right setting-chevron" id="lang-chev"></i>
+</div>
+<div class="lang-panel" id="lang-panel">
+  <div class="lang-grid">
+    <button class="lang-opt selected" data-lang="es" onclick="setLang('es','Español',this)">🇪🇸 Español</button>
+    <button class="lang-opt" data-lang="fr" onclick="setLang('fr','Français',this)">🇫🇷 Français</button>
+    <button class="lang-opt" data-lang="en" onclick="setLang('en','English',this)">🇬🇧 English</button>
+    <button class="lang-opt" data-lang="pt" onclick="setLang('pt','Português',this)">🇵🇹 Português</button>
+  </div>
+</div>
+
+<div class="setting-row" style="cursor:default;">
+  <div class="setting-icon ic-mint"><i class="fas fa-map-pin"></i></div>
+  <div class="setting-text">
+    <div class="setting-title">Región</div>
+    <div class="setting-sub">Guinea Ecuatorial</div>
+  </div>
+  <span class="setting-value">🇬🇶</span>
+</div>
+```
+
+  </div>
+
+  <!-- NOTIFICACIONES -->
+
+  <div class="sec-label">Notificaciones</div>
+  <div class="settings-group">
+
+```
+<div class="setting-row" style="cursor:default;">
+  <div class="setting-icon ic-sky"><i class="fas fa-bell"></i></div>
+  <div class="setting-text">
+    <div class="setting-title">Notificaciones push</div>
+    <div class="setting-sub">Mensajes y ofertas</div>
+  </div>
+  <div class="toggle-wrap">
+    <button class="toggle on" id="toggle-push" onclick="toggleSwitch('toggle-push','notif_push')"></button>
+  </div>
+</div>
+
+<div class="setting-row" style="cursor:default;">
+  <div class="setting-icon ic-mint"><i class="fas fa-comment-dots"></i></div>
+  <div class="setting-text">
+    <div class="setting-title">Mensajes de chats</div>
+    <div class="setting-sub">Nuevas conversaciones</div>
+  </div>
+  <div class="toggle-wrap">
+    <button class="toggle on" id="toggle-chats" onclick="toggleSwitch('toggle-chats','notif_chats')"></button>
+  </div>
+</div>
+
+<div class="setting-row" style="cursor:default;">
+  <div class="setting-icon ic-gold"><i class="fas fa-tag"></i></div>
+  <div class="setting-text">
+    <div class="setting-title">Ofertas y promociones</div>
+    <div class="setting-sub">Descuentos especiales</div>
+  </div>
+  <div class="toggle-wrap">
+    <button class="toggle" id="toggle-promo" onclick="toggleSwitch('toggle-promo','notif_promo')"></button>
+  </div>
+</div>
+
+<div class="setting-row" style="cursor:default;">
+  <div class="setting-icon ic-slate"><i class="fas fa-users"></i></div>
+  <div class="setting-text">
+    <div class="setting-title">Actividad de comunidades</div>
+    <div class="setting-sub">Nuevos miembros y mensajes</div>
+  </div>
+  <div class="toggle-wrap">
+    <button class="toggle on" id="toggle-comm" onclick="toggleSwitch('toggle-comm','notif_comm')"></button>
+  </div>
+</div>
+```
+
+  </div>
+
+  <!-- PRIVACIDAD -->
+
+  <div class="sec-label">Privacidad</div>
+  <div class="settings-group">
+
+```
+<div class="setting-row" style="cursor:default;">
+  <div class="setting-icon ic-ink"><i class="fas fa-eye"></i></div>
+  <div class="setting-text">
+    <div class="setting-title">Perfil visible</div>
+    <div class="setting-sub">Otros usuarios pueden verte</div>
+  </div>
+  <div class="toggle-wrap">
+    <button class="toggle on" id="toggle-visible" onclick="toggleSwitch('toggle-visible','privacy_visible')"></button>
+  </div>
+</div>
+
+<div class="setting-row" style="cursor:default;">
+  <div class="setting-icon ic-slate"><i class="fas fa-clock-rotate-left"></i></div>
+  <div class="setting-text">
+    <div class="setting-title">Última conexión</div>
+    <div class="setting-sub">Mostrar cuándo estuve activo</div>
+  </div>
+  <div class="toggle-wrap">
+    <button class="toggle" id="toggle-lastconn" onclick="toggleSwitch('toggle-lastconn','privacy_lastconn')"></button>
+  </div>
+</div>
+```
+
+  </div>
+
+  <!-- CUENTA -->
+
+  <div class="sec-label">Cuenta</div>
+  <div class="settings-group">
+
+```
+<div class="setting-row" onclick="copyUID()">
+  <div class="setting-icon ic-slate"><i class="fas fa-fingerprint"></i></div>
+  <div class="setting-text">
+    <div class="setting-title">ID de usuario</div>
+    <div class="setting-sub" id="uid-display">Cargando...</div>
+  </div>
+  <i class="fas fa-copy setting-chevron"></i>
+</div>
+
+<div class="setting-row" onclick="showClearCacheModal()">
+  <div class="setting-icon ic-slate"><i class="fas fa-broom"></i></div>
+  <div class="setting-text">
+    <div class="setting-title">Limpiar caché</div>
+    <div class="setting-sub">Liberar espacio local</div>
+  </div>
+  <i class="fas fa-chevron-right setting-chevron"></i>
+</div>
+```
+
+  </div>
+
+  <!-- CERRAR SESIÓN -->
+
+  <div class="logout-row">
+    <button class="logout-btn" onclick="showLogoutModal()">
+      <div class="setting-icon ic-red" style="margin:0;">
+        <i class="fas fa-power-off"></i>
+      </div>
+      <div>
+        <div class="logout-label">Cerrar sesión</div>
+        <div class="logout-sub">Salir de tu cuenta actual</div>
+      </div>
+      <i class="fas fa-chevron-right" style="color:#FFB3BB;font-size:0.78rem;margin-left:auto;"></i>
+    </button>
+  </div>
+
+  <div class="version-note">
+    <strong>CompraYa</strong> v2.0.1 &nbsp;·&nbsp; Hecho con ♥ en Guinea Ecuatorial
+  </div>
+
+</div><!-- /content -->
+
+<!-- MODAL: LOGOUT -->
+
+<div class="modal-backdrop" id="modal-logout">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-icon-wrap" style="background:#FFF0F1;">
+      <i class="fas fa-power-off" style="color:var(--danger);"></i>
+    </div>
+    <div class="modal-title">¿Cerrar sesión?</div>
+    <p class="modal-sub">Se cerrará tu sesión y serás redirigido al inicio.</p>
+    <button class="modal-btn modal-btn-danger" onclick="ejecutarLogout()">
+      <i class="fas fa-right-from-bracket"></i> Sí, cerrar sesión
+    </button>
+    <button class="modal-btn modal-btn-ghost" onclick="closeModal('modal-logout')">
+      Cancelar
+    </button>
+  </div>
+</div>
+
+<!-- MODAL: LIMPIAR CACHÉ -->
+
+<div class="modal-backdrop" id="modal-cache">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-icon-wrap" style="background:rgba(74,85,104,0.08);">
+      <i class="fas fa-broom" style="color:var(--slate);"></i>
+    </div>
+    <div class="modal-title">Limpiar caché</div>
+    <p class="modal-sub">Se eliminarán datos temporales almacenados en tu dispositivo. No afecta tu cuenta ni publicaciones.</p>
+    <button class="modal-btn modal-btn-ghost" style="background:var(--slate);color:white;border:none;" onclick="limpiarCache()">
+      <i class="fas fa-broom"></i> Limpiar ahora
+    </button>
+    <button class="modal-btn modal-btn-ghost" onclick="closeModal('modal-cache')">
+      Cancelar
+    </button>
+  </div>
+</div>
+
+<!-- TOAST -->
+
+<div class="toast-stack" id="toast-stack"></div>
+
+<!-- FIREBASE + LOGIC -->
+
+<script type="module">
+import { initializeApp }    from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut }
+  from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+import { firebaseConfig } from './js/config.js';
+
+const app  = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+/* ── TOAST ── */
+function showToast(type, msg, ms = 3200) {
+  const icons = { success:'fa-circle-check', error:'fa-circle-xmark', info:'fa-circle-info' };
+  const stack = document.getElementById('toast-stack');
+  const el    = document.createElement('div');
+  el.className = `toast-item t-${type}`;
+  el.innerHTML = `<i class="fas ${icons[type]}"></i>${msg}`;
+  stack.appendChild(el);
+  setTimeout(() => {
+    el.style.animation = 'toastOut 0.3s ease forwards';
+    setTimeout(() => el.remove(), 300);
+  }, ms);
+}
+window._toast = showToast;
+
+/* ── AUTH: mostrar UID ── */
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    const uid = user.uid;
+    document.getElementById('uid-display').textContent = uid.slice(0,16) + '…';
+    window._currentUID = uid;
+  } else {
+    window.location.href = 'formulario.html';
+  }
+});
+
+/* ── LOGOUT ── */
+window.ejecutarLogout = async () => {
+  try {
+    await signOut(auth);
+    showToast('info', '👋 Sesión cerrada');
+    setTimeout(() => window.location.href = 'formulario.html', 900);
+  } catch {
+    showToast('error', '❌ Error al cerrar sesión');
+  }
+};
+</script>
+
+<script>
+/* ── Helpers ── */
+function openModal(id)  { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+window.closeModal = closeModal;
+
+document.querySelectorAll('.modal-backdrop').forEach(m => {
+  m.addEventListener('click', e => { if (e.target === m) m.classList.remove('open'); });
+});
+
+window.showLogoutModal   = () => openModal('modal-logout');
+window.showClearCacheModal = () => openModal('modal-cache');
+
+/* ── STORAGE helpers ── */
+function save(key, val) { try { localStorage.setItem('cy_'+key, JSON.stringify(val)); } catch{} }
+function load(key, def) { try { const v = localStorage.getItem('cy_'+key); return v !== null ? JSON.parse(v) : def; } catch{ return def; } }
+
+/* ── IDIOMA ── */
+let langPanelOpen = false;
+window.toggleLangPanel = () => {
+  langPanelOpen = !langPanelOpen;
+  document.getElementById('lang-panel').classList.toggle('open', langPanelOpen);
+  document.getElementById('lang-chev').style.transform = langPanelOpen ? 'rotate(90deg)' : '';
+};
+window.setLang = (code, label, btn) => {
+  document.querySelectorAll('#lang-panel .lang-opt').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  document.getElementById('lang-label').textContent = label;
+  save('lang', code);
+  window._toast?.('success', `✅ Idioma: ${label}`);
+};
+// Restore
+(function(){
+  const saved = load('lang','es');
+  const labels = { es:'Español', fr:'Français', en:'English', pt:'Português' };
+  if (saved !== 'es') {
+    document.querySelectorAll('#lang-panel .lang-opt').forEach(b => {
+      b.classList.toggle('selected', b.dataset.lang === saved);
+    });
+    document.getElementById('lang-label').textContent = labels[saved] || 'Español';
+  }
+})();
+
+/* ── TEMA ── */
+let themePanelOpen = false;
+window.toggleThemePanel = () => {
+  themePanelOpen = !themePanelOpen;
+  document.getElementById('theme-panel').classList.toggle('open', themePanelOpen);
+  document.getElementById('theme-chev').style.transform = themePanelOpen ? 'rotate(90deg)' : '';
+};
+window.setTheme = (val, label, btn) => {
+  document.querySelectorAll('#theme-panel .theme-opt').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  const labels = { light:'Claro', dark:'Oscuro', system:'Sistema' };
+  document.getElementById('theme-label').textContent = labels[val];
+  save('theme', val);
+  window._toast?.('success', `✅ Tema: ${labels[val]}`);
+};
+(function(){
+  const saved = load('theme','light');
+  if (saved !== 'light') {
+    document.querySelectorAll('#theme-panel .theme-opt').forEach(b => {
+      b.classList.toggle('selected', b.dataset.theme === saved);
+    });
+    const labels = { light:'Claro', dark:'Oscuro', system:'Sistema' };
+    document.getElementById('theme-label').textContent = labels[saved];
+  }
+})();
+
+/* ── TAMAÑO FUENTE ── */
+let fontPanelOpen = false;
+window.toggleFontPanel = () => {
+  fontPanelOpen = !fontPanelOpen;
+  document.getElementById('font-panel').classList.toggle('open', fontPanelOpen);
+};
+window.setFontSize = (size, label, btn) => {
+  document.querySelectorAll('#font-panel .lang-opt').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  document.getElementById('font-label').textContent = label;
+  save('fontSize', size);
+  window._toast?.('info', `🔤 Tamaño: ${label}`);
+};
+(function(){
+  const saved = load('fontSize','normal');
+  const labels = { small:'Pequeño', normal:'Normal', large:'Grande' };
+  if (saved !== 'normal') {
+    document.querySelectorAll('#font-panel .lang-opt').forEach(b => {
+      b.classList.toggle('selected', b.dataset.size === saved);
+    });
+    document.getElementById('font-label').textContent = labels[saved];
+  }
+})();
+
+/* ── TOGGLES ── */
+function toggleSwitch(id, key) {
+  const btn = document.getElementById(id);
+  btn.classList.toggle('on');
+  const isOn = btn.classList.contains('on');
+  save(key, isOn);
+  window._toast?.('info', isOn ? '🔔 Activado' : '🔕 Desactivado');
+}
+window.toggleSwitch = toggleSwitch;
+
+// Restore toggles
+['notif_push','notif_chats','notif_promo','notif_comm','privacy_visible','privacy_lastconn'].forEach(key => {
+  const map = {
+    notif_push: 'toggle-push', notif_chats: 'toggle-chats',
+    notif_promo: 'toggle-promo', notif_comm: 'toggle-comm',
+    privacy_visible: 'toggle-visible', privacy_lastconn: 'toggle-lastconn'
+  };
+  const defaults = { notif_push:true, notif_chats:true, notif_promo:false, notif_comm:true, privacy_visible:true, privacy_lastconn:false };
+  const val = load(key, defaults[key]);
+  document.getElementById(map[key])?.classList.toggle('on', val);
+});
+
+/* ── COPY UID ── */
+window.copyUID = () => {
+  const uid = window._currentUID;
+  if (!uid) return;
+  navigator.clipboard?.writeText(uid).then(() => {
+    window._toast?.('success', '📋 ID copiado');
+  }).catch(() => window._toast?.('info', 'UID: ' + uid));
+};
+
+/* ── LIMPIAR CACHÉ ── */
+window.limpiarCache = () => {
+  const toKeep = ['cy_lang','cy_theme','cy_fontSize','cy_notif_push','cy_notif_chats',
+                  'cy_notif_promo','cy_notif_comm','cy_privacy_visible','cy_privacy_lastconn'];
+  const all = Object.keys(localStorage);
+  all.forEach(k => { if (!toKeep.includes(k)) localStorage.removeItem(k); });
+  closeModal('modal-cache');
+  window._toast?.('success', '🧹 Caché limpiado correctamente');
+};
+</script>
+
+</body>
+</html>

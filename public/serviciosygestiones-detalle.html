@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Redirigiendo al detalle…</title>
+<link rel="stylesheet" href="/css/styles.css">
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get("id") || params.get("servicioId");
+  if (id) {
+    window.location.replace("servicio-detalle.html?id=" + encodeURIComponent(id));
+  } else {
+    window.location.replace("serviciosygestiones.html");
+  }
+</script>
+</head>
+<body>
+<p style="font-family:Raleway,sans-serif;padding:24px">Cargando detalle del servicio…</p>
+</body>
+</html>

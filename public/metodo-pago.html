@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Método de pago – Compra Ya</title>
+<link rel="stylesheet" href="/css/styles.css">
+<script>
+  const q = window.location.search;
+  const hasCart = sessionStorage.getItem("pendingOrder") || localStorage.getItem("cart");
+  if (hasCart) {
+    window.location.replace("caritodecompras.html" + q + "#pago");
+  } else {
+    window.location.replace("peninsula-de-pagos.html" + q);
+  }
+</script>
+</head>
+<body>
+<p style="font-family:Raleway,sans-serif;padding:24px">Redirigiendo al pago seguro…</p>
+</body>
+</html>

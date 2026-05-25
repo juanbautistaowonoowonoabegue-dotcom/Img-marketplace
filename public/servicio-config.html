@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Configurar servicio – Compra Ya</title>
+<link rel="stylesheet" href="/css/styles.css">
+<script>
+  const id = new URLSearchParams(window.location.search).get("id");
+  if (id) {
+    window.location.replace("config.html?id=" + encodeURIComponent(id));
+  } else {
+    window.location.replace("vendedores.html");
+  }
+</script>
+</head>
+<body>
+<p style="font-family:Raleway,sans-serif;padding:24px">Abriendo configuración del servicio…</p>
+</body>
+</html>

@@ -1,0 +1,2502 @@
+<!DOCTYPE html>
+
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Crea tu espacio – Compra Ya GE</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800;900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+<style>
+/* ══════════════════════════════════════════
+   VARIABLES — sistema Compra Ya
+══════════════════════════════════════════ */
+:root {
+  --cyan:#00f5ff; --cyan10:rgba(0,245,255,.10); --cyan20:rgba(0,245,255,.20);
+  --teal:#00d4aa; --lime:#00ff9d; --lime10:rgba(0,255,157,.10);
+  --orange:#ff9d00; --red:#ff3b5c; --purple:#a855f7; --gold:#ffd700;
+  --bg:#060b17; --surf:#0e1626; --card:#121d30; --card2:#162038;
+  --border:rgba(0,245,255,.13); --bsoft:rgba(255,255,255,.07);
+  --text:#e8f0ff; --muted:rgba(200,215,230,.55);
+  --fh:'Syne',sans-serif; --fb:'DM Sans',sans-serif;
+  --r:14px; --rg:18px; --nav-h:66px; --hdr-h:58px;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{font-family:var(--fb);background:var(--bg);color:var(--text);
+  min-height:100vh;overflow-x:hidden;padding-bottom:100px}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(ellipse 70% 40% at 15% 10%,rgba(0,245,255,.05),transparent),
+             radial-gradient(ellipse 60% 50% at 85% 85%,rgba(168,85,247,.04),transparent)}
+
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--cyan20);border-radius:99px}
+
+/* ══ HEADER ══ */
+.hdr{position:fixed;top:0;left:0;right:0;z-index:600;
+  height:var(--hdr-h);padding:0 14px;
+  background:rgba(6,11,23,.97);backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--bsoft);
+  display:flex;align-items:center;gap:10px}
+.hdr-back{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.05);
+  border:1px solid var(--bsoft);color:var(--text);display:flex;align-items:center;
+  justify-content:center;font-size:.85rem;cursor:pointer;text-decoration:none;transition:all .2s}
+.hdr-back:hover{background:var(--cyan10);border-color:var(--cyan);color:var(--cyan)}
+.hdr-logo{font-family:var(--fh);font-size:1.05rem;font-weight:900;color:#fff;text-decoration:none;flex:1}
+.hdr-logo span{color:var(--cyan)}
+.hdr-help{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.05);
+  border:1px solid var(--bsoft);color:var(--muted);display:flex;align-items:center;
+  justify-content:center;font-size:.85rem;cursor:pointer;transition:all .2s}
+.hdr-help:hover{background:var(--cyan10);color:var(--cyan);border-color:var(--cyan)}
+
+main{padding-top:var(--hdr-h);position:relative;z-index:1}
+
+/* ══ STEPS INDICATOR ══ */
+.steps-bar{position:sticky;top:var(--hdr-h);z-index:500;
+  background:rgba(6,11,23,.97);backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--bsoft);padding:14px 16px 12px}
+.steps-track{display:flex;align-items:center;justify-content:center;gap:0;margin-bottom:8px}
+.step-node{width:30px;height:30px;border-radius:50%;
+  border:2px solid rgba(255,255,255,.15);
+  display:flex;align-items:center;justify-content:center;
+  font-size:.65rem;font-weight:700;font-family:var(--fh);
+  color:rgba(255,255,255,.35);transition:all .4s cubic-bezier(.34,1.56,.64,1);flex-shrink:0}
+.step-node.done{background:var(--teal);border-color:var(--teal);color:#000}
+.step-node.active{background:var(--cyan);border-color:var(--cyan);color:#000;
+  transform:scale(1.2);box-shadow:0 0 0 4px rgba(0,245,255,.2),0 0 18px rgba(0,245,255,.35)}
+.step-line{flex:1;height:2px;background:rgba(255,255,255,.07);max-width:32px;transition:background .4s}
+.step-line.done{background:var(--teal)}
+.progress-bar{height:3px;background:rgba(255,255,255,.07);border-radius:99px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--cyan),var(--teal),var(--lime));
+  border-radius:99px;transition:width .5s cubic-bezier(.4,0,.2,1)}
+.step-label{text-align:center;font-size:.7rem;color:var(--muted);font-family:var(--fh);
+  margin-top:6px;letter-spacing:.3px}
+
+/* ══ SCREEN TRANSITIONS ══ */
+.screen{display:none;animation:fadeSlide .35s cubic-bezier(.25,.46,.45,.94)}
+.screen.active{display:block}
+@keyframes fadeSlide{from{opacity:0;transform:translateX(16px)}to{opacity:1;transform:none}}
+
+/* ══ TIPO SELECTOR (pantalla 1) ══ */
+.pick-intro{padding:28px 16px 20px;text-align:center}
+.pick-eyebrow{display:inline-flex;align-items:center;gap:6px;
+  background:rgba(0,245,255,.08);border:1px solid rgba(0,245,255,.2);
+  color:var(--cyan);padding:4px 14px;border-radius:50px;
+  font-size:.65rem;font-weight:700;font-family:var(--fh);
+  letter-spacing:.8px;text-transform:uppercase;margin-bottom:12px}
+.pick-title{font-family:var(--fh);font-size:1.55rem;font-weight:900;
+  line-height:1.2;margin-bottom:8px}
+.pick-title .hl{color:var(--cyan)}
+.pick-desc{font-size:.84rem;color:var(--muted);line-height:1.6;max-width:320px;margin:0 auto}
+
+.tipo-grid{display:flex;flex-direction:column;gap:12px;padding:0 16px 24px}
+
+.tipo-card{background:var(--card);border:2px solid var(--bsoft);border-radius:20px;
+  padding:20px 18px;cursor:pointer;transition:all .3s cubic-bezier(.34,1.56,.64,1);
+  display:flex;align-items:flex-start;gap:16px;position:relative;overflow:hidden}
+.tipo-card::before{content:'';position:absolute;inset:0;opacity:0;transition:opacity .3s;pointer-events:none}
+.tipo-card:hover{transform:translateY(-3px)}
+.tipo-card:active{transform:scale(.98)}
+
+/* Variantes de color por tipo */
+.tipo-card[data-tipo="tienda"]{border-color:rgba(0,255,157,.15)}
+.tipo-card[data-tipo="tienda"]::before{background:radial-gradient(ellipse at 0% 0%,rgba(0,255,157,.07),transparent)}
+.tipo-card[data-tipo="tienda"]:hover{border-color:rgba(0,255,157,.4);box-shadow:0 12px 32px rgba(0,255,157,.1)}
+.tipo-card[data-tipo="tienda"]:hover::before{opacity:1}
+
+.tipo-card[data-tipo="agencia"]{border-color:rgba(0,245,255,.15)}
+.tipo-card[data-tipo="agencia"]::before{background:radial-gradient(ellipse at 0% 0%,rgba(0,245,255,.07),transparent)}
+.tipo-card[data-tipo="agencia"]:hover{border-color:rgba(0,245,255,.4);box-shadow:0 12px 32px rgba(0,245,255,.1)}
+.tipo-card[data-tipo="agencia"]:hover::before{opacity:1}
+
+.tipo-card[data-tipo="taxi"]{border-color:rgba(255,215,0,.15)}
+.tipo-card[data-tipo="taxi"]::before{background:radial-gradient(ellipse at 0% 0%,rgba(255,215,0,.07),transparent)}
+.tipo-card[data-tipo="taxi"]:hover{border-color:rgba(255,215,0,.4);box-shadow:0 12px 32px rgba(255,215,0,.1)}
+.tipo-card[data-tipo="taxi"]:hover::before{opacity:1}
+
+.tipo-card[data-tipo="delivery"]{border-color:rgba(255,59,92,.15)}
+.tipo-card[data-tipo="delivery"]::before{background:radial-gradient(ellipse at 0% 0%,rgba(255,59,92,.07),transparent)}
+.tipo-card[data-tipo="delivery"]:hover{border-color:rgba(255,59,92,.4);box-shadow:0 12px 32px rgba(255,59,92,.1)}
+.tipo-card[data-tipo="delivery"]:hover::before{opacity:1}
+
+.tipo-icon-box{width:52px;height:52px;border-radius:15px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center}
+.tipo-card[data-tipo="tienda"] .tipo-icon-box{background:rgba(0,255,157,.1);border:1px solid rgba(0,255,157,.2)}
+.tipo-card[data-tipo="agencia"] .tipo-icon-box{background:rgba(0,245,255,.1);border:1px solid rgba(0,245,255,.2)}
+.tipo-card[data-tipo="taxi"] .tipo-icon-box{background:rgba(255,215,0,.1);border:1px solid rgba(255,215,0,.2)}
+.tipo-card[data-tipo="delivery"] .tipo-icon-box{background:rgba(255,59,92,.1);border:1px solid rgba(255,59,92,.2)}
+
+.tipo-icon-box svg{width:26px;height:26px}
+.tipo-card[data-tipo="tienda"] .tipo-icon-box svg{stroke:var(--lime)}
+.tipo-card[data-tipo="agencia"] .tipo-icon-box svg{stroke:var(--cyan)}
+.tipo-card[data-tipo="taxi"] .tipo-icon-box svg{stroke:var(--gold)}
+.tipo-card[data-tipo="delivery"] .tipo-icon-box svg{stroke:var(--red)}
+
+.tipo-info{flex:1}
+.tipo-nombre{font-family:var(--fh);font-size:1rem;font-weight:800;margin-bottom:4px}
+.tipo-card[data-tipo="tienda"] .tipo-nombre{color:var(--lime)}
+.tipo-card[data-tipo="agencia"] .tipo-nombre{color:var(--cyan)}
+.tipo-card[data-tipo="taxi"] .tipo-nombre{color:var(--gold)}
+.tipo-card[data-tipo="delivery"] .tipo-nombre{color:var(--red)}
+.tipo-desc{font-size:.8rem;color:var(--muted);line-height:1.55;margin-bottom:10px}
+.tipo-chips{display:flex;flex-wrap:wrap;gap:5px}
+.tipo-chip{font-size:.62rem;font-weight:700;font-family:var(--fh);
+  padding:2px 9px;border-radius:99px;border:1px solid}
+.tipo-card[data-tipo="tienda"] .tipo-chip{background:rgba(0,255,157,.08);border-color:rgba(0,255,157,.25);color:var(--lime)}
+.tipo-card[data-tipo="agencia"] .tipo-chip{background:rgba(0,245,255,.08);border-color:rgba(0,245,255,.25);color:var(--cyan)}
+.tipo-card[data-tipo="taxi"] .tipo-chip{background:rgba(255,215,0,.08);border-color:rgba(255,215,0,.25);color:var(--gold)}
+.tipo-card[data-tipo="delivery"] .tipo-chip{background:rgba(255,59,92,.08);border-color:rgba(255,59,92,.25);color:var(--red)}
+.tipo-arrow{position:absolute;right:16px;top:50%;transform:translateY(-50%);
+  color:var(--muted);font-size:.8rem;transition:all .2s}
+.tipo-card:hover .tipo-arrow{transform:translateY(-50%) translateX(4px);color:var(--text)}
+
+/* Aviso premium */
+.premium-notice{margin:0 16px 20px;padding:14px 16px;
+  background:linear-gradient(135deg,rgba(255,215,0,.06),rgba(168,85,247,.04));
+  border:1.5px solid rgba(255,215,0,.2);border-radius:16px;
+  display:flex;align-items:flex-start;gap:12px}
+.pn-icon{width:36px;height:36px;background:rgba(255,215,0,.1);border:1px solid rgba(255,215,0,.25);
+  border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.pn-icon svg{width:20px;height:20px;stroke:var(--gold)}
+.pn-title{font-family:var(--fh);font-size:.84rem;font-weight:700;color:var(--gold);margin-bottom:3px}
+.pn-desc{font-size:.76rem;color:var(--muted);line-height:1.5}
+
+/* ══ FORMULARIO PASOS 2-4 ══ */
+.form-wrap{padding:24px 16px 0}
+.form-section-title{font-family:var(--fh);font-size:1.25rem;font-weight:900;
+  margin-bottom:6px;line-height:1.2}
+.form-section-sub{font-size:.82rem;color:var(--muted);line-height:1.55;margin-bottom:22px}
+
+/* Cabecera del paso con icono SVG */
+.step-head{display:flex;align-items:center;gap:14px;margin-bottom:20px;
+  padding:16px;background:rgba(255,255,255,.03);border-radius:16px;
+  border:1px solid var(--bsoft)}
+.step-head-icon{width:48px;height:48px;border-radius:14px;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.step-head-icon svg{width:26px;height:26px}
+.step-head-text{}
+.step-head-title{font-family:var(--fh);font-size:.95rem;font-weight:800;margin-bottom:3px}
+.step-head-sub{font-size:.75rem;color:var(--muted);line-height:1.4}
+
+/* Grupos de formulario */
+.fg{margin-bottom:18px}
+label.lbl{display:flex;align-items:center;gap:6px;margin-bottom:7px;
+  font-weight:600;font-size:.82rem;color:rgba(200,220,255,.8);
+  font-family:var(--fh);letter-spacing:.3px}
+label.lbl .req{color:var(--cyan)}
+label.lbl .ico{color:var(--teal);font-size:.8em}
+
+input.inp, textarea.inp, select.inp{
+  width:100%;padding:12px 15px;
+  background:rgba(255,255,255,.04);border:1.5px solid rgba(255,255,255,.1);
+  border-radius:13px;font-size:.9rem;font-family:var(--fb);
+  color:var(--text);transition:all .28s;-webkit-appearance:none}
+input.inp::placeholder, textarea.inp::placeholder{color:rgba(200,215,230,.22)}
+input.inp:focus, textarea.inp:focus, select.inp:focus{
+  outline:none;border-color:var(--cyan);
+  background:rgba(0,245,255,.04);box-shadow:0 0 0 4px rgba(0,245,255,.08)}
+input.inp.error, select.inp.error{border-color:var(--red)!important;
+  animation:shake .35s ease;box-shadow:0 0 0 3px rgba(255,59,92,.1)!important}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+textarea.inp{resize:vertical;min-height:110px;line-height:1.6}
+select.inp option{background:#1a2540;color:#e8f0ff}
+
+.field-hint{font-size:.73rem;color:var(--muted);margin-top:5px;
+  display:flex;align-items:flex-start;gap:5px;line-height:1.45}
+.field-hint svg{width:13px;height:13px;stroke:var(--teal);flex-shrink:0;margin-top:1px}
+.field-err{font-size:.73rem;color:var(--red);margin-top:4px;display:none;align-items:center;gap:4px}
+.field-err.show{display:flex}
+
+/* Grid 2 col */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:360px){.grid2{grid-template-columns:1fr}}
+
+/* Upload de logo/foto */
+.upload-zone{border:2px dashed rgba(0,245,255,.25);border-radius:18px;
+  min-height:140px;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;background:rgba(0,245,255,.02);cursor:pointer;
+  transition:all .3s;padding:20px;text-align:center;position:relative}
+.upload-zone:hover{border-color:var(--cyan);background:rgba(0,245,255,.05);transform:translateY(-2px)}
+.upload-zone.drag{border-color:var(--lime);background:rgba(0,255,157,.04)}
+.upload-zone.has-img{border-style:solid}
+.uz-icon{width:46px;height:46px;border-radius:13px;
+  background:linear-gradient(135deg,var(--cyan),var(--teal));
+  display:flex;align-items:center;justify-content:center;margin-bottom:10px;
+  box-shadow:0 6px 18px rgba(0,245,255,.2)}
+.uz-icon svg{width:22px;height:22px;stroke:#000;stroke-width:2.2}
+.uz-title{font-family:var(--fh);font-size:.88rem;font-weight:700;margin-bottom:3px}
+.uz-sub{font-size:.75rem;color:var(--muted)}
+.uz-preview{position:absolute;inset:0;border-radius:16px;overflow:hidden}
+.uz-preview img{width:100%;height:100%;object-fit:cover}
+.uz-remove{position:absolute;top:8px;right:8px;width:28px;height:28px;
+  background:rgba(255,59,92,.85);border:none;border-radius:50%;color:#fff;
+  font-size:.75rem;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  box-shadow:0 2px 8px rgba(255,59,92,.4);z-index:5}
+
+/* Opciones de horario */
+.horario-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.h-chip{padding:10px 12px;border:1.5px solid rgba(255,255,255,.1);
+  border-radius:12px;background:rgba(255,255,255,.03);cursor:pointer;
+  font-size:.78rem;color:var(--muted);transition:all .22s;
+  display:flex;align-items:center;gap:8px;font-family:var(--fh);font-weight:600}
+.h-chip svg{width:15px;height:15px;stroke:var(--muted);flex-shrink:0}
+.h-chip:hover{border-color:rgba(0,245,255,.3);color:var(--text)}
+.h-chip.sel{border-color:var(--cyan);background:rgba(0,245,255,.08);color:var(--cyan)}
+.h-chip.sel svg{stroke:var(--cyan)}
+
+/* Métodos de pago */
+.pago-grid{display:flex;flex-wrap:wrap;gap:8px}
+.pago-chip{padding:8px 14px;border:1.5px solid rgba(255,255,255,.1);
+  border-radius:10px;background:rgba(255,255,255,.03);cursor:pointer;
+  font-size:.76rem;color:var(--muted);transition:all .22s;
+  display:flex;align-items:center;gap:6px;font-family:var(--fh);font-weight:600}
+.pago-chip svg{width:14px;height:14px;stroke:var(--muted)}
+.pago-chip:hover{border-color:rgba(0,245,255,.3);color:var(--text)}
+.pago-chip.sel{border-color:var(--lime);background:rgba(0,255,157,.08);color:var(--lime)}
+.pago-chip.sel svg{stroke:var(--lime)}
+
+/* Tipo de taxi / zona */
+.zona-grid{display:flex;flex-wrap:wrap;gap:7px}
+.zona-chip{padding:8px 13px;border:1.5px solid rgba(255,255,255,.1);
+  border-radius:99px;background:rgba(255,255,255,.03);cursor:pointer;
+  font-size:.73rem;color:var(--muted);transition:all .22s;
+  font-family:var(--fh);font-weight:600}
+.zona-chip:hover{border-color:rgba(255,215,0,.3);color:var(--text)}
+.zona-chip.sel{border-color:var(--gold);background:rgba(255,215,0,.08);color:var(--gold)}
+
+/* Tip info */
+.tip-box{padding:12px 14px;border-left:3px solid var(--cyan);
+  border-radius:0 12px 12px 0;background:rgba(255,255,255,.025);
+  font-size:.79rem;color:var(--muted);line-height:1.55;
+  display:flex;gap:9px;align-items:flex-start;margin-bottom:18px}
+.tip-box svg{width:15px;height:15px;stroke:var(--cyan);flex-shrink:0;margin-top:1px}
+.tip-box.warn{border-left-color:var(--orange)}
+.tip-box.warn svg{stroke:var(--orange)}
+.tip-box.ok{border-left-color:var(--lime)}
+.tip-box.ok svg{stroke:var(--lime)}
+
+/* ══ STEP 3 VISTA PREVIA ══ */
+.preview-card{background:var(--card);border:1.5px solid var(--border);
+  border-radius:20px;overflow:hidden;margin-bottom:20px}
+.preview-banner{height:90px;background:linear-gradient(135deg,rgba(0,245,255,.15),rgba(0,212,170,.08));
+  position:relative;display:flex;align-items:center;justify-content:center}
+.preview-banner-bg{position:absolute;inset:0;opacity:.15;background-size:cover;background-position:center}
+.preview-logo{width:64px;height:64px;border-radius:18px;overflow:hidden;
+  border:3px solid rgba(255,255,255,.2);background:var(--surf);
+  display:flex;align-items:center;justify-content:center;position:relative;z-index:1}
+.preview-logo img{width:100%;height:100%;object-fit:cover}
+.preview-logo-placeholder svg{width:32px;height:32px;stroke:var(--muted)}
+.preview-body{padding:14px 16px}
+.preview-tipo-badge{display:inline-flex;align-items:center;gap:5px;
+  padding:3px 11px;border-radius:50px;font-size:.63rem;font-weight:700;
+  font-family:var(--fh);letter-spacing:.4px;margin-bottom:8px}
+.preview-name{font-family:var(--fh);font-size:1.1rem;font-weight:800;margin-bottom:5px}
+.preview-desc{font-size:.8rem;color:var(--muted);line-height:1.55;margin-bottom:12px}
+.preview-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px}
+.preview-tag{font-size:.62rem;font-weight:700;font-family:var(--fh);
+  padding:3px 9px;border-radius:6px}
+.preview-meta{display:flex;flex-wrap:wrap;gap:10px;padding-top:10px;border-top:1px solid var(--bsoft)}
+.preview-meta-item{display:flex;align-items:center;gap:5px;font-size:.78rem;color:var(--muted)}
+.preview-meta-item svg{width:13px;height:13px;stroke:var(--teal)}
+
+/* Verificado seal */
+.verified-seal{display:flex;align-items:center;gap:8px;padding:10px 13px;
+  background:rgba(0,255,157,.05);border:1px solid rgba(0,255,157,.2);
+  border-radius:11px;margin-top:12px;font-size:.78rem;color:var(--lime);
+  font-weight:600;font-family:var(--fh)}
+.verified-seal svg{width:16px;height:16px;stroke:var(--lime);flex-shrink:0}
+
+/* ══ STEP 4 CONFIRMACIÓN ══ */
+.confirm-list{display:flex;flex-direction:column;gap:10px;margin-bottom:22px}
+.confirm-row{background:rgba(255,255,255,.03);border:1px solid var(--bsoft);
+  border-radius:13px;padding:12px 14px;display:flex;align-items:flex-start;gap:10px}
+.confirm-icon{width:32px;height:32px;border-radius:9px;background:rgba(0,245,255,.08);
+  border:1px solid rgba(0,245,255,.15);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.confirm-icon svg{width:16px;height:16px;stroke:var(--cyan)}
+.confirm-info{}
+.confirm-label{font-size:.68rem;color:var(--muted);font-family:var(--fh);
+  text-transform:uppercase;letter-spacing:.8px;margin-bottom:2px}
+.confirm-val{font-size:.84rem;color:var(--text);font-weight:600}
+
+/* ══ BOTTOM NAV ══ */
+.bottom-bar{position:fixed;bottom:0;left:0;right:0;z-index:600;
+  background:rgba(6,11,23,.97);backdrop-filter:blur(24px);
+  border-top:1px solid var(--bsoft);padding:10px 16px;
+  display:flex;gap:9px}
+.btn-back-step{flex:1;padding:14px;border:1.5px solid rgba(255,255,255,.1);
+  border-radius:13px;background:rgba(255,255,255,.04);color:rgba(255,255,255,.65);
+  font-family:var(--fh);font-weight:700;font-size:.88rem;cursor:pointer;
+  transition:all .25s;display:flex;align-items:center;justify-content:center;gap:7px}
+.btn-back-step:hover{border-color:rgba(255,255,255,.25);color:#fff}
+.btn-next-step{flex:2;padding:14px;border:none;border-radius:13px;
+  background:linear-gradient(135deg,var(--cyan),var(--teal));color:#000;
+  font-family:var(--fh);font-weight:800;font-size:.9rem;cursor:pointer;
+  transition:all .28s cubic-bezier(.34,1.56,.64,1);
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  box-shadow:0 4px 20px rgba(0,245,255,.2);letter-spacing:.3px}
+.btn-next-step:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(0,245,255,.3)}
+.btn-next-step:active{transform:scale(.97)}
+.btn-next-step:disabled{opacity:.45;cursor:not-allowed;transform:none}
+.btn-next-step svg{width:17px;height:17px;stroke:#000;stroke-width:2.5}
+
+/* ══ SUCCESS SCREEN ══ */
+.success-screen{position:fixed;inset:0;background:var(--bg);z-index:999;
+  display:none;flex-direction:column;align-items:center;justify-content:center;
+  padding:28px;text-align:center}
+.success-screen.active{display:flex}
+.success-icon-box{width:90px;height:90px;border-radius:26px;
+  background:linear-gradient(135deg,var(--lime),var(--teal));
+  display:flex;align-items:center;justify-content:center;margin-bottom:20px;
+  animation:pop .6s cubic-bezier(.34,1.56,.64,1);
+  box-shadow:0 20px 50px rgba(0,255,157,.25)}
+.success-icon-box svg{width:44px;height:44px;stroke:#000;stroke-width:2.5}
+@keyframes pop{from{transform:scale(0) rotate(-15deg)}to{transform:scale(1) rotate(0)}}
+.success-title{font-family:var(--fh);font-size:1.65rem;font-weight:900;
+  background:linear-gradient(135deg,#fff,var(--lime));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;margin-bottom:10px}
+.success-sub{color:var(--muted);font-size:.88rem;line-height:1.6;
+  max-width:300px;margin:0 auto 24px}
+.success-actions{display:flex;flex-direction:column;gap:10px;width:100%;max-width:300px}
+.btn-success-main{padding:15px;border:none;border-radius:14px;
+  background:linear-gradient(135deg,var(--cyan),var(--teal));color:#000;
+  font-family:var(--fh);font-weight:800;font-size:.93rem;cursor:pointer;
+  box-shadow:0 8px 24px rgba(0,245,255,.25);transition:all .25s}
+.btn-success-main:hover{transform:translateY(-2px)}
+.btn-success-sec{padding:13px;border:1.5px solid rgba(255,255,255,.12);border-radius:14px;
+  background:transparent;color:rgba(255,255,255,.65);font-family:var(--fh);
+  font-weight:600;font-size:.88rem;cursor:pointer;transition:all .22s}
+.btn-success-sec:hover{border-color:rgba(255,255,255,.3);color:#fff}
+
+/* ══ TOAST ══ */
+#toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);
+  background:var(--card2);color:var(--text);border-radius:13px;
+  padding:11px 18px;font-size:.82rem;font-weight:600;
+  box-shadow:0 12px 38px rgba(0,0,0,.6);border:1px solid var(--bsoft);
+  z-index:900;opacity:0;pointer-events:none;
+  transition:all .35s cubic-bezier(.34,1.56,.64,1);max-width:300px;text-align:center}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+#toast.ok{border-color:rgba(0,255,157,.3)}
+#toast.bad{border-color:rgba(255,59,92,.3)}
+#toast.info{border-color:rgba(0,245,255,.2)}
+
+/* Loading overlay */
+#loadingOv{position:fixed;inset:0;background:rgba(6,11,23,.9);
+  backdrop-filter:blur(12px);z-index:9999;display:none;
+  align-items:center;justify-content:center;flex-direction:column;gap:16px}
+#loadingOv.active{display:flex}
+.spinner{width:44px;height:44px;border:3px solid rgba(0,245,255,.1);
+  border-top-color:var(--cyan);border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-msg{font-family:var(--fh);font-size:.9rem;color:var(--cyan)}
+/* ══ MIS ESPACIOS — TARJETAS ══ */
+.espacio-card{background:var(--card);border:1.5px solid var(--bsoft);
+  border-radius:20px;overflow:hidden;transition:all .3s}
+
+/* Header de la tarjeta */
+.ec-header{padding:16px;display:flex;align-items:center;gap:12px;
+  border-bottom:1px solid var(--bsoft);position:relative}
+.ec-logo{width:52px;height:52px;border-radius:14px;overflow:hidden;
+  background:var(--surf);border:1.5px solid var(--bsoft);flex-shrink:0;
+  display:flex;align-items:center;justify-content:center}
+.ec-logo img{width:100%;height:100%;object-fit:cover}
+.ec-logo-ph svg{width:26px;height:26px;stroke:var(--muted)}
+.ec-meta{flex:1;min-width:0}
+.ec-nombre{font-family:var(--fh);font-size:.95rem;font-weight:800;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:3px}
+.ec-badge{display:inline-flex;align-items:center;gap:4px;
+  padding:2px 9px;border-radius:50px;font-size:.6rem;
+  font-weight:700;font-family:var(--fh);letter-spacing:.4px}
+.ec-status{position:absolute;top:14px;right:14px;
+  width:9px;height:9px;border-radius:50%;background:var(--lime);
+  box-shadow:0 0 0 3px rgba(0,255,157,.18)}
+
+/* Stats básicas */
+.ec-stats{display:grid;grid-template-columns:repeat(3,1fr);
+  border-bottom:1px solid var(--bsoft)}
+.ec-stat{padding:12px 10px;text-align:center;border-right:1px solid var(--bsoft)}
+.ec-stat:last-child{border-right:none}
+.ec-stat-val{font-family:var(--fh);font-size:1.1rem;font-weight:900;
+  color:var(--cyan);line-height:1}
+.ec-stat-lbl{font-size:.62rem;color:var(--muted);margin-top:3px;line-height:1.3}
+
+/* Stats avanzadas bloqueadas */
+.ec-stats-adv{padding:12px 14px;border-bottom:1px solid var(--bsoft);
+  display:flex;align-items:center;gap:10px;
+  background:rgba(168,85,247,.04);cursor:pointer;
+  transition:background .2s}
+.ec-stats-adv:hover{background:rgba(168,85,247,.08)}
+.ec-adv-icon{width:32px;height:32px;border-radius:9px;flex-shrink:0;
+  background:rgba(168,85,247,.1);border:1px solid rgba(168,85,247,.25);
+  display:flex;align-items:center;justify-content:center}
+.ec-adv-icon svg{width:16px;height:16px;stroke:var(--purple)}
+.ec-adv-text{flex:1}
+.ec-adv-title{font-size:.78rem;font-weight:700;font-family:var(--fh);
+  color:var(--purple);margin-bottom:1px}
+.ec-adv-sub{font-size:.68rem;color:var(--muted)}
+.ec-adv-lock{width:26px;height:26px;border-radius:7px;
+  background:rgba(168,85,247,.08);border:1px solid rgba(168,85,247,.2);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ec-adv-lock svg{width:13px;height:13px;stroke:var(--purple)}
+/* Cuando el admin desbloquea */
+.ec-stats-adv.unlocked{background:rgba(0,255,157,.03);cursor:default}
+.ec-stats-adv.unlocked .ec-adv-icon{background:rgba(0,255,157,.08);border-color:rgba(0,255,157,.2)}
+.ec-stats-adv.unlocked .ec-adv-icon svg{stroke:var(--lime)}
+.ec-stats-adv.unlocked .ec-adv-title{color:var(--lime)}
+.ec-stats-adv.unlocked .ec-adv-lock{background:rgba(0,255,157,.08);border-color:rgba(0,255,157,.2)}
+.ec-stats-adv.unlocked .ec-adv-lock svg{stroke:var(--lime)}
+
+/* Acciones rápidas */
+.ec-actions{padding:12px 14px;display:flex;gap:8px}
+.ec-btn{flex:1;padding:10px 8px;border-radius:11px;border:1.5px solid;
+  font-family:var(--fh);font-size:.75rem;font-weight:700;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:6px;
+  transition:all .25s cubic-bezier(.34,1.56,.64,1)}
+.ec-btn svg{width:14px;height:14px;flex-shrink:0}
+.ec-btn-publish{background:linear-gradient(135deg,var(--cyan),var(--teal));
+  border-color:transparent;color:#000;
+  box-shadow:0 4px 14px rgba(0,245,255,.2)}
+.ec-btn-publish:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,245,255,.3)}
+.ec-btn-edit{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.1);color:var(--text)}
+.ec-btn-edit:hover{border-color:rgba(255,255,255,.25);background:rgba(255,255,255,.07)}
+.ec-btn-view{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.1);color:var(--muted)}
+.ec-btn-view:hover{border-color:var(--cyan);color:var(--cyan);background:var(--cyan10)}
+/* ══ MODAL PUBLICAR ══ */
+.modal-overlay{position:fixed;inset:0;z-index:800;
+  background:rgba(4,8,18,.92);backdrop-filter:blur(14px);
+  display:none;align-items:flex-end;justify-content:center}
+.modal-overlay.open{display:flex;animation:fadeIn .25s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+.modal-sheet{width:100%;max-width:560px;
+  background:var(--card);border-radius:24px 24px 0 0;
+  border-top:1.5px solid var(--border);
+  max-height:92vh;overflow-y:auto;
+  animation:slideUp .32s cubic-bezier(.25,.46,.45,.94)}
+@keyframes slideUp{from{transform:translateY(60px);opacity:0}to{transform:none;opacity:1}}
+
+.modal-drag{width:40px;height:4px;background:rgba(255,255,255,.12);
+  border-radius:99px;margin:12px auto 0}
+
+.modal-header{padding:16px 18px 14px;
+  display:flex;align-items:center;justify-content:space-between;
+  border-bottom:1px solid var(--bsoft)}
+.modal-title{font-family:var(--fh);font-size:1rem;font-weight:800}
+.modal-close{width:32px;height:32px;border-radius:50%;
+  background:rgba(255,255,255,.06);border:1px solid var(--bsoft);
+  color:var(--muted);display:flex;align-items:center;justify-content:center;
+  cursor:pointer;font-size:.8rem;transition:all .2s}
+.modal-close:hover{background:rgba(255,59,92,.1);color:var(--red);border-color:rgba(255,59,92,.3)}
+
+.modal-body{padding:18px}
+
+/* Tabs tipo/servicio/producto */
+.pub-tabs{display:flex;gap:6px;margin-bottom:20px;
+  background:rgba(255,255,255,.03);border-radius:12px;padding:4px}
+.pub-tab{flex:1;padding:9px 6px;border-radius:9px;border:none;
+  background:transparent;color:var(--muted);
+  font-family:var(--fh);font-size:.75rem;font-weight:700;
+  cursor:pointer;transition:all .22s;text-align:center}
+.pub-tab.active{background:var(--card2);color:var(--text);
+  box-shadow:0 2px 8px rgba(0,0,0,.3)}
+
+/* Formulario de ítem */
+.pub-form{display:flex;flex-direction:column;gap:14px}
+
+.pub-img-row{display:flex;gap:10px;overflow-x:auto;padding-bottom:4px}
+.pub-img-slot{width:72px;height:72px;border-radius:13px;flex-shrink:0;
+  border:2px dashed rgba(0,245,255,.25);background:rgba(0,245,255,.02);
+  display:flex;align-items:center;justify-content:center;cursor:pointer;
+  transition:all .25s;position:relative;overflow:hidden}
+.pub-img-slot:hover{border-color:var(--cyan);background:rgba(0,245,255,.06)}
+.pub-img-slot svg{width:22px;height:22px;stroke:rgba(0,245,255,.4)}
+.pub-img-slot img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.pub-img-slot .rm-img{position:absolute;top:3px;right:3px;width:20px;height:20px;
+  border-radius:50%;background:rgba(255,59,92,.85);border:none;
+  color:#fff;font-size:.6rem;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;z-index:2}
+
+/* Precio row */
+.price-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+/* Badge de categoría rápida */
+.cat-pills{display:flex;flex-wrap:wrap;gap:6px}
+.cat-pill{padding:6px 12px;border-radius:99px;border:1.5px solid rgba(255,255,255,.1);
+  background:rgba(255,255,255,.03);color:var(--muted);
+  font-size:.72rem;font-weight:700;font-family:var(--fh);cursor:pointer;transition:all .2s}
+.cat-pill:hover{border-color:rgba(0,245,255,.3);color:var(--text)}
+.cat-pill.sel{border-color:var(--cyan);background:var(--cyan10);color:var(--cyan)}
+
+/* Lista de ítems ya publicados */
+.pub-list-title{font-family:var(--fh);font-size:.8rem;font-weight:700;
+  color:var(--muted);letter-spacing:.5px;text-transform:uppercase;
+  margin:20px 0 10px;display:flex;align-items:center;gap:6px}
+.pub-list-title span{background:rgba(0,245,255,.1);color:var(--cyan);
+  font-size:.68rem;padding:2px 8px;border-radius:99px;border:1px solid rgba(0,245,255,.2)}
+
+.pub-item-row{display:flex;align-items:center;gap:10px;
+  padding:10px 12px;background:rgba(255,255,255,.03);
+  border:1px solid var(--bsoft);border-radius:13px;margin-bottom:8px}
+.pub-item-thumb{width:44px;height:44px;border-radius:10px;
+  background:var(--surf);overflow:hidden;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center}
+.pub-item-thumb img{width:100%;height:100%;object-fit:cover}
+.pub-item-thumb svg{width:20px;height:20px;stroke:var(--muted)}
+.pub-item-info{flex:1;min-width:0}
+.pub-item-name{font-size:.84rem;font-weight:700;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:2px}
+.pub-item-price{font-size:.75rem;color:var(--cyan);font-family:var(--fh);font-weight:700}
+.pub-item-price.free{color:var(--lime)}
+.pub-item-del{width:28px;height:28px;border-radius:8px;flex-shrink:0;
+  background:rgba(255,59,92,.08);border:1px solid rgba(255,59,92,.2);
+  color:var(--red);display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:all .2s;font-size:.75rem}
+.pub-item-del:hover{background:rgba(255,59,92,.18)}
+
+/* Botón guardar ítem */
+.btn-pub-save{width:100%;padding:14px;border:none;border-radius:13px;
+  background:linear-gradient(135deg,var(--cyan),var(--teal));color:#000;
+  font-family:var(--fh);font-weight:800;font-size:.9rem;cursor:pointer;
+  box-shadow:0 4px 18px rgba(0,245,255,.2);transition:all .28s;
+  display:flex;align-items:center;justify-content:center;gap:8px;margin-top:4px}
+.btn-pub-save:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,245,255,.3)}
+.btn-pub-save:disabled{opacity:.45;cursor:not-allowed;transform:none}
+</style>
+
+</head>
+<body>
+
+<!-- HEADER -->
+
+<header class="hdr">
+  <a href="index-comprador.html" class="hdr-back">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+  </a>
+  <a href="index-comprador.html" class="hdr-logo">Compra<span>Ya</span></a>
+  <button class="hdr-help" onclick="showToast('¿Necesitas ayuda? Contáctanos por WhatsApp.','info')">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+  </button>
+</header>
+
+<main>
+  <!-- BARRA DE PASOS -->
+  <div class="steps-bar">
+    <div class="steps-track">
+      <div class="step-node active" id="node1">1</div>
+      <div class="step-line" id="line1"></div>
+      <div class="step-node" id="node2">2</div>
+      <div class="step-line" id="line2"></div>
+      <div class="step-node" id="node3">3</div>
+      <div class="step-line" id="line3"></div>
+      <div class="step-node" id="node4">4</div>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="progFill" style="width:0%"></div></div>
+    <div class="step-label" id="stepLabel">Elige qué quieres crear</div>
+  </div>
+
+  <!-- ════════════════════════════════
+       PANTALLA 1 — ELIGE EL TIPO
+  ════════════════════════════════ -->
+
+  <div class="screen active" id="screen1">
+    <div class="pick-intro">
+      <div class="pick-eyebrow">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Solo para cuentas Premium
+      </div>
+      <h1 class="pick-title">¿Qué quieres<br>crear en <span class="hl">Compra Ya</span>?</h1>
+      <p class="pick-desc">Elige tu tipo de espacio. Lo registramos con tu nombre y apareces ante miles de personas en Guinea Ecuatorial.</p>
+    </div>
+
+<!-- CAMBIO EN EL AVISO (Línea 260 aprox) -->
+<div class="premium-notice" style="border-color: var(--cyan);">
+  <div class="pn-icon" style="background: rgba(0,245,255,.1);">
+    <svg viewBox="0 0 24 24" stroke="var(--cyan)"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+  </div>
+  <div>
+    <div class="pn-title" style="color: var(--cyan);">Publicación Instantánea</div>
+    <div class="pn-desc">Si tienes una cuenta Premium, tu espacio se activará en segundos tras pasar nuestra validación automática de seguridad.</div>
+  </div>
+</div>
+
+<!-- CARDS DE TIPO -->
+<div class="tipo-grid">
+
+  <!-- TIENDA -->
+  <div class="tipo-card" data-tipo="tienda" onclick="selectTipo('tienda',this)">
+    <div class="tipo-icon-box">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/>
+      </svg>
+    </div>
+    <div class="tipo-info">
+      <div class="tipo-nombre">Tienda o negocio</div>
+      <div class="tipo-desc">Supermercado, boutique, ferretería, farmacia — cualquier negocio que venda productos. Tendrás un catálogo propio y te contactarán directamente.</div>
+      <div class="tipo-chips">
+        <span class="tipo-chip">Catálogo de productos</span>
+        <span class="tipo-chip">Contacto WhatsApp</span>
+        <span class="tipo-chip">Página propia</span>
+      </div>
+    </div>
+    <svg class="tipo-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+  </div>
+
+  <!-- AGENCIA -->
+  <div class="tipo-card" data-tipo="agencia" onclick="selectTipo('agencia',this)">
+    <div class="tipo-icon-box">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/>
+      </svg>
+    </div>
+    <div class="tipo-info">
+      <div class="tipo-nombre">Agencia o empresa de servicios</div>
+      <div class="tipo-desc">Agencia de viajes, inmobiliaria, empresa de limpieza, estudio de marketing — cualquier empresa que ofrezca servicios a otras personas o negocios.</div>
+      <div class="tipo-chips">
+        <span class="tipo-chip">Ficha de servicios</span>
+        <span class="tipo-chip">Horario de atención</span>
+        <span class="tipo-chip">Mapa de ubicación</span>
+      </div>
+    </div>
+    <svg class="tipo-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+  </div>
+
+  <!-- TAXI -->
+  <div class="tipo-card" data-tipo="taxi" onclick="selectTipo('taxi',this)">
+    <div class="tipo-icon-box">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>
+      </svg>
+    </div>
+    <div class="tipo-info">
+      <div class="tipo-nombre">Taxi o transporte particular</div>
+      <div class="tipo-desc">Si ofreces transporte en tu coche o moto, aparece en la sección de taxis. Los clientes te verán y te llamarán directamente por WhatsApp.</div>
+      <div class="tipo-chips">
+        <span class="tipo-chip">Zona de trabajo</span>
+        <span class="tipo-chip">Matrícula del vehículo</span>
+        <span class="tipo-chip">Contacto directo</span>
+      </div>
+    </div>
+    <svg class="tipo-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+  </div>
+
+  <!-- DELIVERY -->
+  <div class="tipo-card" data-tipo="delivery" onclick="selectTipo('delivery',this)">
+    <div class="tipo-icon-box">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M5 12H19M12 5l7 7-7 7"/><circle cx="5" cy="12" r="3"/>
+      </svg>
+    </div>
+    <div class="tipo-info">
+      <div class="tipo-nombre">Servicio de reparto o delivery</div>
+      <div class="tipo-desc">Si haces entregas a domicilio — comida, compras, documentos — regístrate aquí. Los clientes te buscan y te piden directamente desde Compra Ya.</div>
+      <div class="tipo-chips">
+        <span class="tipo-chip">Zona de reparto</span>
+        <span class="tipo-chip">Tipo de entrega</span>
+        <span class="tipo-chip">Pedidos por WhatsApp</span>
+      </div>
+    </div>
+    <svg class="tipo-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+  </div>
+
+</div>
+ 
+
+  </div>
+
+  <!-- ════════════════════════════════
+       PANTALLA 2 — DATOS BÁSICOS
+  ════════════════════════════════ -->
+
+  <div class="screen" id="screen2">
+    <div class="form-wrap">
+ 
+  <div class="step-head" id="stepHead2">
+    <div class="step-head-icon" id="stepHeadIcon2">
+      <!-- SVG inyectado por JS -->
+    </div>
+    <div class="step-head-text">
+      <div class="step-head-title" id="stepHeadTitle2">Información básica</div>
+      <div class="step-head-sub" id="stepHeadSub2">El nombre y la descripción son lo primero que ven tus clientes.</div>
+    </div>
+  </div>
+
+  <div class="tip-box">
+    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+    <span>Usa el nombre real de tu negocio. Los clientes lo buscarán así en la app.</span>
+  </div>
+
+  <!-- Logo -->
+  <div class="fg">
+    <label class="lbl">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ico"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+      Logo o foto principal
+    </label>
+    <div class="upload-zone" id="logoZone" onclick="triggerLogo()" ondragover="dzDrag(event,'logoZone')" ondragleave="dzLeave('logoZone')" ondrop="dzDrop(event,'logoZone','logoInput')">
+      <div class="uz-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      </div>
+      <div class="uz-title">Sube tu logo o foto</div>
+      <div class="uz-sub">Toca aquí o arrastra la imagen</div>
+      <div class="uz-preview" id="logoPreview" style="display:none">
+        <img id="logoImg" src="" alt="Logo">
+        <button class="uz-remove" onclick="event.stopPropagation();removeImg('logoPreview','logoInput')">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+    </div>
+    <input type="file" id="logoInput" accept="image/*" hidden onchange="handleImg(event,'logoPreview','logoImg','logoZone')">
+    <div class="field-hint">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      <span>Fondo blanco o sin fondo funciona mejor. JPG, PNG o WEBP.</span>
+    </div>
+  </div>
+
+  <!-- Nombre -->
+  <div class="fg">
+    <label class="lbl" for="nombreNegocio">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ico"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+      Nombre del negocio <span class="req">*</span>
+    </label>
+    <input class="inp" type="text" id="nombreNegocio" placeholder="Ej: Supermercado El Buen Precio" maxlength="80">
+    <div class="field-err" id="err-nombre">El nombre es obligatorio</div>
+  </div>
+
+  <!-- Descripción -->
+  <div class="fg">
+    <label class="lbl" for="descNegocio">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ico"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+      Cuéntanos qué haces <span class="req">*</span>
+    </label>
+    <textarea class="inp" id="descNegocio" placeholder="Escribe en pocas frases a qué te dedicas, qué ofreces y por qué elegirte. Ej: Somos una tienda de ropa importada con más de 10 años en Malabo…" maxlength="500"></textarea>
+    <div class="field-err" id="err-desc">La descripción es obligatoria</div>
+  </div>
+
+  <!-- Campos específicos por tipo -->
+
+  <!-- TAXI: matrícula + tipo vehículo -->
+  <div id="taxiFields" style="display:none">
+    <div class="grid2">
+      <div class="fg">
+        <label class="lbl" for="matricula">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ico"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+          Matrícula del vehículo <span class="req">*</span>
+        </label>
+        <input class="inp" type="text" id="matricula" placeholder="GE-1234-A" maxlength="12">
+        <div class="field-err" id="err-matricula">La matrícula es obligatoria</div>
+      </div>
+      <div class="fg">
+        <label class="lbl" for="tipoVehiculo">Tipo de vehículo</label>
+        <select class="inp" id="tipoVehiculo">
+          <option value="sedan">Turismo / Sedán</option>
+          <option value="suv">SUV / 4x4</option>
+          <option value="furgon">Furgón</option>
+          <option value="moto">Moto</option>
+        </select>
+      </div>
+    </div>
+    <div class="fg">
+      <label class="lbl">Zona donde trabajas</label>
+      <div class="zona-grid" id="zonaGrid">
+        <div class="zona-chip" onclick="toggleChip(this,'zonas')">Centro Malabo</div>
+        <div class="zona-chip" onclick="toggleChip(this,'zonas')">Aeropuerto</div>
+        <div class="zona-chip" onclick="toggleChip(this,'zonas')">Sipopo</div>
+        <div class="zona-chip" onclick="toggleChip(this,'zonas')">Luba</div>
+        <div class="zona-chip" onclick="toggleChip(this,'zonas')">Bata</div>
+        <div class="zona-chip" onclick="toggleChip(this,'zonas')">Mongomo</div>
+        <div class="zona-chip" onclick="toggleChip(this,'zonas')">Toda la isla</div>
+        <div class="zona-chip" onclick="toggleChip(this,'zonas')">Todo el país</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TIENDA/AGENCIA: categoría + web -->
+  <div id="tiendaFields" style="display:none">
+    <div class="fg">
+      <label class="lbl" for="categoriaLbl">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ico"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        A qué sector pertenece
+      </label>
+      <select class="inp" id="categoriaNegocio">
+        <option value="">Selecciona el sector…</option>
+        <optgroup label="Productos">
+          <option value="alimentacion">Alimentación y bebidas</option>
+          <option value="moda">Ropa y calzado</option>
+          <option value="tecnologia">Tecnología y electrónica</option>
+          <option value="hogar">Muebles y hogar</option>
+          <option value="belleza">Belleza y cuidado personal</option>
+          <option value="farmacia">Farmacia y salud</option>
+          <option value="construccion_mat">Materiales de construcción</option>
+          <option value="otros_productos">Otros productos</option>
+        </optgroup>
+        <optgroup label="Servicios">
+          <option value="viajes">Agencia de viajes y turismo</option>
+          <option value="inmobiliaria">Inmobiliaria</option>
+          <option value="transporte">Transporte y mudanzas</option>
+          <option value="limpieza">Limpieza</option>
+          <option value="eventos">Eventos y bodas</option>
+          <option value="educacion">Educación y formación</option>
+          <option value="marketing">Marketing y publicidad</option>
+          <option value="legal">Asesoría legal y fiscal</option>
+          <option value="otros_servicios">Otros servicios</option>
+        </optgroup>
+      </select>
+    </div>
+    <div class="fg">
+      <label class="lbl" for="webNegocio">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ico"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+        Página web o redes sociales (opcional)
+      </label>
+      <input class="inp" type="url" id="webNegocio" placeholder="https://instagram.com/tu_negocio">
+    </div>
+  </div>
+
+  <!-- DELIVERY: zona + tipo de reparto -->
+  <div id="deliveryFields" style="display:none">
+    <div class="fg">
+      <label class="lbl">Zona donde repartes</label>
+      <div class="zona-grid">
+        <div class="zona-chip" onclick="toggleChip(this,'zonasD')">Centro Malabo</div>
+        <div class="zona-chip" onclick="toggleChip(this,'zonasD')">Aeropuerto</div>
+        <div class="zona-chip" onclick="toggleChip(this,'zonasD')">Sipopo</div>
+        <div class="zona-chip" onclick="toggleChip(this,'zonasD')">Toda Malabo</div>
+        <div class="zona-chip" onclick="toggleChip(this,'zonasD')">Bata</div>
+        <div class="zona-chip" onclick="toggleChip(this,'zonasD')">Todo el país</div>
+      </div>
+    </div>
+    <div class="fg">
+      <label class="lbl">Qué tipos de pedidos aceptas</label>
+      <div class="pago-grid">
+        <div class="pago-chip" onclick="togglePago(this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
+          Comida
+        </div>
+        <div class="pago-chip" onclick="togglePago(this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/></svg>
+          Compras
+        </div>
+        <div class="pago-chip" onclick="togglePago(this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          Documentos
+        </div>
+        <div class="pago-chip" onclick="togglePago(this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          Todo tipo
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+ 
+
+  </div>
+
+  <!-- ════════════════════════════════
+       PANTALLA 3 — CONTACTO Y HORARIO
+  ════════════════════════════════ -->
+
+  <div class="screen" id="screen3">
+    <div class="form-wrap">
+
+ 
+  <div class="step-head">
+    <div class="step-head-icon" style="background:rgba(0,212,170,.08);border:1px solid rgba(0,212,170,.2)">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.67A2 2 0 012 .18h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 14.92z"/></svg>
+    </div>
+    <div class="step-head-text">
+      <div class="step-head-title">Cómo te van a contactar</div>
+      <div class="step-head-sub">Tu número de WhatsApp y dónde estás. Los clientes te llamarán directamente.</div>
+    </div>
+  </div>
+
+  <!-- Teléfono -->
+  <div class="fg">
+    <label class="lbl" for="telefono">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ico"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.67A2 2 0 012 .18h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 14.92z"/></svg>
+      Número de WhatsApp <span class="req">*</span>
+    </label>
+    <input class="inp" type="tel" id="telefono" placeholder="+240 222 003 467">
+    <div class="field-hint">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2"/></svg>
+      <span>Los clientes te escribirán directamente a este número.</span>
+    </div>
+    <div class="field-err" id="err-telefono">El teléfono es obligatorio</div>
+  </div>
+
+  <!-- Ubicación -->
+  <div class="fg">
+    <label class="lbl" for="ubicacion">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ico"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+      Dónde estás / dirección <span class="req">*</span>
+    </label>
+    <input class="inp" type="text" id="ubicacion" placeholder="Ej: Calle de la Independencia, Malabo">
+    <div class="field-err" id="err-ubicacion">La ubicación es obligatoria</div>
+  </div>
+
+  <!-- Ciudad -->
+  <div class="fg">
+    <label class="lbl" for="ciudad">Ciudad</label>
+    <select class="inp" id="ciudad">
+      <option value="Malabo">Malabo</option>
+      <option value="Bata">Bata</option>
+      <option value="Ebebiyín">Ebebiyín</option>
+      <option value="Mongomo">Mongomo</option>
+      <option value="Luba">Luba</option>
+      <option value="Moka">Moka</option>
+      <option value="Añisoc">Añisoc</option>
+      <option value="Otra">Otra ciudad</option>
+    </select>
+  </div>
+
+  <!-- Horario (no para taxis) -->
+  <div id="horarioGroup">
+    <div class="fg">
+      <label class="lbl">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ico"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        Cuándo estás abierto
+      </label>
+      <div class="horario-grid">
+        <div class="h-chip" onclick="toggleHorario(this)" data-val="lun-vie">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          Lunes a Viernes
+        </div>
+        <div class="h-chip" onclick="toggleHorario(this)" data-val="sabado">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          Sábado
+        </div>
+        <div class="h-chip" onclick="toggleHorario(this)" data-val="domingo">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+          Domingo
+        </div>
+        <div class="h-chip" onclick="toggleHorario(this)" data-val="24h">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          24 horas
+        </div>
+      </div>
+    </div>
+
+    <!-- Hora apertura/cierre -->
+    <div class="grid2">
+      <div class="fg">
+        <label class="lbl" for="horaAbre">Abre a las</label>
+        <input class="inp" type="time" id="horaAbre" value="08:00">
+      </div>
+      <div class="fg">
+        <label class="lbl" for="horaCierra">Cierra a las</label>
+        <input class="inp" type="time" id="horaCierra" value="20:00">
+      </div>
+    </div>
+
+    <!-- Métodos de pago -->
+    <div class="fg">
+      <label class="lbl">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ico"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+        Cómo acepta pagos tu negocio
+      </label>
+      <div class="pago-grid">
+        <div class="pago-chip" onclick="togglePago(this)" data-val="efectivo">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/></svg>
+          Efectivo
+        </div>
+        <div class="pago-chip" onclick="togglePago(this)" data-val="transferencia">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 014-4h14M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg>
+          Transferencia
+        </div>
+        <div class="pago-chip" onclick="togglePago(this)" data-val="mooney">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+          Mooney
+        </div>
+        <div class="pago-chip" onclick="togglePago(this)" data-val="orange_money">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+          Orange Money
+        </div>
+        <div class="pago-chip" onclick="togglePago(this)" data-val="tarjeta">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+          Tarjeta
+        </div>
+        <div class="pago-chip" onclick="togglePago(this)" data-val="paypal">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 11l5 5 5-5"/><path d="M7 6l5 5 5-5"/></svg>
+          PayPal
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Email (opcional para todos) -->
+  <div class="fg">
+    <label class="lbl" for="emailNegocio">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ico"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      Correo electrónico (opcional)
+    </label>
+    <input class="inp" type="email" id="emailNegocio" placeholder="minegocio@gmail.com">
+  </div>
+
+</div>
+ 
+
+  </div>
+
+  <!-- ════════════════════════════════
+       PANTALLA 4 — REVISIÓN Y ENVÍO
+  ════════════════════════════════ -->
+
+  <div class="screen" id="screen4">
+    <div class="form-wrap">
+
+ 
+  <div class="step-head">
+    <div class="step-head-icon" style="background:rgba(0,255,157,.08);border:1px solid rgba(0,255,157,.2)">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="var(--lime)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+    </div>
+    <div class="step-head-text">
+      <div class="step-head-title">Revisa y publica</div>
+      <div class="step-head-sub">Comprueba que todo esté bien antes de que aparezca en la app.</div>
+    </div>
+  </div>
+
+  <!-- VISTA PREVIA -->
+  <div class="preview-card" id="previewCard">
+    <div class="preview-banner">
+      <div class="preview-banner-bg" id="previewBannerBg"></div>
+      <div class="preview-logo">
+        <div class="preview-logo-placeholder" id="previewLogoPlaceholder">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+        </div>
+        <img id="previewLogoImg" src="" alt="" style="display:none">
+      </div>
+    </div>
+    <div class="preview-body">
+      <div class="preview-tipo-badge" id="previewBadge">Tienda</div>
+      <div class="preview-name" id="previewName">Nombre del negocio</div>
+      <div class="preview-desc" id="previewDesc">Descripción del negocio</div>
+      <div class="preview-meta">
+        <div class="preview-meta-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          <span id="previewUbi">Malabo</span>
+        </div>
+        <div class="preview-meta-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.67A2 2 0 012 .18h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 14.92z"/></svg>
+          <span id="previewTel">+240 —</span>
+        </div>
+      </div>
+      <div class="verified-seal">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        Registro verificado en Compra Ya GE
+      </div>
+    </div>
+  </div>
+
+  <!-- RESUMEN EN LISTA -->
+  <div class="confirm-list" id="confirmList"></div>
+
+  <!-- Aviso final -->
+  <div class="tip-box ok">
+    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+    <span>Tu ficha quedará en revisión. El equipo de Compra Ya la aprobará en menos de 24 horas y recibirás una notificación.</span>
+  </div>
+
+  <div class="tip-box warn">
+    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+    <span>No uses nombres de marcas que no sean tuyas. Publicar información falsa suspende la cuenta.</span>
+  </div>
+
+</div>
+ 
+
+  </div>
+<!-- ════════════════════════════════
+     MIS ESPACIOS — aparece solo si hay entidades activas
+════════════════════════════════ -->
+<div id="misEspaciosSection" style="display:none">
+
+  <!-- Estado: cargando -->
+  <div id="misEspaciosLoading" style="padding:32px 16px;text-align:center;display:none">
+    <div style="width:32px;height:32px;border:3px solid rgba(0,245,255,.1);
+      border-top-color:var(--cyan);border-radius:50%;
+      animation:spin .7s linear infinite;margin:0 auto 12px"></div>
+    <div style="font-size:.8rem;color:var(--muted)">Cargando tus espacios…</div>
+  </div>
+
+  <!-- Cabecera de la sección -->
+  <div style="padding:28px 16px 14px;display:flex;align-items:center;justify-content:space-between">
+    <div>
+      <div style="font-family:var(--fh);font-size:1.1rem;font-weight:900;margin-bottom:3px">
+        Mis espacios
+      </div>
+      <div style="font-size:.76rem;color:var(--muted)">
+        Gestiona tus negocios registrados
+      </div>
+    </div>
+    <div style="font-size:.7rem;font-weight:700;font-family:var(--fh);
+      color:var(--cyan);background:rgba(0,245,255,.08);
+      border:1px solid rgba(0,245,255,.2);padding:4px 11px;border-radius:50px"
+      id="misEspaciosCount">0 activos</div>
+  </div>
+
+  <!-- Aquí se inyectan las tarjetas de cada entidad -->
+  <div id="misEspaciosCards" style="padding:0 16px;display:flex;flex-direction:column;gap:14px">
+  </div>
+
+</div>
+</main>
+
+<!-- BARRA INFERIOR DE NAVEGACIÓN -->
+
+<div class="bottom-bar">
+  <button class="btn-back-step" id="btnBack" onclick="goBack()" style="display:none">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+    Atrás
+  </button>
+  <button class="btn-next-step" id="btnNext" onclick="goNext()" style="display:none">
+    Continuar
+    <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+  </button>
+</div>
+
+<!-- TOAST -->
+
+<div id="toast"></div>
+
+<!-- LOADING -->
+
+<div id="loadingOv">
+  <div class="spinner"></div>
+  <div class="loading-msg" id="loadingMsg">Registrando tu negocio…</div>
+</div>
+
+<!-- PANTALLA ÉXITO -->
+
+<div class="success-screen" id="successScreen">
+  <div class="success-icon-box">
+    <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+  </div>
+  <h2 class="success-title">¡Ya está enviado!</h2>
+  <p class="success-sub" id="successSub">Tu negocio queda en revisión. Lo aprobamos en menos de 24 horas. Recibirás una notificación en la app.</p>
+  <div class="success-actions">
+    <button class="btn-success-main" onclick="goToServicios()">Ver mis servicios</button>
+    <button class="btn-success-sec" onclick="goToHome()">Volver al inicio</button>
+  </div>
+</div>
+<!-- ════════════════════════════════
+     MODAL PUBLICAR PRODUCTO/SERVICIO
+     (crear-entidades.html)
+════════════════════════════════ -->
+<div class="modal-overlay" id="modalPublicar">
+  <div class="modal-sheet">
+    <div class="modal-drag"></div>
+
+    <div class="modal-header">
+      <div class="modal-title" id="modalPubTitle">Publicar en mi espacio</div>
+      <button class="modal-close" onclick="cerrarModalPublicar()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="3"
+          stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/>
+          <line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <div class="modal-body">
+
+      <!-- Tabs: cambian según el tipo de entidad -->
+      <div class="pub-tabs" id="pubTabs">
+        <!-- Se inyectan por JS según tipo -->
+      </div>
+
+      <!-- Formulario -->
+      <div class="pub-form" id="pubForm">
+
+        <!-- Imágenes -->
+        <div>
+          <label class="lbl">Fotos</label>
+          <div class="pub-img-row" id="pubImgRow">
+            <div class="pub-img-slot" onclick="addPubImg(this)">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="3" width="18" height="18" rx="2"/>
+                <circle cx="8.5" cy="8.5" r="1.5"/>
+                <polyline points="21 15 16 10 5 21"/>
+              </svg>
+            </div>
+          </div>
+          <input type="file" id="pubImgInput" accept="image/*" hidden
+            onchange="handlePubImg(event)">
+        </div>
+
+        <!-- Nombre del ítem -->
+        <div class="fg" style="margin-bottom:0">
+          <label class="lbl" for="pubNombre">
+            Nombre <span class="req">*</span>
+          </label>
+          <input class="inp" type="text" id="pubNombre"
+            placeholder="Ej: Arroz basmati 5 kg" maxlength="80">
+          <div class="field-err" id="err-pubNombre">El nombre es obligatorio</div>
+        </div>
+
+        <!-- Descripción corta -->
+        <div class="fg" style="margin-bottom:0">
+          <label class="lbl" for="pubDesc">Descripción corta</label>
+          <textarea class="inp" id="pubDesc" style="min-height:80px"
+            placeholder="Breve descripción del producto o servicio…"
+            maxlength="300"></textarea>
+        </div>
+
+        <!-- Precio -->
+        <div class="price-row">
+          <div class="fg" style="margin-bottom:0">
+            <label class="lbl" for="pubPrecio">Precio (XAF)</label>
+            <input class="inp" type="number" id="pubPrecio"
+              placeholder="0" min="0">
+          </div>
+          <div class="fg" style="margin-bottom:0">
+            <label class="lbl" for="pubUnidad">Unidad</label>
+            <select class="inp" id="pubUnidad">
+              <option value="unidad">Por unidad</option>
+              <option value="kg">Por kg</option>
+              <option value="litro">Por litro</option>
+              <option value="servicio">Por servicio</option>
+              <option value="dia">Por día</option>
+              <option value="hora">Por hora</option>
+              <option value="gratis">Gratis / Consultar</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Categoría rápida (se rellena por JS) -->
+        <div class="fg" style="margin-bottom:0">
+          <label class="lbl">Categoría</label>
+          <div class="cat-pills" id="pubCatPills">
+          </div>
+        </div>
+
+        <!-- Disponibilidad -->
+        <div style="display:flex;align-items:center;gap:10px;
+          padding:10px 13px;background:rgba(255,255,255,.03);
+          border:1px solid var(--bsoft);border-radius:11px">
+          <div style="flex:1">
+            <div style="font-size:.8rem;font-weight:700;margin-bottom:1px">
+              Disponible ahora
+            </div>
+            <div style="font-size:.72rem;color:var(--muted)">
+              Aparecerá como disponible en tu espacio
+            </div>
+          </div>
+          <label style="position:relative;width:42px;height:24px;cursor:pointer">
+            <input type="checkbox" id="pubDisponible" checked
+              style="opacity:0;width:0;height:0">
+            <span id="toggleDisp" onclick="toggleDisponible()"
+              style="position:absolute;inset:0;border-radius:99px;
+              background:var(--cyan);transition:.3s;
+              display:flex;align-items:center;padding:3px">
+              <span style="width:18px;height:18px;border-radius:50%;
+                background:#000;margin-left:auto;transition:.3s"></span>
+            </span>
+          </label>
+        </div>
+
+        <!-- Botón guardar -->
+        <button class="btn-pub-save" id="btnPubSave"
+          onclick="guardarItem()">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none"
+            stroke="#000" stroke-width="2.5" stroke-linecap="round"
+            stroke-linejoin="round">
+            <path d="M22 11.08V12a10 10 0 11-5.93-9.14"/>
+            <polyline points="22 4 12 14.01 9 11.01"/>
+          </svg>
+          Publicar ahora
+        </button>
+
+      </div><!-- /pub-form -->
+
+      <!-- Lista de ítems ya publicados -->
+      <div class="pub-list-title">
+        Publicado
+        <span id="pubListCount">0</span>
+      </div>
+      <div id="pubItemsList">
+        <div style="text-align:center;padding:16px 0;
+          font-size:.8rem;color:var(--muted)" id="pubListEmpty">
+          Aún no has publicado nada aquí.
+        </div>
+      </div>
+
+    </div><!-- /modal-body -->
+  </div>
+</div>
+<!-- SCRIPTS -->
+ 
+<script type="module">
+
+// ─────────────────────────────────────────────
+//  IMPORTS FIREBASE (descomentar cuando conectes)
+// ─────────────────────────────────────────────
+ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+ import { getFirestore, collection, addDoc, serverTimestamp, doc, getDoc }
+  from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+ import { getAuth, onAuthStateChanged }
+   from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+ import { firebaseConfig } from './js/config.js';
+  const app  = initializeApp(firebaseConfig);
+  const db   = getFirestore(app);
+ const auth = getAuth(app);
+
+// ─────────────────────────────────────────────
+//  ESTADO GLOBAL
+// ─────────────────────────────────────────────
+let currentStep  = 0; // 0 = selección de tipo, 1-3 = pasos
+let tipoSeleccionado = null;
+let logoBlob     = null;
+let selectedHorarios = [];
+let selectedPagos    = [];
+let selectedZonas    = [];
+let toastTimer;
+
+const TIPO_CONFIG = {
+  tienda: {
+    label: 'Tienda / Negocio',
+    badge: { text: 'Tienda oficial', bg: 'rgba(0,255,157,.12)', border: 'rgba(0,255,157,.3)', color: '#00ff9d' },
+    color: 'var(--lime)',
+    head2Title: 'Datos de tu tienda',
+    head2Sub: 'El nombre y la foto son lo primero que ven tus clientes.',
+    head2Bg: 'rgba(0,255,157,.08)',
+    head2Border: 'rgba(0,255,157,.2)',
+    head2SvgColor: 'var(--lime)',
+    head2SvgPath: '<path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/>',
+    successSub: 'Tu tienda queda en revisión. En menos de 24 horas estará visible en la sección de supermercados y tiendas de Compra Ya.',
+    showTiendaFields: true, showTaxiFields: false, showDeliveryFields: false, showHorario: true,
+  },
+  agencia: {
+    label: 'Agencia / Empresa',
+    badge: { text: 'Agencia verificada', bg: 'rgba(0,245,255,.12)', border: 'rgba(0,245,255,.3)', color: 'var(--cyan)' },
+    color: 'var(--cyan)',
+    head2Title: 'Datos de tu agencia',
+    head2Sub: 'Cuéntanos qué servicio ofreces y cómo te pueden contratar.',
+    head2Bg: 'rgba(0,245,255,.08)',
+    head2Border: 'rgba(0,245,255,.2)',
+    head2SvgColor: 'var(--cyan)',
+    head2SvgPath: '<rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/>',
+    successSub: 'Tu agencia queda en revisión. En menos de 24 horas aparecerá en la sección de agencias y servicios de Compra Ya.',
+    showTiendaFields: true, showTaxiFields: false, showDeliveryFields: false, showHorario: true,
+  },
+  taxi: {
+    label: 'Taxi / Transporte',
+    badge: { text: 'Taxista registrado', bg: 'rgba(255,215,0,.12)', border: 'rgba(255,215,0,.3)', color: 'var(--gold)' },
+    color: 'var(--gold)',
+    head2Title: 'Datos de tu servicio de taxi',
+    head2Sub: 'Tu matrícula y zona de trabajo para que los clientes te encuentren.',
+    head2Bg: 'rgba(255,215,0,.08)',
+    head2Border: 'rgba(255,215,0,.2)',
+    head2SvgColor: 'var(--gold)',
+    head2SvgPath: '<rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>',
+    successSub: 'Tu perfil de taxi queda en revisión. En menos de 24 horas aparecerás en la sección de taxis de Compra Ya.',
+    showTiendaFields: false, showTaxiFields: true, showDeliveryFields: false, showHorario: false,
+  },
+  delivery: {
+    label: 'Delivery / Reparto',
+    badge: { text: 'Servicio de reparto', bg: 'rgba(255,59,92,.12)', border: 'rgba(255,59,92,.3)', color: 'var(--red)' },
+    color: 'var(--red)',
+    head2Title: 'Datos de tu servicio de reparto',
+    head2Sub: 'Tu zona de cobertura y tipo de pedidos que aceptas.',
+    head2Bg: 'rgba(255,59,92,.08)',
+    head2Border: 'rgba(255,59,92,.2)',
+    head2SvgColor: 'var(--red)',
+    head2SvgPath: '<path d="M5 12H19M12 5l7 7-7 7"/><circle cx="5" cy="12" r="3"/>',
+    successSub: 'Tu servicio de reparto queda en revisión. En menos de 24 horas aparecerás en la sección de delivery de Compra Ya.',
+    showTiendaFields: false, showTaxiFields: false, showDeliveryFields: true, showHorario: false,
+  },
+};
+
+const STEP_LABELS = [
+  'Elige qué quieres crear',
+  'Información básica',
+  'Contacto y horario',
+  'Revisa y publica',
+];
+
+// ─────────────────────────────────────────────
+//  TOAST
+// ─────────────────────────────────────────────
+window.showToast = function(msg, type='info', dur=3500) {
+  const el = document.getElementById('toast');
+  el.textContent = msg; el.className = `show ${type}`;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.className = '', dur);
+};
+
+// ─────────────────────────────────────────────
+//  SELECCIÓN DE TIPO
+// ─────────────────────────────────────────────
+window.selectTipo = function(tipo, card) {
+  tipoSeleccionado = tipo;
+  document.querySelectorAll('.tipo-card').forEach(c => {
+    c.style.borderColor = '';
+    c.style.boxShadow   = '';
+  });
+  const cfg = TIPO_CONFIG[tipo];
+  card.style.borderColor = cfg.color;
+  card.style.boxShadow   = `0 0 0 3px ${cfg.color}22, 0 12px 32px ${cfg.color}18`;
+
+  // Actualizar icono y textos del paso 2
+  const icon2 = document.getElementById('stepHeadIcon2');
+  icon2.style.background  = cfg.head2Bg;
+  icon2.style.border      = `1px solid ${cfg.head2Border}`;
+  icon2.innerHTML = `<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="${cfg.head2SvgColor}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${cfg.head2SvgPath}</svg>`;
+  document.getElementById('stepHeadTitle2').textContent = cfg.head2Title;
+  document.getElementById('stepHeadSub2').textContent   = cfg.head2Sub;
+
+  // Mostrar/ocultar campos específicos
+  document.getElementById('tiendaFields').style.display  = cfg.showTiendaFields  ? 'block' : 'none';
+  document.getElementById('taxiFields').style.display    = cfg.showTaxiFields    ? 'block' : 'none';
+  document.getElementById('deliveryFields').style.display= cfg.showDeliveryFields ? 'block' : 'none';
+  document.getElementById('horarioGroup').style.display  = cfg.showHorario       ? 'block' : 'none';
+
+  // Avanzar automáticamente después de un breve delay
+  setTimeout(() => goNext(), 220);
+};
+
+// ─────────────────────────────────────────────
+//  NAVEGACIÓN POR PASOS
+// ─────────────────────────────────────────────
+function updateUI() {
+  // Nodos
+  [1,2,3,4].forEach(n => {
+    const node = document.getElementById(`node${n}`);
+    if (!node) return;
+    node.classList.remove('active','done');
+    const step = currentStep + 1; // step 1=pantalla tipo, 2-4=formularios
+    if (n < step)        node.classList.add('done');
+    else if (n === step) node.classList.add('active');
+  });
+  // Líneas
+  [1,2,3].forEach(n => {
+    const line = document.getElementById(`line${n}`);
+    if (line) line.classList.toggle('done', n < currentStep + 1);
+  });
+  // Barra
+  const pct = (currentStep / 3) * 100;
+  document.getElementById('progFill').style.width = pct + '%';
+  // Label
+  document.getElementById('stepLabel').textContent = STEP_LABELS[currentStep] || '';
+  // Botones
+  document.getElementById('btnBack').style.display = currentStep > 0 ? 'flex' : 'none';
+  document.getElementById('btnNext').style.display = currentStep > 0 ? 'flex' : 'none';
+  if (currentStep === 3) {
+    document.getElementById('btnNext').innerHTML = `
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+      Enviar y publicar`;
+  } else {
+    document.getElementById('btnNext').innerHTML = `Continuar
+      <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="#000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>`;
+  }
+}
+
+function showScreen(n) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  const sc = document.getElementById(`screen${n}`);
+  if (sc) sc.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+  if (n === 4) buildPreview();
+}
+
+window.goNext = function() {
+  if (currentStep === 0) {
+    if (!tipoSeleccionado) { showToast('Elige primero qué tipo de negocio quieres crear','bad'); return; }
+    currentStep = 1;
+    showScreen(2); updateUI(); return;
+  }
+  if (currentStep === 1) {
+    if (!validateStep2()) return;
+    currentStep = 2;
+    showScreen(3); updateUI(); return;
+  }
+  if (currentStep === 2) {
+    if (!validateStep3()) return;
+    currentStep = 3;
+    showScreen(4); updateUI(); return;
+  }
+  if (currentStep === 3) {
+    submitForm(); return;
+  }
+};
+
+window.goBack = function() {
+  if (currentStep <= 0) return;
+  currentStep--;
+  showScreen(currentStep === 0 ? 1 : currentStep + 1);
+  updateUI();
+};
+
+// ─────────────────────────────────────────────
+//  VALIDACIONES
+// ─────────────────────────────────────────────
+function showErr(id, show=true) {
+  const el = document.getElementById(`err-${id}`);
+  const inp = document.getElementById(id);
+  if (el)  el.classList.toggle('show', show);
+  if (inp) inp.classList.toggle('error', show);
+}
+function clearErr(id) { showErr(id, false); }
+
+function validateStep2() {
+  let ok = true;
+  const nombre = (document.getElementById('nombreNegocio').value || '').trim();
+  const desc   = (document.getElementById('descNegocio').value || '').trim();
+  if (!nombre) { showErr('nombre'); ok = false; } else clearErr('nombre');
+  if (!desc)   { showErr('desc');   ok = false; } else clearErr('desc');
+  if (tipoSeleccionado === 'taxi') {
+    const mat = (document.getElementById('matricula').value || '').trim();
+    if (!mat) { showErr('matricula'); ok = false; } else clearErr('matricula');
+  }
+  return ok;
+}
+
+function validateStep3() {
+  let ok = true;
+  const tel = (document.getElementById('telefono').value || '').trim();
+  const ubi = (document.getElementById('ubicacion').value || '').trim();
+  if (!tel) { showErr('telefono'); ok = false; } else clearErr('telefono');
+  if (!ubi) { showErr('ubicacion'); ok = false; } else clearErr('ubicacion');
+  return ok;
+}
+
+// ─────────────────────────────────────────────
+//  IMAGEN LOGO
+// ─────────────────────────────────────────────
+window.triggerLogo = function() { document.getElementById('logoInput').click(); };
+
+window.handleImg = function(e, previewId, imgId, zoneId) {
+  const file = e.target.files[0]; if (!file) return;
+  logoBlob = file;
+  const url = URL.createObjectURL(file);
+  document.getElementById(imgId).src = url;
+  document.getElementById(previewId).style.display = 'block';
+  document.getElementById(zoneId).classList.add('has-img');
+};
+
+window.removeImg = function(previewId, inputId) {
+  document.getElementById(previewId).style.display = 'none';
+  document.getElementById(inputId).value = '';
+  logoBlob = null;
+};
+
+window.dzDrag  = (e, id) => { e.preventDefault(); document.getElementById(id).classList.add('drag'); };
+window.dzLeave = (id)    => document.getElementById(id).classList.remove('drag');
+window.dzDrop  = (e, id, inputId) => {
+  e.preventDefault(); document.getElementById(id).classList.remove('drag');
+  const file = e.dataTransfer.files[0];
+  if (!file || !file.type.startsWith('image/')) return;
+  logoBlob = file;
+  document.getElementById('logoImg').src = URL.createObjectURL(file);
+  document.getElementById('logoPreview').style.display = 'block';
+};
+
+// ─────────────────────────────────────────────
+//  CHIPS INTERACTIVOS
+// ─────────────────────────────────────────────
+window.toggleChip = function(el, group) {
+  el.classList.toggle('sel');
+  const val = el.textContent.trim();
+  if (group === 'zonas' || group === 'zonasD') {
+    selectedZonas = el.classList.contains('sel')
+      ? [...selectedZonas, val]
+      : selectedZonas.filter(x => x !== val);
+  }
+};
+
+window.toggleHorario = function(el) {
+  el.classList.toggle('sel');
+  const val = el.dataset.val;
+  selectedHorarios = el.classList.contains('sel')
+    ? [...selectedHorarios, val]
+    : selectedHorarios.filter(x => x !== val);
+};
+
+window.togglePago = function(el) {
+  el.classList.toggle('sel');
+  const val = el.dataset.val || el.textContent.trim();
+  selectedPagos = el.classList.contains('sel')
+    ? [...selectedPagos, val]
+    : selectedPagos.filter(x => x !== val);
+};
+
+// ─────────────────────────────────────────────
+//  CONSTRUIR VISTA PREVIA
+// ─────────────────────────────────────────────
+function buildPreview() {
+  const cfg     = TIPO_CONFIG[tipoSeleccionado];
+  const nombre  = document.getElementById('nombreNegocio').value || 'Mi Negocio';
+  const desc    = document.getElementById('descNegocio').value   || '';
+  const tel     = document.getElementById('telefono').value       || '—';
+  const ubi     = document.getElementById('ubicacion').value      || '';
+  const ciudad  = document.getElementById('ciudad').value         || '';
+
+  // Badge
+  const badge = document.getElementById('previewBadge');
+  badge.textContent    = cfg.badge.text;
+  badge.style.background   = cfg.badge.bg;
+  badge.style.border        = `1px solid ${cfg.badge.border}`;
+  badge.style.color         = cfg.badge.color;
+
+  document.getElementById('previewName').textContent = nombre;
+  document.getElementById('previewDesc').textContent = desc.slice(0,120) + (desc.length>120?'…':'');
+  document.getElementById('previewUbi').textContent  = [ubi, ciudad].filter(Boolean).join(', ');
+  document.getElementById('previewTel').textContent  = tel;
+
+  // Logo en preview
+  if (logoBlob) {
+    const url = URL.createObjectURL(logoBlob);
+    document.getElementById('previewLogoImg').src = url;
+    document.getElementById('previewLogoImg').style.display = 'block';
+    document.getElementById('previewLogoPlaceholder').style.display = 'none';
+    document.getElementById('previewBannerBg').style.backgroundImage = `url(${url})`;
+  }
+
+  // Lista de confirmación
+  const confirmData = [
+    { ico: '<path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/>', label: 'Tipo', val: cfg.label },
+    { ico: '<path d="M20.59 13.41l-7.17 7.17"/>', label: 'Nombre', val: nombre },
+    { ico: '<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/>', label: 'Ubicación', val: [ubi, ciudad].filter(Boolean).join(', ') || '—' },
+    { ico: '<path d="M22 16.92v3a2 2 0 01-2.18 2"/>', label: 'WhatsApp', val: tel },
+  ];
+
+  if (tipoSeleccionado === 'taxi') {
+    const mat = document.getElementById('matricula').value;
+    const tv  = document.getElementById('tipoVehiculo');
+    confirmData.push({ ico: '<rect x="1" y="3" width="15" height="13" rx="2"/>', label: 'Matrícula', val: mat });
+    confirmData.push({ ico: '<rect x="1" y="3" width="15" height="13" rx="2"/>', label: 'Vehículo', val: tv.options[tv.selectedIndex]?.text || '' });
+  }
+
+  if (selectedZonas.length)    confirmData.push({ ico: '<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/>', label: 'Zonas', val: selectedZonas.join(', ') });
+  if (selectedHorarios.length) confirmData.push({ ico: '<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>', label: 'Horario', val: selectedHorarios.join(', ') });
+  if (selectedPagos.length)    confirmData.push({ ico: '<rect x="1" y="4" width="22" height="16" rx="2" ry="2"/>', label: 'Pagos', val: selectedPagos.join(', ') });
+
+  document.getElementById('confirmList').innerHTML = confirmData.map(d => `
+    <div class="confirm-row">
+      <div class="confirm-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${d.ico}</svg>
+      </div>
+      <div class="confirm-info">
+        <div class="confirm-label">${d.label}</div>
+        <div class="confirm-val">${d.val || '—'}</div>
+      </div>
+    </div>`).join('');
+}
+
+// 1. Configuración de la automatización
+async function publicarEntidadAutomatica(datosEntidad) {
+    showLoading(true, "Validando con IA...");
+
+    try {
+        // PASO 1: Moderación de Contenido Automática
+        // Enviamos el texto a un endpoint de moderación (puedes usar Gemini o una función simple)
+        const esValido = await moderarContenidoIA(datosEntidad.nombre, datosEntidad.descripcion);
+
+        if (!esValido) {
+            showToast("Contenido no permitido o incoherente. Revisa tu descripción.", "bad");
+            return;
+        }
+
+        // PASO 2: Verificación de Suscripción Premium (Firebase)
+        const userStatus = await checkPremiumStatus(auth.currentUser.uid);
+        
+        if (userStatus !== 'active') {
+            showToast("Tu suscripción Premium no está activa.", "bad");
+            return;
+        }
+
+        // PASO 3: Publicación Instantánea
+        // Guardamos con estado 'activo' directamente, sin pasar por 'pendiente'
+        await db.collection('entidades').add({
+            ...datosEntidad,
+            status: 'activo', // Publicado automáticamente
+            fechaCreacion: new Date().toISOString(),
+            verificadoPorIA: true
+        });
+
+        mostrarPantallaExito();
+
+    } catch (error) {
+        console.error(error);
+        showToast("Error en el servidor", "bad");
+    } finally {
+        showLoading(false);
+    }
+}
+
+// 2. Función de Moderación (Lógica de IA)
+async function moderarContenidoIA(titulo, texto) {
+    // Aquí puedes llamar a tu Cloud Function que usa Gemini
+    // Por ahora, simulamos filtros básicos:
+    const palabrasProhibidas = ["insulto1", "estafa", "asdfgh"];
+    const contenidoLimpio = !palabrasProhibidas.some(p => texto.toLowerCase().includes(p));
+    
+    // Validamos longitud mínima para evitar registros "basura"
+    const tieneSentido = texto.split(' ').length > 5;
+
+    return contenidoLimpio && tieneSentido;
+}
+// ─────────────────────────────────────────────
+//  NAVEGACIÓN A OTRAS PÁGINAS
+// ─────────────────────────────────────────────
+window.goToServicios = function() { window.location.href = 'serviciosygestiones.html'; };
+window.goToHome      = function() { window.location.href = 'index-comprador.html'; };
+// ─────────────────────────────────────────────
+//  HELPERS UI
+// ─────────────────────────────────────────────
+function showLoading(active, msg = 'Registrando tu negocio…') {
+  const ov = document.getElementById('loadingOv');
+  document.getElementById('loadingMsg').textContent = msg;
+  ov.classList.toggle('active', active);
+}
+
+// ─────────────────────────────────────────────
+//  CHECK PREMIUM (Firestore)
+// ─────────────────────────────────────────────
+async function checkPremiumStatus(uid) {
+  try {
+    const snap = await getDoc(doc(db, 'usuarios', uid));
+    if (!snap.exists()) return 'none';
+    return snap.data()?.suscripcion?.estado || 'none'; // 'active' | 'none' | 'expired'
+  } catch (e) {
+    console.warn('[CY] checkPremiumStatus error:', e);
+    return 'none';
+  }
+}
+
+// ─────────────────────────────────────────────
+//  MODERACIÓN BÁSICA
+// ─────────────────────────────────────────────
+ 
+
+// ─────────────────────────────────────────────
+//  SUBIDA DE IMAGEN (Firebase Storage opcional)
+//  Si no tienes Storage configurado, se guarda null
+// ─────────────────────────────────────────────
+async function subirLogo(uid) {
+  if (!logoBlob) return null;
+  try {
+    // Descomenta si tienes Firebase Storage:
+    // const { getStorage, ref, uploadBytes, getDownloadURL } =
+    //   await import("https://www.gstatic.com/firebasejs/10.14.1/firebase-storage.js");
+    // const storage  = getStorage(app);
+    // const logoRef  = ref(storage, `logos/${uid}_${Date.now()}`);
+    // const snapshot = await uploadBytes(logoRef, logoBlob);
+    // return await getDownloadURL(snapshot.ref);
+    return null; // sin Storage → guardamos sin foto por ahora
+  } catch (e) {
+    console.warn('[CY] subirLogo error:', e);
+    return null;
+  }
+}
+
+// ─────────────────────────────────────────────
+//  SUBMIT PRINCIPAL
+// ─────────────────────────────────────────────
+async function submitForm() {
+  // 0. Usuario autenticado
+  const user = auth.currentUser;
+  if (!user) {
+    showToast('Debes iniciar sesión para publicar.', 'bad');
+    return;
+  }
+
+  // 1. Recoger datos del formulario
+  const cfg         = TIPO_CONFIG[tipoSeleccionado];
+  const nombre      = document.getElementById('nombreNegocio').value.trim();
+  const descripcion = document.getElementById('descNegocio').value.trim();
+  const telefono    = document.getElementById('telefono').value.trim();
+  const ubicacion   = document.getElementById('ubicacion').value.trim();
+  const ciudad      = document.getElementById('ciudad').value;
+  const email       = document.getElementById('emailNegocio').value.trim();
+
+  // Campos específicos
+  const matricula     = tipoSeleccionado === 'taxi'
+    ? document.getElementById('matricula').value.trim() : null;
+  const tipoVehiculo  = tipoSeleccionado === 'taxi'
+    ? document.getElementById('tipoVehiculo').value : null;
+  const categoria     = ['tienda','agencia'].includes(tipoSeleccionado)
+    ? document.getElementById('categoriaNegocio').value : null;
+  const web           = ['tienda','agencia'].includes(tipoSeleccionado)
+    ? document.getElementById('webNegocio').value.trim() : null;
+  const horaAbre      = document.getElementById('horaAbre')?.value  || null;
+  const horaCierra    = document.getElementById('horaCierra')?.value || null;
+
+  // 2. Moderación de contenido
+  showLoading(true, 'Validando contenido…');
+  const esValido = await moderarContenidoIA(nombre, descripcion);
+  if (!esValido) {
+    showLoading(false);
+    showToast('El contenido no supera la validación. Revisa el nombre y la descripción.', 'bad');
+    return;
+  }
+
+  // 3. Verificar suscripción Premium
+  showLoading(true, 'Verificando tu cuenta Premium…');
+  const estadoPremium = await checkPremiumStatus(user.uid);
+  const esPremium     = estadoPremium === 'active';
+
+  // 4. Subir logo (si existe)
+  showLoading(true, 'Subiendo imagen…');
+  const logoUrl = await subirLogo(user.uid);
+
+  // 5. Construir documento Firestore
+  const entidad = {
+    // Identificación
+    uid:            user.uid,
+    tipo:           tipoSeleccionado,
+
+    // Datos básicos
+    nombre,
+    descripcion,
+    logoUrl,
+
+    // Contacto
+    telefono,
+    ubicacion,
+    ciudad,
+    email:          email || null,
+    web:            web   || null,
+
+    // Campos por tipo
+    categoria:      categoria  || null,
+    matricula:      matricula  || null,
+    tipoVehiculo:   tipoVehiculo || null,
+
+    // Horario y operación
+    horario: {
+      dias:   selectedHorarios,
+      abre:   horaAbre,
+      cierra: horaCierra,
+    },
+    zonas:          selectedZonas,
+    metodosPago:    selectedPagos,
+
+    // Estado de publicación
+    // Premium → activo de inmediato; free → pendiente de revisión manual
+    status:         esPremium ? 'activo' : 'pendiente',
+    verificadoPorIA: true,
+    esPremium,
+
+    // Timestamps
+    creadoEn:       serverTimestamp(),
+    actualizadoEn:  serverTimestamp(),
+  };
+
+  // 6. Guardar en Firestore
+  showLoading(true, esPremium ? 'Publicando al instante…' : 'Enviando para revisión…');
+  try {
+    const ref = await addDoc(collection(db, 'entidades'), entidad);
+    console.log('[CY] Entidad creada:', ref.id);
+
+    // 7. Mostrar éxito
+    showLoading(false);
+    document.getElementById('successSub').textContent = esPremium
+      ? cfg.successSub.replace('queda en revisión', 'ya está publicado')
+      : cfg.successSub;
+    document.getElementById('successScreen').classList.add('active');
+
+  } catch (err) {
+    showLoading(false);
+    console.error('[CY] submitForm error:', err);
+    showToast('Error al guardar. Inténtalo de nuevo.', 'bad');
+  }
+}
+// ─────────────────────────────────────────────
+//  PARTE 1 — CARGAR MIS ESPACIOS AL INICIO
+// ─────────────────────────────────────────────
+import { query, where, getDocs }
+  from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+
+async function cargarMisEspacios(uid) {
+  const section  = document.getElementById('misEspaciosSection');
+  const loading  = document.getElementById('misEspaciosLoading');
+  const cards    = document.getElementById('misEspaciosCards');
+  const counter  = document.getElementById('misEspaciosCount');
+
+  // Mostrar spinner, ocultar sección hasta saber si hay datos
+  loading.style.display = 'block';
+
+  try {
+    const q      = query(collection(db, 'entidades'),
+                         where('uid',    '==', uid),
+                         where('status', '==', 'activo'));
+    const snap   = await getDocs(q);
+
+    loading.style.display = 'none';
+
+    if (snap.empty) {
+      // Sin entidades activas → sección invisible
+      section.style.display = 'none';
+      return;
+    }
+
+    // Hay entidades → mostrar sección
+    section.style.display = 'block';
+    counter.textContent   = `${snap.size} activo${snap.size > 1 ? 's' : ''}`;
+    cards.innerHTML       = '';
+
+    snap.forEach(docSnap => {
+      const e  = docSnap.data();
+      const id = docSnap.id;
+      cards.insertAdjacentHTML('beforeend', buildEspacioCard(e, id));
+    });
+
+  } catch (err) {
+    console.error('[CY] cargarMisEspacios:', err);
+    loading.style.display = 'none';
+  }
+}
+
+// Llama a la función cuando el usuario está autenticado
+onAuthStateChanged(auth, user => {
+  if (user) cargarMisEspacios(user.uid);
+});
+// ─────────────────────────────────────────────
+//  PARTE 2 — CONSTRUIR TARJETA DE ESPACIO
+// ─────────────────────────────────────────────
+
+// Colores y labels por tipo
+const TIPO_UI = {
+  tienda:   { label:'Tienda',   bg:'rgba(0,255,157,.1)',  border:'rgba(0,255,157,.25)',  color:'var(--lime)',   icon:'#00ff9d' },
+  agencia:  { label:'Agencia',  bg:'rgba(0,245,255,.1)',  border:'rgba(0,245,255,.25)',  color:'var(--cyan)',   icon:'#00f5ff' },
+  taxi:     { label:'Taxi',     bg:'rgba(255,215,0,.1)',  border:'rgba(255,215,0,.25)',  color:'var(--gold)',   icon:'#ffd700' },
+  delivery: { label:'Reparto',  bg:'rgba(255,59,92,.1)',  border:'rgba(255,59,92,.25)',  color:'var(--red)',    icon:'#ff3b5c' },
+};
+
+function buildEspacioCard(e, id) {
+  const ui  = TIPO_UI[e.tipo] || TIPO_UI.tienda;
+
+  // Logo
+  const logoHtml = e.logoUrl
+    ? `<img src="${e.logoUrl}" alt="logo">`
+    : `<div class="ec-logo-ph">
+         <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"
+           stroke-linecap="round" stroke-linejoin="round">
+           <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+           <line x1="3" y1="6" x2="21" y2="6"/>
+           <path d="M16 10a4 4 0 01-8 0"/>
+         </svg>
+       </div>`;
+
+  // Stats avanzadas: bloqueadas por defecto, admin puede poner statsDesbloqueadas:true en Firestore
+  const advUnlocked = e.statsDesbloqueadas === true;
+  const advClass    = advUnlocked ? 'ec-stats-adv unlocked' : 'ec-stats-adv';
+  const lockIcon    = advUnlocked
+    ? `<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+         <polyline points="20 6 9 17 4 12"/>
+       </svg>`
+    : `<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+         <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+         <path d="M7 11V7a5 5 0 0110 0v4"/>
+       </svg>`;
+  const advTitle    = advUnlocked ? 'Estadísticas avanzadas activas' : 'Estadísticas avanzadas';
+  const advSub      = advUnlocked
+    ? 'Accede a métricas completas de rendimiento'
+    : 'Visitas detalladas, conversión y más — disponibles con plan Pro';
+  const advClick    = advUnlocked
+    ? `onclick="abrirStatsAvanzadas('${id}')"`
+    : `onclick="showToast('Las estadísticas avanzadas se desbloquean con el plan Pro.','info')"`;
+
+  return `
+  <div class="espacio-card" id="ec-${id}">
+
+    <!-- HEADER -->
+    <div class="ec-header">
+      <div class="ec-logo">${logoHtml}</div>
+      <div class="ec-meta">
+        <div class="ec-nombre">${e.nombre || 'Sin nombre'}</div>
+        <div class="ec-badge"
+          style="background:${ui.bg};border:1px solid ${ui.border};color:${ui.color}">
+          ${ui.label}
+        </div>
+      </div>
+      <div class="ec-status" title="Activo"></div>
+    </div>
+
+    <!-- STATS BÁSICAS (gratis, siempre visibles) -->
+    <div class="ec-stats">
+      <div class="ec-stat">
+        <div class="ec-stat-val" id="stat-vistas-${id}">—</div>
+        <div class="ec-stat-lbl">Visitas hoy</div>
+      </div>
+      <div class="ec-stat">
+        <div class="ec-stat-val" id="stat-contactos-${id}">—</div>
+        <div class="ec-stat-lbl">Contactos</div>
+      </div>
+      <div class="ec-stat">
+        <div class="ec-stat-val" id="stat-productos-${id}">—</div>
+        <div class="ec-stat-lbl">Productos</div>
+      </div>
+    </div>
+
+    <!-- STATS AVANZADAS (bloqueadas hasta que admin desbloquee) -->
+    <div class="${advClass}" ${advClick}>
+      <div class="ec-adv-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="20" x2="18" y2="10"/>
+          <line x1="12" y1="20" x2="12" y2="4"/>
+          <line x1="6"  y1="20" x2="6"  y2="14"/>
+        </svg>
+      </div>
+      <div class="ec-adv-text">
+        <div class="ec-adv-title">${advTitle}</div>
+        <div class="ec-adv-sub">${advSub}</div>
+      </div>
+      <div class="ec-adv-lock">${lockIcon}</div>
+    </div>
+
+    <!-- ACCIONES -->
+    <div class="ec-actions">
+      <button class="ec-btn ec-btn-publish"
+        onclick="abrirPublicar('${id}','${e.tipo}')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2.5"
+          stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="5" x2="12" y2="19"/>
+          <line x1="5"  y1="12" x2="19" y2="12"/>
+        </svg>
+        Publicar
+      </button>
+      <button class="ec-btn ec-btn-edit"
+        onclick="showToast('Editor de ficha próximamente.','info')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
+          <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
+        </svg>
+        Editar
+      </button>
+      <button class="ec-btn ec-btn-view"
+        onclick="verEspacio('${id}')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+          <circle cx="12" cy="12" r="3"/>
+        </svg>
+        Ver
+      </button>
+    </div>
+
+  </div>`;
+}
+
+// ─────────────────────────────────────────────
+//  CARGAR STATS BÁSICAS POR ENTIDAD
+// ─────────────────────────────────────────────
+async function cargarStatsBasicas(id) {
+  try {
+    // Visitas de hoy
+    const hoy  = new Date().toISOString().slice(0,10); // "2026-05-19"
+    const snapV = await getDocs(
+      query(collection(db, 'entidades', id, 'visitas'),
+            where('fecha', '==', hoy))
+    );
+    document.getElementById(`stat-vistas-${id}`).textContent = snapV.size;
+
+    // Contactos totales (clics en WhatsApp guardados)
+    const snapC = await getDocs(
+      collection(db, 'entidades', id, 'contactos')
+    );
+    document.getElementById(`stat-contactos-${id}`).textContent = snapC.size;
+
+    // Productos publicados
+    const snapP = await getDocs(
+      query(collection(db, 'entidades', id, 'productos'),
+            where('activo', '==', true))
+    );
+    document.getElementById(`stat-productos-${id}`).textContent = snapP.size;
+
+  } catch (err) {
+    console.warn('[CY] cargarStatsBasicas:', err);
+  }
+  snap.forEach(docSnap => {
+  const e  = docSnap.data();
+  const id = docSnap.id;
+  cards.insertAdjacentHTML('beforeend', buildEspacioCard(e, id));
+  cargarStatsBasicas(id); // ← añade esta línea
+});
+}
+
+// ─────────────────────────────────────────────
+//  STUBS — se desarrollan en Parte 3 y 4
+// ─────────────────────────────────────────────
+window.abrirPublicar      = (id, tipo) => showToast('Panel de publicación — Parte 3 próximamente', 'info');
+window.verEspacio         = (id)       => showToast('Vista pública — Parte 4 próximamente', 'info');
+window.abrirStatsAvanzadas= (id)       => showToast('Estadísticas avanzadas desbloqueadas — próximamente', 'ok');
+// ─────────────────────────────────────────────
+//  PARTE 3 — MODAL PUBLICAR
+// ─────────────────────────────────────────────
+import { deleteDoc }
+  from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+
+let _pubEntidadId   = null;
+let _pubTipo        = null;
+let _pubTabActual   = 'producto';
+let _pubImgBlobs    = [];   // máx 3 imágenes
+let _pubCatSel      = null;
+let _pubDisponible  = true;
+
+// Categorías rápidas por tipo
+const PUB_CATS = {
+  tienda:   ['Alimentación','Bebidas','Ropa','Electrónica','Hogar','Belleza','Otros'],
+  agencia:  ['Viajes','Inmobiliaria','Limpieza','Eventos','Legal','Marketing','Otros'],
+  taxi:     ['Aeropuerto','Ciudad','Excursión','Mudanza','Otros'],
+  delivery: ['Comida','Compras','Documentos','Medicamentos','Otros'],
+};
+
+const PUB_TABS = {
+  tienda:   [{ id:'producto',  label:'Producto' },
+             { id:'oferta',    label:'Oferta'   }],
+  agencia:  [{ id:'servicio',  label:'Servicio' },
+             { id:'oferta',    label:'Promoción'}],
+  taxi:     [{ id:'servicio',  label:'Ruta'     },
+             { id:'oferta',    label:'Tarifa'   }],
+  delivery: [{ id:'servicio',  label:'Servicio' },
+             { id:'oferta',    label:'Oferta'   }],
+};
+
+// ── Abrir modal ──────────────────────────────
+window.abrirPublicar = function(entidadId, tipo) {
+  _pubEntidadId  = entidadId;
+  _pubTipo       = tipo;
+  _pubImgBlobs   = [];
+  _pubCatSel     = null;
+  _pubDisponible = true;
+
+  // Título
+  const ui = TIPO_UI[tipo] || TIPO_UI.tienda;
+  document.getElementById('modalPubTitle').textContent =
+    `Publicar en ${ui.label}`;
+
+  // Tabs
+  const tabs = PUB_TABS[tipo] || PUB_TABS.tienda;
+  document.getElementById('pubTabs').innerHTML = tabs.map((t,i) =>
+    `<button class="pub-tab ${i===0?'active':''}"
+       onclick="switchPubTab('${t.id}',this)">${t.label}</button>`
+  ).join('');
+  _pubTabActual = tabs[0].id;
+
+  // Categorías
+  const cats = PUB_CATS[tipo] || PUB_CATS.tienda;
+  document.getElementById('pubCatPills').innerHTML = cats.map(c =>
+    `<div class="cat-pill" onclick="selCat(this,'${c}')">${c}</div>`
+  ).join('');
+
+  // Reset formulario
+  ['pubNombre','pubDesc','pubPrecio'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  document.getElementById('pubImgRow').innerHTML = `
+    <div class="pub-img-slot" onclick="addPubImg(this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="3" width="18" height="18" rx="2"/>
+        <circle cx="8.5" cy="8.5" r="1.5"/>
+        <polyline points="21 15 16 10 5 21"/>
+      </svg>
+    </div>`;
+  resetToggle();
+
+  // Cargar ítems ya publicados
+  cargarItemsPublicados(entidadId);
+
+  document.getElementById('modalPublicar').classList.add('open');
+  document.body.style.overflow = 'hidden';
+};
+
+window.cerrarModalPublicar = function() {
+  document.getElementById('modalPublicar').classList.remove('open');
+  document.body.style.overflow = '';
+};
+
+// Cerrar al tocar el overlay
+document.getElementById('modalPublicar')
+  .addEventListener('click', e => {
+    if (e.target === e.currentTarget) cerrarModalPublicar();
+  });
+
+// ── Tabs ─────────────────────────────────────
+window.switchPubTab = function(tabId, btn) {
+  _pubTabActual = tabId;
+  document.querySelectorAll('.pub-tab')
+    .forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  // Ajustar placeholder de nombre según tab
+  const placeholders = {
+    producto: 'Ej: Arroz basmati 5 kg',
+    servicio: 'Ej: Limpieza de hogar completa',
+    oferta:   'Ej: 2x1 en refrescos este fin de semana',
+  };
+  document.getElementById('pubNombre').placeholder =
+    placeholders[tabId] || 'Nombre…';
+};
+
+// ── Imágenes ─────────────────────────────────
+window.addPubImg = function(slot) {
+  if (_pubImgBlobs.length >= 3) {
+    showToast('Máximo 3 fotos por publicación','info'); return;
+  }
+  document.getElementById('pubImgInput').click();
+  // guardamos referencia al slot
+  document.getElementById('pubImgInput')._slot = slot;
+};
+
+window.handlePubImg = function(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  if (file.size > 5 * 1024 * 1024) {
+    showToast('La imagen no puede superar 5 MB','bad'); return;
+  }
+  const idx = _pubImgBlobs.length;
+  _pubImgBlobs.push(file);
+
+  const reader = new FileReader();
+  reader.onload = ev => {
+    const row  = document.getElementById('pubImgRow');
+    // Reemplazar el slot de "+" o añadir nuevo
+    const slot = document.getElementById('pubImgInput')._slot;
+    slot.innerHTML = `
+      <img src="${ev.target.result}" alt="">
+      <button class="rm-img" onclick="event.stopPropagation();removePubImg(this,${idx})">
+        <svg width="9" height="9" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="3" stroke-linecap="round">
+          <line x1="18" y1="6" x2="6" y2="18"/>
+          <line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>`;
+    slot.onclick = null; // ya no es el slot de añadir
+
+    // Añadir nuevo slot "+" si quedan huecos
+    if (_pubImgBlobs.length < 3) {
+      const newSlot = document.createElement('div');
+      newSlot.className = 'pub-img-slot';
+      newSlot.onclick   = () => addPubImg(newSlot);
+      newSlot.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="3" width="18" height="18" rx="2"/>
+        <circle cx="8.5" cy="8.5" r="1.5"/>
+        <polyline points="21 15 16 10 5 21"/>
+      </svg>`;
+      row.appendChild(newSlot);
+    }
+  };
+  reader.readAsDataURL(file);
+  e.target.value = '';
+};
+
+window.removePubImg = function(btn, idx) {
+  _pubImgBlobs.splice(idx, 1);
+  btn.closest('.pub-img-slot').remove();
+};
+
+// ── Categoría ────────────────────────────────
+window.selCat = function(el, cat) {
+  document.querySelectorAll('.cat-pill')
+    .forEach(p => p.classList.remove('sel'));
+  el.classList.add('sel');
+  _pubCatSel = cat;
+};
+
+// ── Toggle disponible ────────────────────────
+window.toggleDisponible = function() {
+  _pubDisponible = !_pubDisponible;
+  const span = document.getElementById('toggleDisp');
+  const dot  = span.querySelector('span');
+  if (_pubDisponible) {
+    span.style.background = 'var(--cyan)';
+    dot.style.marginLeft  = 'auto';
+    dot.style.marginRight = '0';
+  } else {
+    span.style.background = 'rgba(255,255,255,.12)';
+    dot.style.marginLeft  = '0';
+    dot.style.marginRight = 'auto';
+  }
+};
+function resetToggle() {
+  _pubDisponible = true;
+  const span = document.getElementById('toggleDisp');
+  if (!span) return;
+  const dot = span.querySelector('span');
+  span.style.background = 'var(--cyan)';
+  dot.style.marginLeft  = 'auto';
+  dot.style.marginRight = '0';
+}
+
+// ── Guardar ítem en Firestore ────────────────
+window.guardarItem = async function() {
+  const nombre = document.getElementById('pubNombre').value.trim();
+  if (!nombre) {
+    document.getElementById('err-pubNombre').classList.add('show');
+    document.getElementById('pubNombre').classList.add('error');
+    return;
+  }
+  document.getElementById('err-pubNombre').classList.remove('show');
+  document.getElementById('pubNombre').classList.remove('error');
+
+  const btn = document.getElementById('btnPubSave');
+  btn.disabled = true;
+
+  const precio  = parseFloat(document.getElementById('pubPrecio').value) || 0;
+  const unidad  = document.getElementById('pubUnidad').value;
+  const desc    = document.getElementById('pubDesc').value.trim();
+
+  // Subir imágenes (stub — sin Storage guardamos null)
+  const fotos = [];
+  // Si tienes Firebase Storage, aquí harías el upload de _pubImgBlobs
+
+  const item = {
+    nombre,
+    descripcion: desc || null,
+    precio,
+    unidad,
+    categoria:   _pubCatSel || null,
+    tab:         _pubTabActual,    // 'producto' | 'servicio' | 'oferta'
+    activo:      _pubDisponible,
+    fotos,
+    entidadId:   _pubEntidadId,
+    creadoEn:    serverTimestamp(),
+  };
+
+  try {
+    await addDoc(
+      collection(db, 'entidades', _pubEntidadId, 'productos'),
+      item
+    );
+    showToast('¡Publicado correctamente!', 'ok');
+
+    // Actualizar contador de la tarjeta
+    const statEl = document.getElementById(`stat-productos-${_pubEntidadId}`);
+    if (statEl) statEl.textContent =
+      (parseInt(statEl.textContent) || 0) + 1;
+
+    // Resetear form y recargar lista
+    document.getElementById('pubNombre').value = '';
+    document.getElementById('pubDesc').value   = '';
+    document.getElementById('pubPrecio').value = '';
+    _pubImgBlobs = [];
+    _pubCatSel   = null;
+    document.querySelectorAll('.cat-pill')
+      .forEach(p => p.classList.remove('sel'));
+
+    cargarItemsPublicados(_pubEntidadId);
+
+  } catch (err) {
+    console.error('[CY] guardarItem:', err);
+    showToast('Error al publicar. Inténtalo de nuevo.', 'bad');
+  } finally {
+    btn.disabled = false;
+  }
+};
+
+// ── Cargar ítems ya publicados ───────────────
+async function cargarItemsPublicados(entidadId) {
+  const lista  = document.getElementById('pubItemsList');
+  const count  = document.getElementById('pubListCount');
+  const empty  = document.getElementById('pubListEmpty');
+
+  lista.innerHTML = `<div style="text-align:center;padding:14px 0;
+    font-size:.78rem;color:var(--muted)">Cargando…</div>`;
+
+  try {
+    const snap = await getDocs(
+      collection(db, 'entidades', entidadId, 'productos')
+    );
+
+    if (snap.empty) {
+      lista.innerHTML = '';
+      if (empty) empty.style.display = 'block';
+      count.textContent = '0';
+      return;
+    }
+
+    if (empty) empty.style.display = 'none';
+    count.textContent = snap.size;
+    lista.innerHTML   = '';
+
+    snap.forEach(d => {
+      const it = d.data();
+      const id = d.id;
+      const precioStr = it.unidad === 'gratis' || it.precio === 0
+        ? 'Gratis / Consultar'
+        : `${it.precio?.toLocaleString('es-GQ')} XAF`;
+      const precioClass = (it.unidad === 'gratis' || it.precio === 0)
+        ? 'pub-item-price free' : 'pub-item-price';
+
+      lista.insertAdjacentHTML('beforeend', `
+        <div class="pub-item-row" id="pi-${id}">
+          <div class="pub-item-thumb">
+            ${it.fotos?.[0]
+              ? `<img src="${it.fotos[0]}" alt="">`
+              : `<svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"
+                   stroke-linecap="round" stroke-linejoin="round">
+                   <rect x="3" y="3" width="18" height="18" rx="2"/>
+                   <circle cx="8.5" cy="8.5" r="1.5"/>
+                   <polyline points="21 15 16 10 5 21"/>
+                 </svg>`}
+          </div>
+          <div class="pub-item-info">
+            <div class="pub-item-name">${it.nombre}</div>
+            <div class="${precioClass}">${precioStr}</div>
+          </div>
+          <button class="pub-item-del"
+            onclick="eliminarItem('${entidadId}','${id}')">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2.5"
+              stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="3 6 5 6 21 6"/>
+              <path d="M19 6l-1 14H6L5 6"/>
+              <path d="M10 11v6M14 11v6"/>
+            </svg>
+          </button>
+        </div>`);
+    });
+
+  } catch (err) {
+    console.error('[CY] cargarItemsPublicados:', err);
+    lista.innerHTML = `<div style="font-size:.78rem;color:var(--red);
+      text-align:center;padding:12px">Error al cargar. Recarga la página.</div>`;
+  }
+}
+
+// ── Eliminar ítem ────────────────────────────
+window.eliminarItem = async function(entidadId, itemId) {
+  try {
+    await deleteDoc(
+      doc(db, 'entidades', entidadId, 'productos', itemId)
+    );
+    document.getElementById(`pi-${itemId}`)?.remove();
+    showToast('Eliminado correctamente', 'ok');
+
+    // Actualizar contador
+    const statEl = document.getElementById(`stat-productos-${entidadId}`);
+    if (statEl) {
+      const v = Math.max(0, (parseInt(statEl.textContent) || 1) - 1);
+      statEl.textContent = v;
+    }
+
+    // Actualizar contador del modal
+    const count = document.getElementById('pubListCount');
+    if (count) count.textContent =
+      Math.max(0, (parseInt(count.textContent) || 1) - 1);
+
+  } catch (err) {
+    console.error('[CY] eliminarItem:', err);
+    showToast('No se pudo eliminar', 'bad');
+  }
+};
+
+
+// ─────────────────────────────────────────────
+//  INIT
+// ─────────────────────────────────────────────
+updateUI();
+console.log('%c[Compra Ya] crear-entidad.html listo', 'color:#00f5ff;font-weight:bold');
+
+</script>
+</body>
+</html>

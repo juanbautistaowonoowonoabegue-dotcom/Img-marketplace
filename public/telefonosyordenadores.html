@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teléfonos, iPhone y Ordenadores Baratos en Malabo | Compra Ya</title>
+<meta name="description" content="Venta de teléfonos móviles, laptops y tecnología en Guinea Ecuatorial. Encuentra las mejores ofertas en iPhone y ordenadores en Malabo y Bata.">
+     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+  <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+<script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-analytics.js";
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
+
+  // Your web app's Firebase configuration
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+  const firebaseConfig = {
+    apiKey: "AIzaSyDQu4XnOG8lRadXJ_WrgOAuUWaYJouZJ5w",
+    authDomain: "marketplace-2005.firebaseapp.com",
+    projectId: "marketplace-2005",
+    storageBucket: "marketplace-2005.firebasestorage.app",
+    messagingSenderId: "525827241488",
+    appId: "1:525827241488:web:c88a4d8e88d0f0a28bbc95",
+    measurementId: "G-REKGVTB1L5"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+</script>
+ 
+    <style>
+        :root {
+            --primary: #00bfff;
+            --dark: #0f0e0efc;
+            --tech: #06b6d4; /* Cian moderno y tecnológico */
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background-color: #0a0a0a;
+            color: #ffffff;
+        }
+
+        /* HEADER - Coherente con todas las páginas anteriores */
+        .header-moderno {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background-color: var(--dark);
+            border-bottom: 1px solid #333;
+        }
+
+        .header-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 15px;
+        }
+
+        .menu-hamburguesa {
+            font-size: 1.8rem;
+            cursor: pointer;
+            padding: 8px;
+        }
+
+        .logo-mini {
+            height: 45px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn-header-simple, .btn-premium-small {
+            padding: 8px 14px;
+            border-radius: 30px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-header-simple { background: #333; color: white; }
+        .btn-premium-small {
+            background: linear-gradient(135deg, #ffd700, #ffaa00);
+            color: #000;
+        }
+
+        .search-bar-container {
+            padding: 12px 15px;
+            background: var(--dark);
+        }
+
+        .search-wrapper {
+            display: flex;
+            align-items: center;
+            background: #1f1f1f;
+            border-radius: 50px;
+            padding: 8px 15px;
+            border: 1px solid #333;
+        }
+
+        #main-search {
+            flex: 1;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: white;
+            font-size: 1rem;
+        }
+
+        .btn-search-main {
+            background: var(--primary);
+            color: white;
+            border: none;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Subcategorías de Teléfonos y Ordenadores */
+        .subcategorias-tech {
+            display: flex;
+            overflow-x: auto;
+            padding: 15px;
+            gap: 12px;
+            background: var(--dark);
+            scrollbar-width: none;
+        }
+
+        .subcategoria-btn {
+            padding: 14px 24px;
+            background: #1f1f1f;
+            border: none;
+            border-radius: 30px;
+            white-space: nowrap;
+            font-weight: 700;
+            font-size: 1.05rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .subcategoria-btn.active {
+            background: var(--tech);
+            color: white;
+            box-shadow: 0 4px 20px rgba(6, 182, 212, 0.5);
+        }
+
+        /* Carruseles con scroll infinito */
+        .carrusel-section {
+            padding: 25px 15px 10px;
+        }
+
+        .carrusel-titulo {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            padding-left: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .carrusel-titulo a {
+            font-size: 1rem;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .carrusel-container {
+            display: flex;
+            overflow-x: auto;
+            gap: 16px;
+            padding: 10px 5px;
+            scroll-snap-type: x mandatory;
+            scrollbar-width: none;
+            animation: scrollInfinite 36s linear infinite;
+        }
+
+        .carrusel-container:hover {
+            animation-play-state: paused;
+        }
+
+        @keyframes scrollInfinite {
+            from { transform: translateX(0); }
+            to { transform: translateX(-50%); }
+        }
+
+        .carrusel-container::-webkit-scrollbar { display: none; }
+
+        .tarjeta-tech {
+            min-width: 180px;
+            max-width: 180px;
+            background: #1a1a1a;
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(6, 182, 212, 0.25);
+            transition: all 0.3s ease;
+            scroll-snap-align: start;
+            position: relative;
+        }
+
+        .tarjeta-tech:hover {
+            transform: translateY(-12px) scale(1.04);
+        }
+
+        .tarjeta-tech img {
+            width: 100%;
+            height: 210px;
+            object-fit: cover;
+        }
+
+        .badge-tech {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background: var(--tech);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            z-index: 10;
+        }
+
+        .tarjeta-info {
+            padding: 14px;
+        }
+
+        .tarjeta-titulo {
+            font-size: 1.08rem;
+            margin-bottom: 8px;
+            font-weight: 600;
+            line-height: 1.3;
+        }
+
+        .tarjeta-precio {
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: #00ff9d;
+        }
+
+        .tarjeta-precio span {
+            font-size: 0.95rem;
+            color: #888;
+            text-decoration: line-through;
+        }
+
+        .tarjeta-extra {
+            font-size: 0.82rem;
+            color: #bbb;
+            margin-top: 4px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px 15px;
+            background: #0a0a0a;
+            border-top: 1px solid #222;
+            color: #888;
+            margin-top: 60px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <header class="header-moderno">
+        <div class="header-top">
+            <div class="menu-hamburguesa" onclick="toggleMenuLateral()">
+                <i class="fas fa-bars"></i>
+            </div>
+            
+            <img src="logotipo.JPEG" class="logo-mini" alt="Compra Ya" onclick="window.location.href='index.html'">
+
+            <div class="header-actions">
+                <button class="btn-premium-small" onclick="window.location.href='perfildelusuario.html'">
+                    <i class="fas fa-user-circle"></i> Mi Cuenta
+                </button>
+                <button class="btn-premium-small" onclick="window.location.href='caritodecompras.html'">
+                    <i class="fas fa-shopping-cart"></i> Mis compras
+                </button>
+            </div>
+        </div>
+
+        <div class="search-bar-container">
+            <div class="search-wrapper">
+                <input type="text" id="main-search" placeholder="📱 Busca iPhone, Samsung, laptops, tablets..." 
+                       onkeyup="if(event.key==='Enter') buscarEnTech()">
+                <button class="btn-search-main" onclick="buscarEnTech()">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Subcategorías de Teléfonos y Ordenadores -->
+        <nav class="subcategorias-tech">
+            <button class="subcategoria-btn active" id="btn-todas" onclick="filtrarSubcategoria('todas')">
+                📱 Todos los Dispositivos
+            </button>
+            <button class="subcategoria-btn" id="btn-moviles" onclick="filtrarSubcategoria('moviles')">
+                📱 Teléfonos Móviles
+            </button>
+            <button class="subcategoria-btn" id="btn-iphones" onclick="filtrarSubcategoria('iphones')">
+                 iPhones
+            </button>
+            <button class="subcategoria-btn" id="btn-android" onclick="filtrarSubcategoria('android')">
+                🤖 Android
+            </button>
+            <button class="subcategoria-btn" id="btn-laptops" onclick="filtrarSubcategoria('laptops')">
+                💻 Laptops y Ordenadores
+            </button>
+            <button class="subcategoria-btn" id="btn-tablets" onclick="filtrarSubcategoria('tablets')">
+                📟 Tablets
+            </button>
+        </nav>
+    </header>
+
+    <!-- MENÚ LATERAL -->
+    <aside id="menu-lateral" style="position: fixed; top: 0; left: -280px; width: 280px; height: 100vh; background: #121212; transition: left 0.4s ease; z-index: 2000;">
+        <div class="sidebar-header" style="display: flex; justify-content: space-between; align-items: center; padding: 20px; border-bottom: 1px solid #333;">
+            <h3>📱 Tecnología</h3>
+            <span onclick="toggleMenuLateral()" style="font-size: 2rem; cursor: pointer;">×</span>
+        </div>
+        <ul class="sidebar-links" style="list-style: none; padding: 0;">
+            <li><a href="index.html" style="padding: 16px 20px; display: flex; align-items: center; gap: 12px; color: #ddd; text-decoration: none;"><i class="fas fa-home"></i> Inicio</a></li>
+            <li><a href="belleza.html" style="padding: 16px 20px; display: flex; align-items: center; gap: 12px; color: #ddd; text-decoration: none;"><i class="fas fa-sparkles"></i> Belleza</a></li>
+            <li><a href="alimentacion.html" style="padding: 16px 20px; display: flex; align-items: center; gap: 12px; color: #ddd; text-decoration: none;"><i class="fas fa-apple-alt"></i> Alimentación</a></li>
+            <li><a href="deportes.html" style="padding: 16px 20px; display: flex; align-items: center; gap: 12px; color: #ddd; text-decoration: none;"><i class="fas fa-futbol"></i> Deportes</a></li>
+            <li><a href="ofertas.html" style="padding: 16px 20px; display: flex; align-items: center; gap: 12px; color: #ddd; text-decoration: none;"><i class="fas fa-fire"></i> Ofertas</a></li>
+            <li><a href="tech.html" style="padding: 16px 20px; display: flex; align-items: center; gap: 12px; color: #ddd; text-decoration: none; background: rgba(6,182,212,0.2);"><i class="fas fa-laptop"></i> Teléfonos y Ordenadores</a></li>
+            <li><a href="Listadodeproductos.html" style="padding: 16px 20px; display: flex; align-items: center; gap: 12px; color: #ddd; text-decoration: none;"><i class="fas fa-th-large"></i> Todos los productos</a></li>
+            <li><a href="vendedores.html" style="padding: 16px 20px; display: flex; align-items: center; gap: 12px; color: #ddd; text-decoration: none;"><i class="fas fa-store"></i> Vender</a></li>
+        </ul>
+    </aside>
+<!-- BOTÓN VOLVER AL INICIO - ICONO -->
+<button onclick="window.location.href='index.html'" 
+style="
+position: fixed;
+bottom: 20px;
+left: 20px;
+z-index: 999;
+background: linear-gradient(135deg, #f59e0b, #d97706);
+border: none;
+width: 55px;
+height: 55px;
+border-radius: 50%;
+display: flex;
+align-items: center;
+justify-content: center;
+cursor: pointer;
+box-shadow: 0 6px 20px rgba(245, 158, 11, 0.5);
+transition: all 0.3s ease;
+"
+onmouseover="this.style.transform='scale(1.1) translateY(-3px)'; this.style.boxShadow='0 10px 25px rgba(245,158,11,0.7)'"
+onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 6px 20px rgba(245,158,11,0.5)'"
+onmousedown="this.style.transform='scale(0.9)'"
+onmouseup="this.style.transform='scale(1.1)'"
+>
+    <i class="fas fa-home" style="color:white; font-size: 1.5rem;"></i>
+</button>
+    <!-- CONTENIDO PRINCIPAL -->
+    <main>
+
+        <!-- Carrusel Principal -->
+        <section class="carrusel-section">
+            <div class="carrusel-titulo">
+                <h2>📱 Teléfonos y Ordenadores</h2>
+                <a href="#" onclick="filtrarSubcategoria('todas'); return false;">Ver todo →</a>
+            </div>
+            <div class="carrusel-container" id="carrusel-todas"></div>
+        </section>
+
+        <!-- Teléfonos Móviles -->
+        <section class="carrusel-section">
+            <div class="carrusel-titulo">
+                <h2>📱 Teléfonos Móviles</h2>
+                <a href="#" onclick="filtrarSubcategoria('moviles'); return false;">Más móviles →</a>
+            </div>
+            <div class="carrusel-container" id="carrusel-moviles"></div>
+        </section>
+
+        <!-- iPhones -->
+        <section class="carrusel-section">
+            <div class="carrusel-titulo">
+                <h2> iPhones</h2>
+                <a href="#" onclick="filtrarSubcategoria('iphones'); return false;">Más iPhones →</a>
+            </div>
+            <div class="carrusel-container" id="carrusel-iphones"></div>
+        </section>
+
+        <!-- Android -->
+        <section class="carrusel-section">
+            <div class="carrusel-titulo">
+                <h2>🤖 Teléfonos Android</h2>
+                <a href="#" onclick="filtrarSubcategoria('android'); return false;">Más Android →</a>
+            </div>
+            <div class="carrusel-container" id="carrusel-android"></div>
+        </section>
+
+        <!-- Laptops y Ordenadores -->
+        <section class="carrusel-section">
+            <div class="carrusel-titulo">
+                <h2>💻 Laptops y Ordenadores</h2>
+                <a href="#" onclick="filtrarSubcategoria('laptops'); return false;">Más laptops →</a>
+            </div>
+            <div class="carrusel-container" id="carrusel-laptops"></div>
+        </section>
+
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Compra Ya - Marketplace Guinea Ecuatorial</p>
+        <p style="margin-top: 8px; font-size: 0.9rem;">Malabo • Bata • Ebebiyín</p>
+        <p style="margin-top: 12px; font-size: 0.85rem; color: var(--tech);">
+            <i class="fas fa-mobile-alt"></i> Dispositivos nuevos y reacondicionados • Garantía local
+        </p>
+    </footer>
+
+    <script>
+    
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // ==================== CREAR TARJETA DE TECNOLOGÍA ====================
+        function crearTarjetaTech(producto) {
+            const div = document.createElement('div');
+            div.className = 'tarjeta-tech';
+            div.setAttribute('data-tipo', producto.tipo || 'otros');
+
+            let badgeHTML = '';
+            if (producto.tipo === 'moviles') {
+                badgeHTML = `<div class="badge-tech">📱 Móvil</div>`;
+            } else if (producto.tipo === 'iphones') {
+                badgeHTML = `<div class="badge-tech" style="background:#000;"> iPhone</div>`;
+            } else if (producto.tipo === 'android') {
+                badgeHTML = `<div class="badge-tech" style="background:#22c55e;">🤖 Android</div>`;
+            } else if (producto.tipo === 'laptops') {
+                badgeHTML = `<div class="badge-tech" style="background:#eab308;">💻 Laptop</div>`;
+            } else if (producto.tipo === 'tablets') {
+                badgeHTML = `<div class="badge-tech" style="background:#8b5cf6;">📟 Tablet</div>`;
+            }
+
+            div.innerHTML = `
+                <div style="position: relative;">
+                    ${badgeHTML}
+                    <img src="${producto.imagen || 'https://picsum.photos/id/180/300/300'}" 
+                         alt="${producto.titulo}" 
+                         onclick="verDetalle('${producto.docId || producto.id}')">
+                </div>
+                <div class="tarjeta-info">
+                    <div class="tarjeta-titulo">${producto.titulo}</div>
+                    <div class="tarjeta-precio">
+                        ${producto.precio} FCFA
+                        ${producto.precioAntiguo ? `<span>${producto.precioAntiguo} FCFA</span>` : ''}
+                    </div>
+                    ${producto.marca || producto.modelo ? `<div class="tarjeta-extra">${producto.marca || ''} ${producto.modelo || ''}</div>` : ''}
+                </div>
+            `;
+            return div;
+        }
+
+        function verDetalle(productoId) {
+            window.location.href = `detalledelproducto.html?id=${productoId}`;
+        }
+
+        // ==================== CARGAR PRODUCTOS DE TECNOLOGÍA ====================
+        async function cargarTech() {
+            const contenedores = {
+                todas: document.getElementById('carrusel-todas'),
+                moviles: document.getElementById('carrusel-moviles'),
+                iphones: document.getElementById('carrusel-iphones'),
+                android: document.getElementById('carrusel-android'),
+                laptops: document.getElementById('carrusel-laptops')
+            };
+
+            Object.values(contenedores).forEach(c => c.innerHTML = '');
+
+            try {
+                const snapshot = await db.collection("productos")
+                    .where("categoria", "==", "tecnologia")
+                    .where("estado", "==", "aceptado")
+                    .orderBy("fechaPublicacion", "desc")
+                    .limit(60)
+                    .get();
+
+                let productosTech = [];
+
+                snapshot.forEach(doc => {
+                    const prod = doc.data();
+                    prod.docId = doc.id;
+                    productosTech.push(prod);
+                });
+
+                if (productosTech.length === 0) {
+                    const mensaje = `<p style="color:#06b6d4; padding: 40px 20px; text-align:center; font-size:1.1rem;">
+                        📱 Aún no hay teléfonos ni ordenadores publicados.<br>¡Sé el primero en vender tecnología!
+                    </p>`;
+                    Object.values(contenedores).forEach(c => c.innerHTML = mensaje);
+                    return;
+                }
+
+                // Función para agregar con duplicado (scroll infinito)
+                function agregarAlCarrusel(contenedor, array) {
+                    array.forEach(prod => contenedor.appendChild(crearTarjetaTech(prod)));
+                    array.forEach(prod => contenedor.appendChild(crearTarjetaTech(prod))); // duplicado
+                }
+
+                // Todas
+                agregarAlCarrusel(contenedores.todas, productosTech);
+
+                // Filtrados
+                const moviles = productosTech.filter(p => p.tipo === 'moviles' || p.tipo === 'iphones' || p.tipo === 'android');
+                const iphones = productosTech.filter(p => p.tipo === 'iphones');
+                const android = productosTech.filter(p => p.tipo === 'android');
+                const laptops = productosTech.filter(p => p.tipo === 'laptops');
+                const tablets = productosTech.filter(p => p.tipo === 'tablets');
+
+                agregarAlCarrusel(contenedores.moviles, moviles.length ? moviles : productosTech.slice(0, 12));
+                agregarAlCarrusel(contenedores.iphones, iphones.length ? iphones : productosTech.slice(0, 8));
+                agregarAlCarrusel(contenedores.android, android.length ? android : productosTech.slice(0, 8));
+                agregarAlCarrusel(contenedores.laptops, laptops.length ? laptops : productosTech.slice(0, 10));
+
+            } catch (error) {
+                console.error("Error cargando tecnología:", error);
+                const errorMsg = `<p style="color:#ff6666; padding:40px 20px; text-align:center;">Error al cargar los productos tecnológicos.</p>`;
+                Object.values(contenedores).forEach(c => c.innerHTML = errorMsg);
+            }
+        }
+
+        // ==================== FILTRADO ====================
+        function filtrarSubcategoria(tipo) {
+            document.querySelectorAll('.subcategoria-btn').forEach(btn => btn.classList.remove('active'));
+
+            if (tipo === 'todas') {
+                document.getElementById('btn-todas').classList.add('active');
+            } else if (tipo === 'moviles') {
+                document.getElementById('btn-moviles').classList.add('active');
+            } else if (tipo === 'iphones') {
+                document.getElementById('btn-iphones').classList.add('active');
+            } else if (tipo === 'android') {
+                document.getElementById('btn-android').classList.add('active');
+            } else if (tipo === 'laptops') {
+                document.getElementById('btn-laptops').classList.add('active');
+            } else if (tipo === 'tablets') {
+                document.getElementById('btn-tablets').classList.add('active');
+            }
+
+            document.querySelectorAll('.tarjeta-tech').forEach(tarjeta => {
+                const tipoTarjeta = tarjeta.getAttribute('data-tipo');
+                if (tipo === 'todas') {
+                    tarjeta.style.display = 'block';
+                } else {
+                    tarjeta.style.display = (tipoTarjeta === tipo) ? 'block' : 'none';
+                }
+            });
+        }
+
+        function buscarEnTech() {
+            const termino = document.getElementById("main-search").value.toLowerCase().trim();
+            
+            document.querySelectorAll('.tarjeta-tech').forEach(tarjeta => {
+                const titulo = tarjeta.querySelector('.tarjeta-titulo').textContent.toLowerCase();
+                tarjeta.style.display = titulo.includes(termino) ? 'block' : 'none';
+            });
+        }
+
+        function toggleMenuLateral() {
+            document.getElementById('menu-lateral').classList.toggle('active');
+        }
+
+        // ==================== INICIALIZACIÓN ====================
+        window.onload = () => {
+            cargarTech();
+        };
+    </script>
+<script src="api.js"></script>
+    <script>
+        // Ejemplo: Cargar productos cuando se abra la página
+        obtenerProductos().then(productos => {
+            console.log("¡Listo! Estos son tus productos:", productos);
+            // Aquí llamarías a la función que dibuja las tarjetas en tu web
+        });
+    </script>
+</body>
+</html>

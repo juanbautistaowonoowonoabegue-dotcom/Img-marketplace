@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Términos y Condiciones - Compra Ya</title>
+     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+  <!-- ══ SEGURIDAD ══════════════════════════════════ -->
+
+  <!-- Evita que tu web se cargue dentro de un iframe (clickjacking) -->
+  <meta http-equiv="X-Frame-Options" content="DENY">
+
+  <!-- Fuerza HTTPS, no permite downgrade a HTTP -->
+  <meta http-equiv="Strict-Transport-Security" content="max-age=31536000; includeSubDomains">
+
+  <!-- Evita que el navegador adivine el tipo de archivo (MIME sniffing) -->
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+
+  <!-- Controla qué info se envía en el Referer al salir de tu web -->
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+
+  <!-- Desactiva funciones sensibles del navegador que no necesitas -->
+  <meta http-equiv="Permissions-Policy" content="
+    geolocation=(),
+    microphone=(),
+    camera=(),
+    payment=(),
+    usb=()
+  ">
+
+  <!-- XSS Protection (para navegadores viejos) -->
+  <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+
+  <!-- CSP adaptado para Firebase + Compra Ya -->
+  <meta http-equiv="Content-Security-Policy" content="
+    default-src 'self';
+    script-src 'self' 'unsafe-inline' 'unsafe-eval'
+      https://www.gstatic.com
+      https://cdnjs.cloudflare.com
+      https://generativelanguage.googleapis.com;
+    style-src 'self' 'unsafe-inline'
+      https://fonts.googleapis.com
+      https://cdnjs.cloudflare.com;
+    font-src 'self'
+      https://fonts.gstatic.com
+      https://cdnjs.cloudflare.com;
+    img-src 'self' data: blob: https:;
+    connect-src 'self'
+      https://*.googleapis.com
+      https://*.firebaseio.com
+      https://firestore.googleapis.com
+      https://identitytoolkit.googleapis.com
+      https://storage.googleapis.com;
+    media-src 'self' blob:;
+    frame-ancestors 'none';
+    upgrade-insecure-requests;
+  ">
+
+  <!-- ══ FIN SEGURIDAD ══════════════════════════════ -->
+<script>
+   import {firebaseConfig  } from "./public/js/config.js";
+ 
+
+  // 2. Inicialización (Forma compatible con tus librerías de arriba)
+  if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+      console.log("✅ Firebase conectado correctamente en COMPRA YA!!");
+  }
+</script>
+    <style>
+        :root {
+            --primary: #00bfff;
+            --dark: #121212;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background-color: #0a0a0a;
+            color: #e0e0e0;
+            line-height: 1.7;
+        }
+
+        header {
+            background: var(--dark);
+            padding: 20px 15px;
+            border-bottom: 1px solid #333;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            color: white;
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        h1 {
+            color: white;
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #00bfff;
+            margin-bottom: 40px;
+            font-size: 1.1rem;
+        }
+
+        .section {
+            background: #1a1a1a;
+            padding: 30px;
+            margin-bottom: 30px;
+            border-radius: 12px;
+            border: 1px solid #333;
+        }
+
+        h2 {
+            color: #ffffff;
+            margin-bottom: 18px;
+            font-size: 1.5rem;
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 10px;
+        }
+
+        h3 {
+            color: #00ff9d;
+            margin: 25px 0 12px 0;
+            font-size: 1.25rem;
+        }
+
+        p, li {
+            margin-bottom: 12px;
+            color: #ddd;
+        }
+
+        ul {
+            padding-left: 25px;
+        }
+
+        .last-updated {
+            text-align: center;
+            color: #888;
+            font-size: 0.95rem;
+            margin-bottom: 30px;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #333;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 30px;
+            text-decoration: none;
+            margin: 30px 0;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            background: var(--primary);
+            color: black;
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: #666;
+            font-size: 0.9rem;
+            border-top: 1px solid #333;
+            margin-top: 60px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header">
+    <h2>cookies</h2>
+    <div class="nav-icons">
+        <i class="fas fa-home" onclick="window.location.href='index.html'"></i>
+        <i class="fas fa-store" onclick="window.location.href='Listadodeproductos.html'"></i>
+        <i class="fas fa-user" onclick="window.location.href='perfildelusuario.html'"></i>
+    </div>
+</div>
+    </header>
+<!-- BOTÓN VOLVER AL INICIO - ICONO -->
+<button onclick="window.location.href='index.html'" 
+style="
+position: fixed;
+bottom: 20px;
+left: 20px;
+z-index: 999;
+background: linear-gradient(135deg, #f59e0b, #d97706);
+border: none;
+width: 55px;
+height: 55px;
+border-radius: 50%;
+display: flex;
+align-items: center;
+justify-content: center;
+cursor: pointer;
+box-shadow: 0 6px 20px rgba(245, 158, 11, 0.5);
+transition: all 0.3s ease;
+"
+onmouseover="this.style.transform='scale(1.1) translateY(-3px)'; this.style.boxShadow='0 10px 25px rgba(245,158,11,0.7)'"
+onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 6px 20px rgba(245,158,11,0.5)'"
+onmousedown="this.style.transform='scale(0.9)'"
+onmouseup="this.style.transform='scale(1.1)'"
+>
+    <i class="fas fa-home" style="color:white; font-size: 1.5rem;"></i>
+</button>
+    <div class="container">
+        <h1>Términos y Condiciones de Uso</h1>
+        <p class="subtitle">COMPRA YA!!</p>
+        <p class="last-updated">Última actualización: 31 de marzo de 2026</p>
+
+        <div class="section">
+            <p><strong>Bienvenido a COMPRA YA!!</strong></p>
+            <p>Al acceder a nuestro sitio web y utilizar nuestros servicios, aceptas cumplir con los siguientes términos y condiciones. Por favor, léelos detenidamente antes de realizar cualquier transacción.</p>
+        </div>
+
+        <div class="section">
+            <h2>1. Objeto de la Plataforma</h2>
+            <p>COMPRA YA!! es un marketplace especializado en la comercialización de laptops, smartphones, electrodomésticos y otros artículos tecnológicos. Nuestra función es facilitar la visualización, selección y compra de productos de alta calidad para nuestros usuarios.</p>
+        </div>
+
+        <div class="section">
+            <h2>2. Registro y Seguridad de la Cuenta</h2>
+            <ul>
+                <li>Para realizar compras, el usuario podrá ser requerido a crear una cuenta proporcionando información veraz y actualizada.</li>
+                <li>Es responsabilidad del usuario mantener la confidencialidad de sus credenciales de acceso.</li>
+                <li>Nos reservamos el derecho de suspender cuentas que muestren actividad fraudulenta o sospechosa.</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>3. Propiedad Intelectual</h2>
+            <p>Todo el contenido presente en esta plataforma (logotipos, textos, gráficos, interfaces y código fuente) es propiedad exclusiva de COMPRA YA!! o de sus proveedores de contenido y está protegido por las leyes de propiedad intelectual internacionales.</p>
+        </div>
+
+        <div class="section">
+            <h2>4. Políticas de Venta y Precios</h2>
+            <ul>
+                <li>Todos los precios están expresados en la moneda local e incluyen los impuestos aplicables, a menos que se indique lo contrario.</li>
+                <li>Nos reservamos el derecho de modificar los precios en cualquier momento sin previo aviso.</li>
+                <li>En caso de error tipográfico en el precio de un producto, nos pondremos en contacto con el cliente para anular el pedido o ajustar la diferencia.</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>5. Pagos y Envíos</h2>
+            <ul>
+                <li>Aceptamos los métodos de pago detallados en nuestra pasarela de pago segura (transferencia bancaria, tarjetas, soluciones móviles).</li>
+                <li>Los tiempos de entrega son estimados y pueden variar según la ubicación del cliente y la disponibilidad de stock.</li>
+                <li>COMPRA YA!! no se hace responsable por retrasos derivados de causas de fuerza mayor o servicios de logística externos.</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>6. Garantías y Devoluciones</h2>
+            <ul>
+                <li><strong>Garantía:</strong> Todos los productos electrónicos cuentan con una garantía limitada contra defectos de fábrica. El periodo de garantía se especificará en la ficha de cada producto.</li>
+                <li><strong>Devoluciones:</strong> El cliente tiene un plazo de [X] días hábiles tras la recepción para solicitar un cambio o devolución, siempre que el producto esté sellado, en su empaque original y sin señales de uso.</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>7. Limitación de Responsabilidad</h2>
+            <p>COMPRA YA!! no será responsable por daños directos, indirectos o incidentales derivados del uso inadecuado de los productos adquiridos o de interrupciones técnicas en el sitio web ajenas a nuestro control.</p>
+        </div>
+
+        <div class="section">
+            <h2>8. Protección de Datos</h2>
+            <p>Tu privacidad es nuestra prioridad. Los datos personales recolectados se utilizarán exclusivamente para procesar pedidos, mejorar la experiencia de usuario y, previa autorización, enviar promociones de marketing digital. Consulta nuestra <a href="privacidad.html" style="color: var(--primary);">Política de Privacidad</a> para más detalles.</p>
+        </div>
+
+        <div class="section">
+            <h2>9. Modificaciones de los Términos</h2>
+            <p>Nos reservamos el derecho de actualizar estos términos en cualquier momento. Los cambios entrarán en vigor inmediatamente después de su publicación en el sitio web.</p>
+        </div>
+
+        <div class="section">
+            <h2>10. Jurisdicción y Ley Aplicable</h2>
+            <p>Estos términos se rigen por las leyes de la República de Guinea Ecuatorial. Cualquier disputa relacionada con el uso de la plataforma será sometida a los tribunales competentes de la ciudad de Malabo.</p>
+        </div>
+
+        <a href="index.html" class="back-btn">
+            <i class="fas fa-arrow-left"></i> Volver a la página principal
+        </a>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Compra Ya - Marketplace de Tecnología en Guinea Ecuatorial</p>
+        <p>Última actualización: 31 de marzo de 2026</p>
+    </footer>
+
+<script src="api.js"></script>
+    <script>
+        // Ejemplo: Cargar productos cuando se abra la página
+        obtenerProductos().then(productos => {
+            console.log("¡Listo! Estos son tus productos:", productos);
+            // Aquí llamarías a la función que dibuja las tarjetas en tu web
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Servicios Premium - Compra Ya | Guinea Ecuatorial</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #00bfff;
+            --neon: #00ff9d;
+            --dark: #0a0f1c;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #000;
+            color: white;
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        .slides-container {
+            height: 100vh;
+            overflow-y: scroll;
+            scroll-snap-type: y mandatory;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .slide {
+            height: 100vh;
+            scroll-snap-align: start;
+            position: relative;
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .slide::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(10,15,28,0.6), rgba(10,15,28,0.92));
+            z-index: 1;
+        }
+
+        .content {
+            position: relative;
+            z-index: 2;
+            max-width: 420px;
+            width: 100%;
+            animation: fadeUp 0.9s ease forwards;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .progress-circles {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            z-index: 100;
+        }
+
+        .circle {
+            width: 11px;
+            height: 11px;
+            border: 2px solid rgba(255,255,255,0.5);
+            border-radius: 50%;
+            transition: all 0.4s ease;
+        }
+
+        .circle.active {
+            background: var(--neon);
+            border-color: var(--neon);
+            transform: scale(1.4);
+            box-shadow: 0 0 12px var(--neon);
+        }
+
+        h1 {
+            font-size: 2.1rem;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            text-shadow: 0 4px 15px rgba(0,0,0,0.8);
+        }
+
+        .info-box {
+            background: rgba(0,0,0,0.85);
+            padding: 25px;
+            border-radius: 20px;
+            border-left: 5px solid var(--primary);
+            margin-bottom: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+        }
+
+        .info-box ul {
+            margin-top: 15px;
+            padding-left: 20px;
+            line-height: 1.7;
+        }
+
+        .price {
+            font-size: 1.8rem;
+            color: var(--neon);
+            font-weight: 700;
+            margin: 15px 0;
+        }
+
+        .btn-activar {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #ffd700, #ffaa00);
+            color: #000;
+            font-weight: 700;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.4s;
+        }
+
+        .btn-activar:hover {
+            transform: scale(1.05);
+        }
+
+        .next-btn {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            background: white;
+            color: #000;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            box-shadow: 0 8px 25px rgba(0,191,255,0.4);
+            z-index: 100;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<div class="slides-container" id="slides">
+
+    <!-- Slide 1 - Visibilidad y Exposición -->
+    <div class="slide" style="background-image: url('https://raw.githubusercontent.com/juanbautistaowonoowonoabegue-dotcom/Img-marketplace/refs/heads/main/A.JPG');">
+        <div class="content">
+            <h1>1. Visibilidad y Exposición</h1>
+            <div class="info-box">
+                <strong>🚀 Acelerador de Ventas</strong>
+                <ul>
+                    <li>Destacado en Portada</li>
+                    <li>Impulso en Búsquedas (AdBoost)</li>
+                    <li>Etiqueta "Vendedor Verificado"</li>
+                    <li>Relanzamiento automático cada 7 días</li>
+                </ul>
+                <div class="price">Desde 5.000 XAF / 7 días</div>
+            </div>
+            <button onclick="activarServicio(1)" class="btn-activar">Impulsar Ahora</button>
+        </div>
+    </div>
+
+    <!-- Slide 2 - Inteligencia Artificial -->
+    <div class="slide" style="background-image: url('https://raw.githubusercontent.com/juanbautistaowonoowonoabegue-dotcom/Img-marketplace/refs/heads/main/B.JPG');">
+        <div class="content">
+            <h1>2. Inteligencia Artificial</h1>
+            <div class="info-box">
+                <strong>🤖 Potencia con IA</strong>
+                <ul>
+                    <li>Optimización automática de imágenes</li>
+                    <li>Redactor de descripciones SEO</li>
+                    <li>Recomendación inteligente de precios</li>
+                </ul>
+                <div class="price">2.500 XAF / mes</div>
+            </div>
+            <button onclick="activarServicio(2)" class="btn-activar">Activar IA Premium</button>
+        </div>
+    </div>
+
+    <!-- Slide 3 - Estadísticas -->
+    <div class="slide" style="background-image: url('https://raw.githubusercontent.com/juanbautistaowonoowonoabegue-dotcom/Img-marketplace/refs/heads/main/C.JPG');">
+        <div class="content">
+            <h1>3. Estadísticas y Análisis</h1>
+            <div class="info-box">
+                <strong>📊 Analytics Profundo</strong>
+                <ul>
+                    <li>Mapa de calor de clics</li>
+                    <li>Embudo de conversión</li>
+                    <li>Reportes semanales en PDF</li>
+                </ul>
+                <div class="price">2.500 XAF / mes</div>
+            </div>
+            <button onclick="activarServicio(3)" class="btn-activar">Activar Analytics</button>
+        </div>
+    </div>
+
+    <!-- Slide 4 - Gestión y Operaciones -->
+    <div class="slide" style="background-image: url('https://raw.githubusercontent.com/juanbautistaowonoowonoabegue-dotcom/Img-marketplace/refs/heads/main/D.JPG');">
+        <div class="content">
+            <h1>4. Gestión y Operaciones</h1>
+            <div class="info-box">
+                <strong>⚙️ Herramientas Profesionales</strong>
+                <ul>
+                    <li>Soporte prioritario por chat</li>
+                    <li>Chat con respuestas automáticas</li>
+                    <li>Panel avanzado de control</li>
+                </ul>
+                <div class="price">3.000 XAF / mes</div>
+            </div>
+            <button onclick="activarServicio(4)" class="btn-activar">Activar Gestión Pro</button>
+        </div>
+    </div>
+
+    <!-- Slide 5 - Personalización -->
+    <div class="slide" style="background-image: url('https://raw.githubusercontent.com/juanbautistaowonoowonoabegue-dotcom/Img-marketplace/refs/heads/main/E.JPG');">
+        <div class="content">
+            <h1>5. Personalización del Perfil</h1>
+            <div class="info-box">
+                <strong>🏪 Tu Mini-Tienda Personal</strong>
+                <ul>
+                    <li>URL personalizada: compra-ya.com/tu-nombre</li>
+                    <li>Mini-tienda sin publicidad ajena</li>
+                    <li>Video de portada</li>
+                </ul>
+                <div class="price">4.000 XAF / mes</div>
+            </div>
+            <button onclick="activarServicio(5)" class="btn-activar">Crear Mi Tienda Personal</button>
+        </div>
+    </div>
+
+</div>
+
+<!-- Círculos de progreso -->
+<div class="progress-circles" id="progress">
+    <div class="circle active"></div>
+    <div class="circle"></div>
+    <div class="circle"></div>
+    <div class="circle"></div>
+    <div class="circle"></div>
+</div>
+
+<!-- Botón Siguiente -->
+<div class="next-btn" onclick="nextSlide()">
+    <i class="fas fa-arrow-down"></i>
+</div>
+
+<script>
+  import { firebaseConfig } from './js/config.js';
+
+    const slidesContainer = document.getElementById('slides');
+    let currentSlide = 0;
+
+    function updateProgress() {
+        const circles = document.querySelectorAll('.circle');
+        circles.forEach((circle, index) => {
+            circle.classList.toggle('active', index === currentSlide);
+        });
+    }
+
+    function nextSlide() {
+        currentSlide = (currentSlide + 1) % 5;
+        slidesContainer.scrollTo({
+            top: currentSlide * window.innerHeight,
+            behavior: 'smooth'
+        });
+        updateProgress();
+    }
+
+    // Detectar scroll manual
+    slidesContainer.addEventListener('scroll', () => {
+        const scrollPos = slidesContainer.scrollTop;
+        currentSlide = Math.round(scrollPos / window.innerHeight);
+        updateProgress();
+    });
+
+    // Soporte swipe en móviles
+    let touchStartY = 0;
+    slidesContainer.addEventListener('touchstart', e => touchStartY = e.changedTouches[0].screenY);
+    slidesContainer.addEventListener('touchend', e => {
+        const touchEndY = e.changedTouches[0].screenY;
+        if (touchEndY < touchStartY - 80) nextSlide();
+    });
+
+    // Inicializar
+    window.onload = () => {
+        updateProgress();
+        console.log("%c✅ Servicios Premium cargado con estilo unificado", "color:#00ff9d; font-weight:bold");
+    };
+
+    function activarServicio(n) {
+        alert(`✅ Servicio ${n} activado correctamente.\nPronto tendrás acceso completo.`);
+        // Aquí puedes redirigir a pago o formulario
+    }
+</script>
+
+</body>
+</html>

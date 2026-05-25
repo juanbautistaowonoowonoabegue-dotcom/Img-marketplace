@@ -1,0 +1,438 @@
+ <!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Publicaciones | Compra Ya</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+    <style>
+        :root {
+            --primary: #00bfff;
+            --dark: #0f0e0efc;
+            --gold: #ffd700;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background-color: #0a0a0a;
+            color: #ffffff;
+        }
+
+        .header-moderno {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background-color: var(--dark);
+            border-bottom: 1px solid #333;
+        }
+
+        .header-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 15px;
+        }
+
+        .logo-mini {
+            height: 45px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        .logo-badge {
+    width: 52px;
+    height: 52px;
+    background: url('https://raw.githubusercontent.com/juanbautistaowonoowonoabegue-dotcom/Img-marketplace/refs/heads/main/favicon.PNG') center/contain no-repeat;
+    border-radius: 14px;
+    flex-shrink: 0;
+    box-shadow: 0 6px 18px rgba(10, 175, 255, 0.35);
+}
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn-premium-small {
+            padding: 8px 14px;
+            border-radius: 30px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: linear-gradient(135deg, #ffd700, #ffaa00);
+            color: #000;
+        }
+
+        .search-bar-container {
+            padding: 12px 15px;
+            background: var(--dark);
+        }
+
+        .search-wrapper {
+            display: flex;
+            align-items: center;
+            background: #1f1f1f;
+            border-radius: 50px;
+            padding: 8px 15px;
+            border: 1px solid #333;
+        }
+
+        #main-search {
+            flex: 1;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: white;
+            font-size: 1rem;
+        }
+
+        .btn-search-main {
+            background: var(--primary);
+            color: white;
+            border: none;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .main-container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 15px;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .btn-nueva {
+            background: linear-gradient(135deg, var(--gold), #ffaa00);
+            color: #000;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.3s;
+        }
+
+        .btn-nueva:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4);
+        }
+
+        .publications-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .product-card {
+            background: #1a1a1a;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            transition: all 0.3s;
+        }
+
+        .product-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 35px rgba(0, 191, 255, 0.15);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            background: #222;
+        }
+
+        .product-info {
+            padding: 18px;
+        }
+
+        .product-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: -webkit-box;
+          line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .product-price {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--gold);
+            margin-bottom: 12px;
+        }
+
+        .product-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: #aaa;
+            margin-bottom: 15px;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-card {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            font-size: 0.95rem;
+        }
+
+        .btn-edit {
+            background: #333;
+            color: white;
+        }
+
+        .btn-delete {
+            background: #c42b2b;
+            color: white;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+            color: #777;
+        }
+
+        .empty-state i {
+            font-size: 4.5rem;
+            margin-bottom: 20px;
+            opacity: 0.6;
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px 15px;
+            background: #0a0a0a;
+            border-top: 1px solid #222;
+            color: #888;
+            margin-top: 80px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            font-size: 1.1rem;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header-moderno">
+        <div class="header-top">
+            <div class="menu-hamburguesa" onclick="toggleMenuLateral()">
+                <i class="fas fa-bars"></i>
+            </div>
+             <div class="header-actions">
+                <button class="btn-premium-small" onclick="window.location.href='perfildelusuario.html'">
+                    <i class="fas fa-user-circle"></i> Mi Cuenta
+                </button>
+            </div>
+        </div>
+        <div class="search-bar-container">
+            <div class="search-wrapper">
+                <input type="text" id="main-search" placeholder="Buscar en mis publicaciones...">
+                <button class="btn-search-main"><i class="fas fa-search"></i></button>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-container">
+        <div class="page-header">
+            <h1 class="page-title">📋 Mis Publicaciones</h1>
+            <button class="btn-nueva" onclick="window.location.href='vendedores.html'">
+                <i class="fas fa-plus"></i> Nueva Publicación
+            </button>
+        </div>
+
+        <div id="loading" class="loading">
+            <i class="fas fa-spinner fa-spin"></i> Cargando tus publicaciones...
+        </div>
+
+        <div id="empty-state" class="empty-state" style="display: none;">
+            <i class="fas fa-box-open"></i>
+            <h2>Aún no tienes publicaciones</h2>
+            <p>¡Empieza a vender hoy mismo!</p>
+            <button class="btn-nueva" onclick="window.location.href='vendedores.html'" style="margin-top: 20px;">
+                Publicar mi primer producto
+            </button>
+        </div>
+
+        <div id="publications-grid" class="publications-grid">
+            <!-- Las tarjetas se generan dinámicamente con JavaScript -->
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Compra Ya - Marketplace Guinea Ecuatorial</p>
+    </footer>
+
+    <script src="firebase-config.js"></script>
+    <script src="firebase-init.js"></script>
+    <script type="module" >
+         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+    import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+import {firebaseConfig  } from "./public/js/config.js";
+ 
+    // 🔥 TU CONFIGURACIÓN REAL (la que acabas de enviarme)
+     
+        let currentUser = null;
+        let unsubscribe = null;
+
+        // Esperar a que Firebase se inicialice y el usuario esté autenticado
+        function initMisPublicaciones() {
+            firebase.auth().onAuthStateChanged(user => {
+                if (user) {
+                    currentUser = user;
+                    cargarMisPublicaciones();
+                } else {
+                    // Si no hay usuario logueado, redirigir al login o mostrar mensaje
+                    window.location.href = 'formulario.html'; // ajusta según tu flujo
+                }
+            });
+        }
+        auth.onAuthStateChanged((user) => {
+  if (!user) {
+    // Si no hay usuario, mandarlo a la página principal
+    window.location.href = "index-comprador.html";
+  }
+});
+
+        function cargarMisPublicaciones() {
+            const grid = document.getElementById('publications-grid');
+            const loading = document.getElementById('loading');
+            const emptyState = document.getElementById('empty-state');
+
+            // Limpiar grid
+            grid.innerHTML = '';
+
+            // Query: publicaciones del usuario actual, ordenadas por fecha descendente
+            const q = firebase.firestore().collection('productos')
+                .where('userId', '==', currentUser.uid)
+                .orderBy('createdAt', 'desc');
+
+            // Listener en tiempo real
+            unsubscribe = q.onSnapshot(snapshot => {
+                loading.style.display = 'none';
+
+                if (snapshot.empty) {
+                    emptyState.style.display = 'block';
+                    grid.style.display = 'none';
+                    return;
+                }
+
+                emptyState.style.display = 'none';
+                grid.style.display = 'grid';
+
+                grid.innerHTML = '';
+
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    const cardHTML = `
+                        <div class="product-card">
+                            <img src="${data.imagen || 'placeholder.jpg'}" 
+                                 alt="${data.titulo}" 
+                                 class="product-image"
+                                 onerror="this.src='placeholder.jpg'">
+                            <div class="product-info">
+                                <div class="product-title">${data.titulo}</div>
+                                <div class="product-price">${parseInt(data.precio).toLocaleString('es-GQ')} FCFA</div>
+                                <div class="product-meta">
+                                    <span>${data.categoria || 'Sin categoría'}</span>
+                                    <span>${new Date(data.createdAt?.seconds * 1000).toLocaleDateString('es-ES')}</span>
+                                </div>
+                                <div class="card-actions">
+                                    <button class="btn-card btn-edit" onclick="editarPublicacion('${doc.id}')">
+                                        <i class="fas fa-edit"></i> Editar
+                                    </button>
+                                    <button class="btn-card btn-delete" onclick="eliminarPublicacion('${doc.id}')">
+                                        <i class="fas fa-trash"></i> Eliminar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    grid.innerHTML += cardHTML;
+                });
+            }, error => {
+                console.error("Error al cargar publicaciones:", error);
+                loading.innerHTML = `<p style="color:#c42b2b;">Error al cargar las publicaciones. Inténtalo de nuevo.</p>`;
+            });
+        }
+
+        // Función para eliminar publicación (con confirmación)
+        function eliminarPublicacion(id) {
+            if (confirm('¿Estás seguro de que deseas eliminar esta publicación? Esta acción no se puede deshacer.')) {
+                firebase.firestore().collection('productos').doc(id).delete()
+                    .then(() => {
+                        alert('Publicación eliminada correctamente.');
+                    })
+                    .catch(error => {
+                        console.error("Error al eliminar:", error);
+                        alert('Error al eliminar la publicación.');
+                    });
+            }
+        }
+
+        // Función placeholder para editar (puedes crear un editar.html o modal)
+        function editarPublicacion(id) {
+            window.location.href = `editar-publicacion.html?id=${id}`;
+            // Alternativa: abrir modal con formulario de edición
+        }
+
+        // Limpieza al salir de la página
+        window.addEventListener('beforeunload', () => {
+            if (unsubscribe) unsubscribe();
+        });
+
+        // Iniciar la página
+        window.onload = initMisPublicaciones;
+    </script>
+</body>
+</html>
+
+

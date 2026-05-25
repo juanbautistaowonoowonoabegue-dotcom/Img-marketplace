@@ -1,0 +1,1749 @@
+<!DOCTYPE html>
+
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Perfil | Compra Ya</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+<style>
+/* ═══════════════════════════════════════════
+   VARIABLES & RESET
+═══════════════════════════════════════════ */
+:root {
+  --sky: #0AAFFF;
+  --sky-d: #0088D4;
+  --sky-glow: rgba(10,175,255,0.22);
+  --mint: #00E5A0;
+  --mint-d: #00B87F;
+  --gold: #F5C842;
+  --danger: #FF4757;
+  --ink: #080C12;
+  --ink2: #111827;
+  --ink3: #1E2D3D;
+  --slate: #4A5568;
+  --mist: #8A9BB0;
+  --cloud: #F0F6FB;
+  --white: #FFFFFF;
+  --border: rgba(10,175,255,0.14);
+  --r: 20px;
+  --r-sm: 12px;
+  --shadow: 0 8px 32px rgba(0,0,0,0.10);
+  --shadow-blue: 0 8px 28px rgba(10,175,255,0.22);
+  --shadow-sm: 0 2px 10px rgba(0,0,0,0.07);
+  --font-d: 'Syne', sans-serif;
+  --font-b: 'DM Sans', sans-serif;
+}
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-b);
+  background: var(--cloud);
+  color: var(--ink);
+  min-height: 100vh;
+  padding-bottom: 100px;
+  overflow-x: hidden;
+}
+
+/* ═══════════════════════════════════════════
+LOADING SCREEN
+═══════════════════════════════════════════ */
+#loading-screen {
+position: fixed; inset: 0; z-index: 9999;
+background: var(–ink);
+display: flex; flex-direction: column;
+align-items: center; justify-content: center;
+gap: 18px;
+transition: opacity 0.5s, visibility 0.5s;
+}
+#loading-screen.hidden { opacity:0; visibility:hidden; pointer-events:none; }
+.load-logo { font-family: var(–font-d); font-size:2rem; font-weight:800; color:white; }
+.load-logo span { color: var(–sky); }
+.load-bar { width:140px; height:3px; background:rgba(255,255,255,0.1); border-radius:4px; overflow:hidden; }
+.load-bar-fill { height:100%; background:linear-gradient(90deg, var(–sky), var(–mint)); border-radius:4px; animation:loadFill 1.2s ease forwards; }
+@keyframes loadFill { from{width:0} to{width:100%} }
+.load-dots { display:flex; gap:6px; }
+.load-dots span { width:7px; height:7px; border-radius:50%; background:var(–sky); animation:dotBounce 1s ease-in-out infinite; }
+.load-dots span:nth-child(2) { animation-delay:0.18s; background:var(–mint); }
+.load-dots span:nth-child(3) { animation-delay:0.36s; }
+@keyframes dotBounce { 0%,80%,100%{transform:scale(0.6);opacity:0.5} 40%{transform:scale(1);opacity:1} }
+
+/* ═══════════════════════════════════════════
+TOP NAV BAR
+═══════════════════════════════════════════ */
+.top-nav {
+position: sticky; top: 0; z-index: 200;
+background: rgba(8,12,18,0.85);
+backdrop-filter: blur(16px);
+-webkit-backdrop-filter: blur(16px);
+padding: 12px 16px;
+display: flex; align-items: center; gap: 12px;
+border-bottom: 1px solid rgba(255,255,255,0.07);
+transform: translateY(-100%);
+transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
+}
+.top-nav.visible { transform: translateY(0); }
+.back-btn {
+width: 36px; height: 36px; border-radius: 50%;
+background: rgba(255,255,255,0.1);
+border: 1px solid rgba(255,255,255,0.15);
+color: white; display: flex; align-items: center; justify-content: center;
+cursor: pointer; font-size: 0.95rem;
+transition: background 0.2s;
+flex-shrink: 0;
+}
+.back-btn:hover { background: rgba(255,255,255,0.2); }
+.nav-user-info { flex: 1; overflow: hidden; }
+.nav-user-name { font-family: var(–font-d); font-weight: 700; color: white; font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.nav-user-sub { font-size: 0.72rem; color: rgba(255,255,255,0.45); }
+.nav-logo { font-family: var(–font-d); font-size: 1.1rem; font-weight: 800; color: white; }
+.nav-logo span { color: var(–sky); }
+.nav-more-btn {
+width: 36px; height: 36px; border-radius: 50%;
+background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15);
+color: white; display: flex; align-items: center; justify-content: center;
+cursor: pointer; font-size: 1rem; transition: background 0.2s;
+}
+
+/* ═══════════════════════════════════════════
+HERO COVER / BANNER
+═══════════════════════════════════════════ */
+.profile-cover {
+position: relative;
+height: 230px;
+background: linear-gradient(150deg, #05131E 0%, #0A2340 50%, #0D3060 100%);
+overflow: hidden;
+}
+.cover-canvas {
+position: absolute; inset: 0;
+background-image:
+radial-gradient(ellipse 80% 60% at 70% 30%, rgba(10,175,255,0.25) 0%, transparent 60%),
+radial-gradient(ellipse 50% 40% at 20% 80%, rgba(0,229,160,0.15) 0%, transparent 60%);
+}
+.cover-grid {
+position: absolute; inset: 0;
+background-image: radial-gradient(circle, rgba(255,255,255,0.025) 1px, transparent 1px);
+background-size: 28px 28px;
+}
+/* Liquid parallax orbs */
+.cover-orb {
+position: absolute; border-radius: 50%; pointer-events: none;
+filter: blur(60px);
+}
+.cover-orb-1 { width:280px; height:280px; background:var(–sky); opacity:0.13; top:-80px; right:-60px; animation:orbFloat1 9s ease-in-out infinite; }
+.cover-orb-2 { width:180px; height:180px; background:var(–mint); opacity:0.10; bottom:-40px; left:-30px; animation:orbFloat2 11s ease-in-out infinite; }
+.cover-orb-3 { width:120px; height:120px; background:var(–gold); opacity:0.07; top:40px; left:40%; animation:orbFloat3 7s ease-in-out infinite; }
+@keyframes orbFloat1 { 0%,100%{transform:translate(0,0) scale(1)} 33%{transform:translate(-20px,15px) scale(1.05)} 66%{transform:translate(10px,-10px) scale(0.97)} }
+@keyframes orbFloat2 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(15px,-20px) scale(1.08)} }
+@keyframes orbFloat3 { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-14px)} }
+
+/* ── STORIES ring style particles ── */
+.cover-particles { position:absolute; inset:0; overflow:hidden; pointer-events:none; }
+.particle {
+position:absolute; width:3px; height:3px; border-radius:50%;
+background:rgba(255,255,255,0.4);
+animation: particleRise 6s linear infinite;
+}
+@keyframes particleRise { 0%{opacity:0;transform:translateY(0)} 10%{opacity:1} 90%{opacity:0.5} 100%{opacity:0;transform:translateY(-200px)} }
+
+/* Back btn on cover */
+.cover-back-btn {
+position: absolute; top: 16px; left: 16px; z-index: 10;
+width: 40px; height: 40px; border-radius: 50%;
+background: rgba(8,12,18,0.55);
+backdrop-filter: blur(10px);
+border: 1px solid rgba(255,255,255,0.15);
+color: white; display:flex; align-items:center; justify-content:center;
+cursor: pointer; font-size: 1rem;
+transition: all 0.2s;
+}
+.cover-back-btn:hover { background: rgba(8,12,18,0.8); }
+
+.cover-more-btn {
+position: absolute; top: 16px; right: 16px; z-index: 10;
+width: 40px; height: 40px; border-radius: 50%;
+background: rgba(8,12,18,0.55);
+backdrop-filter: blur(10px);
+border: 1px solid rgba(255,255,255,0.15);
+color: white; display:flex; align-items:center; justify-content:center;
+cursor: pointer; font-size: 1rem; transition: all 0.2s;
+}
+
+/* Online indicator pulse */
+.cover-online {
+position: absolute; bottom: 16px; right: 16px; z-index: 10;
+display: flex; align-items: center; gap: 6px;
+background: rgba(8,12,18,0.65); backdrop-filter: blur(8px);
+border: 1px solid rgba(0,229,160,0.3);
+padding: 4px 12px; border-radius: 20px;
+font-size: 0.72rem; color: white;
+display: none;
+}
+.online-dot { width: 8px; height: 8px; border-radius: 50%; background: var(–mint); }
+.online-dot.pulse { animation: onlinePulse 2s ease-in-out infinite; }
+@keyframes onlinePulse { 0%,100%{box-shadow:0 0 0 0 rgba(0,229,160,0.5)} 50%{box-shadow:0 0 0 6px rgba(0,229,160,0)} }
+
+/* ═══════════════════════════════════════════
+AVATAR SECTION — Instagram-style with story ring
+═══════════════════════════════════════════ */
+.avatar-section {
+position: relative;
+margin-top: -56px;
+padding: 0 18px;
+z-index: 30;
+display: flex;
+align-items: flex-end;
+justify-content: space-between;
+}
+.avatar-outer {
+position: relative;
+width: 110px; height: 110px;
+}
+/* Story ring gradient — Instagram exact */
+.story-ring {
+position: absolute; inset: -4px;
+border-radius: 50%;
+background: conic-gradient(
+var(–sky) 0deg, var(–mint) 120deg, var(–gold) 240deg, var(–sky) 360deg
+);
+animation: storyRingRotate 4s linear infinite;
+z-index: 1;
+}
+@keyframes storyRingRotate { to{transform:rotate(360deg)} }
+.story-ring-inner {
+position: absolute; inset: 3px;
+border-radius: 50%;
+background: var(–cloud);
+z-index: 2;
+}
+#public-avatar {
+position: absolute; inset: 6px;
+border-radius: 50%;
+object-fit: cover;
+z-index: 3;
+width: calc(100% - 12px); height: calc(100% - 12px);
+background: var(–ink3);
+border: 3px solid white;
+box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
+cursor: pointer;
+}
+#public-avatar:hover { transform: scale(1.06); }
+/* Verified badge on avatar */
+.avatar-verified {
+position: absolute; bottom: 4px; right: 4px; z-index: 4;
+width: 26px; height: 26px; border-radius: 50%;
+background: var(–sky);
+border: 3px solid white;
+display: none; align-items: center; justify-content: center;
+color: white; font-size: 0.62rem;
+box-shadow: 0 2px 8px rgba(10,175,255,0.5);
+}
+
+/* Avatar quick action buttons */
+.avatar-actions {
+display: flex; gap: 8px; padding-bottom: 8px;
+}
+.aa-btn {
+height: 40px; border-radius: 22px;
+border: none; cursor: pointer;
+font-family: var(–font-b); font-weight: 700; font-size: 0.82rem;
+display: flex; align-items: center; justify-content: center; gap: 6px;
+transition: all 0.25s;
+padding: 0 16px;
+}
+.aa-btn:hover { transform: translateY(-2px); filter: brightness(1.08); }
+.aa-btn:active { transform: scale(0.95); }
+.aa-follow { background: var(–sky); color: white; box-shadow: 0 4px 14px rgba(10,175,255,0.35); }
+.aa-follow.following { background: white; color: var(–sky); border: 2px solid var(–sky); box-shadow: none; }
+.aa-chat { background: white; color: var(–ink); border: 1.5px solid #E5ECF6; box-shadow: var(–shadow-sm); }
+.aa-more {
+width: 40px; height: 40px; padding: 0; border-radius: 50%;
+background: white; color: var(–slate); border: 1.5px solid #E5ECF6;
+}
+
+/* ═══════════════════════════════════════════
+PROFILE INFO
+═══════════════════════════════════════════ */
+.profile-info {
+padding: 14px 18px 0;
+}
+.profile-name-row {
+display: flex; align-items: center; gap: 8px;
+margin-bottom: 2px;
+}
+.p-name {
+font-family: var(–font-d); font-size: 1.5rem; font-weight: 800;
+color: var(–ink); line-height: 1.1;
+}
+.p-verified-icon {
+display: none;
+width: 24px; height: 24px; border-radius: 50%;
+background: var(–sky);
+align-items: center; justify-content: center;
+color: white; font-size: 0.68rem;
+flex-shrink: 0;
+}
+.p-username { color: var(–mist); font-size: 0.85rem; margin-bottom: 10px; }
+.p-bio {
+font-size: 0.88rem; line-height: 1.55; color: var(–slate);
+margin-bottom: 10px; white-space: pre-wrap;
+}
+.p-meta { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 14px; }
+.p-meta-item { display: flex; align-items: center; gap: 5px; font-size: 0.78rem; color: var(–mist); }
+.p-meta-item i { color: var(–sky); font-size: 0.72rem; }
+
+/* ═══════════════════════════════════════════
+STATS BAR — Instagram-style tappable
+═══════════════════════════════════════════ */
+.stats-bar {
+display: flex; gap: 0;
+border-top: 1px solid #EEF2F7;
+border-bottom: 1px solid #EEF2F7;
+background: white;
+margin: 0 18px;
+border-radius: var(–r-sm);
+overflow: hidden;
+box-shadow: var(–shadow-sm);
+}
+.stat-pill {
+flex: 1; padding: 14px 6px; text-align: center;
+cursor: pointer; transition: background 0.2s; position: relative;
+}
+.stat-pill:hover { background: #F5FAFF; }
+.stat-pill + .stat-pill::before {
+content:’’; position:absolute; left:0; top:20%; height:60%;
+width:1px; background:#EEF2F7;
+}
+.stat-num {
+font-family: var(–font-d); font-size: 1.4rem; font-weight: 800;
+color: var(–ink); line-height: 1;
+display: block;
+}
+.stat-lbl {
+font-size: 0.67rem; font-weight: 600; color: var(–mist);
+text-transform: uppercase; letter-spacing: 0.5px; margin-top: 3px;
+display: block;
+}
+
+/* ═══════════════════════════════════════════
+STORY HIGHLIGHTS — Instagram-like circles
+═══════════════════════════════════════════ */
+.highlights-section {
+padding: 18px 0 0;
+}
+.highlights-scroll {
+display: flex; gap: 14px;
+overflow-x: auto; scrollbar-width: none;
+padding: 0 18px 12px;
+scroll-snap-type: x mandatory;
+}
+.highlights-scroll::-webkit-scrollbar { display: none; }
+.highlight-item {
+display: flex; flex-direction: column; align-items: center; gap: 5px;
+flex-shrink: 0; scroll-snap-align: start;
+cursor: pointer; transition: transform 0.2s;
+}
+.highlight-item:hover { transform: scale(1.05); }
+.hl-ring {
+width: 64px; height: 64px; border-radius: 50%;
+background: linear-gradient(135deg, var(–sky), var(–mint));
+padding: 2px;
+display: flex; align-items: center; justify-content: center;
+}
+.hl-ring-inner {
+width: 100%; height: 100%; border-radius: 50%;
+border: 3px solid var(–cloud);
+overflow: hidden;
+display: flex; align-items: center; justify-content: center;
+background: linear-gradient(135deg, var(–ink3), var(–ink2));
+font-size: 1.4rem;
+}
+.hl-ring-inner img { width:100%; height:100%; object-fit:cover; }
+.hl-label { font-size: 0.67rem; color: var(–ink); font-weight: 600; max-width: 64px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+/* “Add” highlight */
+.hl-add .hl-ring { background: #EEF2F7; padding: 0; }
+.hl-add .hl-ring-inner { border: 2px dashed #CBD5E0; background: transparent; font-size: 1.2rem; color: var(–mist); }
+
+/* ═══════════════════════════════════════════
+CONTENT TABS — Posts / Products / Likes
+═══════════════════════════════════════════ */
+.content-tabs {
+display: flex; margin: 0 0 0;
+border-bottom: 2px solid #EEF2F7;
+background: white;
+position: sticky; top: 60px; z-index: 100;
+padding: 0 18px;
+}
+.c-tab {
+flex: 1; padding: 13px 0; text-align: center;
+border-bottom: 3px solid transparent;
+font-family: var(–font-b); font-weight: 700; font-size: 0.78rem;
+color: var(–mist); cursor: pointer; transition: all 0.22s;
+display: flex; align-items: center; justify-content: center; gap: 5px;
+margin-bottom: -2px;
+background: none; border-left: none; border-right: none; border-top: none;
+}
+.c-tab i { font-size: 0.9rem; }
+.c-tab.active { color: var(–sky); border-bottom-color: var(–sky); }
+
+/* ═══════════════════════════════════════════
+GRID CONTENT — Instagram 3-col
+═══════════════════════════════════════════ */
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* Products grid */
+.products-grid {
+display: grid;
+grid-template-columns: repeat(3, 1fr);
+gap: 2px;
+background: #EEF2F7;
+}
+.pg-item {
+aspect-ratio: 1;
+position: relative;
+overflow: hidden;
+cursor: pointer;
+background: var(–ink3);
+}
+.pg-item img {
+width: 100%; height: 100%; object-fit: cover;
+transition: transform 0.4s;
+display: block;
+}
+.pg-item:hover img { transform: scale(1.08); }
+.pg-item-overlay {
+position: absolute; inset: 0;
+background: rgba(8,12,18,0.55);
+display: flex; flex-direction: column;
+align-items: center; justify-content: center; gap: 4px;
+opacity: 0; transition: opacity 0.25s;
+color: white;
+}
+.pg-item:hover .pg-item-overlay { opacity: 1; }
+.pg-item-overlay span { font-weight: 700; font-size: 0.85rem; }
+.pg-item-overlay small { font-size: 0.7rem; opacity: 0.75; }
+.pg-sold-tag {
+position: absolute; top: 6px; right: 6px;
+background: var(–danger); color: white;
+font-size: 0.58rem; font-weight: 800;
+padding: 2px 6px; border-radius: 4px;
+text-transform: uppercase;
+display: none;
+}
+.pg-item.sold .pg-sold-tag { display: block; }
+
+/* ── Liked products grid ── */
+.likes-grid {
+display: grid;
+grid-template-columns: repeat(3, 1fr);
+gap: 2px;
+background: #EEF2F7;
+}
+.lg-item {
+aspect-ratio: 1;
+position: relative;
+overflow: hidden;
+cursor: pointer;
+background: var(–ink3);
+}
+.lg-item img { width:100%; height:100%; object-fit:cover; display:block; transition: transform 0.4s; }
+.lg-item:hover img { transform: scale(1.08); }
+.lg-heart {
+position: absolute; bottom: 6px; right: 6px;
+color: var(–danger); font-size: 1rem;
+text-shadow: 0 1px 4px rgba(0,0,0,0.5);
+}
+
+/* ═══════════════════════════════════════════
+REVIEWS / RATINGS SECTION
+═══════════════════════════════════════════ */
+.reviews-panel { padding: 18px; }
+.rating-summary {
+display: flex; align-items: center; gap: 20px;
+background: white; border-radius: var(–r-sm);
+padding: 18px; margin-bottom: 16px;
+box-shadow: var(–shadow-sm);
+}
+.rating-big {
+font-family: var(–font-d); font-size: 3.5rem; font-weight: 800;
+color: var(–ink); line-height: 1;
+flex-shrink: 0;
+}
+.rating-stars-col { flex: 1; }
+.stars-row {
+display: flex; gap: 3px; margin-bottom: 6px;
+}
+.stars-row i { color: var(–gold); font-size: 1.1rem; }
+.rating-count { font-size: 0.78rem; color: var(–mist); }
+.rating-bars { flex: 1; display: flex; flex-direction: column; gap: 4px; }
+.rb-row { display: flex; align-items: center; gap: 6px; }
+.rb-num { font-size: 0.7rem; color: var(–mist); width: 8px; }
+.rb-track { flex: 1; height: 5px; background: #EEF2F7; border-radius: 3px; overflow: hidden; }
+.rb-fill { height: 100%; background: var(–gold); border-radius: 3px; transition: width 1s ease; width: 0; }
+
+.review-card {
+background: white; border-radius: var(–r-sm);
+padding: 14px; margin-bottom: 10px;
+box-shadow: var(–shadow-sm);
+animation: cardIn 0.3s ease;
+}
+@keyframes cardIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+.rev-header { display:flex; align-items:center; gap:10px; margin-bottom:8px; }
+.rev-avatar {
+width:38px; height:38px; border-radius:50%;
+object-fit:cover; background:var(–sky);
+display:flex; align-items:center; justify-content:center;
+color:white; font-weight:700; font-size:0.9rem; overflow:hidden; flex-shrink:0;
+}
+.rev-avatar img { width:100%; height:100%; object-fit:cover; }
+.rev-name { font-weight:600; font-size:0.88rem; }
+.rev-date { font-size:0.72rem; color:var(–mist); }
+.rev-stars { display:flex; gap:2px; }
+.rev-stars i { color:var(–gold); font-size:0.75rem; }
+.rev-text { font-size:0.83rem; color:var(–slate); line-height:1.5; }
+
+/* ═══════════════════════════════════════════
+EMPTY STATES
+═══════════════════════════════════════════ */
+.empty-state {
+padding: 52px 20px; text-align: center; color: var(–mist);
+}
+.empty-state i { font-size: 2.6rem; display: block; margin-bottom: 12px; opacity: 0.25; }
+.empty-state p { font-size: 0.9rem; font-weight: 500; margin-bottom: 4px; color: var(–slate); }
+.empty-state small { font-size: 0.76rem; opacity: 0.6; }
+
+/* ═══════════════════════════════════════════
+SKELETON LOADERS
+═══════════════════════════════════════════ */
+.skel {
+background: linear-gradient(90deg, #f0f2f5 25%, #e8ebee 50%, #f0f2f5 75%);
+background-size: 300% 100%;
+animation: skelAnim 1.5s infinite;
+border-radius: 8px;
+}
+@keyframes skelAnim { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+
+/* ═══════════════════════════════════════════
+PRODUCT DETAIL MODAL — Instagram style
+═══════════════════════════════════════════ */
+.modal-backdrop {
+display: none; position: fixed; inset: 0; z-index: 500;
+background: rgba(8,12,18,0.75);
+backdrop-filter: blur(10px);
+align-items: flex-end; justify-content: center;
+}
+.modal-backdrop.open { display: flex; animation: fadeInBg 0.22s ease; }
+@keyframes fadeInBg { from{opacity:0} to{opacity:1} }
+.modal-sheet {
+background: white; border-radius: 28px 28px 0 0;
+width: 100%; max-width: 540px;
+max-height: 88vh; overflow-y: auto;
+animation: sheetUp 0.35s cubic-bezier(0.34,1.56,0.64,1);
+scrollbar-width: none;
+}
+.modal-sheet::-webkit-scrollbar { display: none; }
+@keyframes sheetUp { from{transform:translateY(100%)} to{transform:translateY(0)} }
+.modal-handle {
+width: 40px; height: 4px;
+background: #E5ECF6; border-radius: 4px;
+margin: 16px auto 0;
+}
+
+/* Product modal content */
+.prod-modal-img {
+width: 100%; aspect-ratio: 4/3;
+object-fit: cover; display: block;
+border-radius: 0 0 20px 20px;
+margin-bottom: 0;
+}
+.prod-modal-body { padding: 18px 20px 40px; }
+.prod-modal-name {
+font-family: var(–font-d); font-size: 1.3rem; font-weight: 800;
+color: var(–ink); margin-bottom: 4px;
+}
+.prod-modal-price {
+font-family: var(–font-d); font-size: 1.7rem; font-weight: 800;
+color: var(–sky); margin-bottom: 10px;
+}
+.prod-modal-desc { font-size: 0.86rem; color: var(–slate); line-height: 1.6; margin-bottom: 16px; }
+.prod-modal-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
+.prod-tag {
+padding: 4px 12px; border-radius: 20px;
+background: rgba(10,175,255,0.08);
+border: 1.5px solid rgba(10,175,255,0.18);
+font-size: 0.73rem; font-weight: 600; color: var(–sky-d);
+}
+.prod-modal-actions { display: flex; gap: 10px; }
+.pma-btn {
+flex: 1; height: 52px; border: none; border-radius: 14px;
+font-family: var(–font-d); font-weight: 700; font-size: 0.9rem;
+cursor: pointer; transition: all 0.25s;
+display: flex; align-items: center; justify-content: center; gap: 7px;
+}
+.pma-btn:hover { filter: brightness(1.08); transform: translateY(-2px); }
+.pma-chat { background: var(–sky); color: white; box-shadow: 0 5px 18px rgba(10,175,255,0.3); }
+.pma-like {
+flex: 0 0 52px; border-radius: 14px;
+background: #FFF0F1; color: var(–danger);
+border: 1.5px solid rgba(255,71,87,0.15);
+}
+.pma-like.liked { background: var(–danger); color: white; }
+
+/* ═══════════════════════════════════════════
+TOAST
+═══════════════════════════════════════════ */
+.toast-stack {
+position: fixed; bottom: 28px; left: 50%;
+transform: translateX(-50%);
+display: flex; flex-direction: column; gap: 8px;
+align-items: center; z-index: 9999;
+pointer-events: none;
+}
+.toast-item {
+display: inline-flex; align-items: center; gap: 9px;
+padding: 11px 20px; background: var(–ink2); color: white;
+border-radius: 50px; font-size: 0.84rem; font-weight: 500;
+white-space: nowrap; max-width: calc(100vw - 40px);
+box-shadow: 0 8px 28px rgba(0,0,0,0.28);
+animation: toastIn 0.38s cubic-bezier(0.34,1.56,0.64,1) forwards;
+}
+.toast-item.t-success i { color: var(–mint); }
+.toast-item.t-error i { color: var(–danger); }
+.toast-item.t-info i { color: var(–sky); }
+@keyframes toastIn { from{opacity:0;transform:translateY(14px) scale(0.9)} to{opacity:1;transform:translateY(0) scale(1)} }
+@keyframes toastOut { from{opacity:1} to{opacity:0;transform:translateY(8px) scale(0.94)} }
+
+/* ═══════════════════════════════════════════
+SHARE MODAL
+═══════════════════════════════════════════ */
+.share-grid {
+display: grid; grid-template-columns: repeat(4,1fr); gap: 14px;
+padding: 8px 0 20px;
+}
+.share-item {
+display: flex; flex-direction: column; align-items: center; gap: 6px;
+cursor: pointer; transition: transform 0.2s;
+}
+.share-item:hover { transform: scale(1.1); }
+.share-icon {
+width: 50px; height: 50px; border-radius: 16px;
+display: flex; align-items: center; justify-content: center;
+font-size: 1.3rem; color: white;
+}
+.share-item span { font-size: 0.7rem; color: var(–slate); font-weight: 600; }
+.copy-link-row {
+display: flex; gap: 10px; padding: 14px 0 8px;
+border-top: 1px solid #EEF2F7;
+}
+.copy-link-input {
+flex: 1; padding: 10px 14px;
+background: #F5F8FB; border: 1.5px solid #E5ECF6;
+border-radius: 10px; font-family: var(–font-b);
+font-size: 0.8rem; color: var(–mist); outline: none;
+}
+.copy-link-btn {
+padding: 10px 18px; background: var(–sky); color: white;
+border: none; border-radius: 10px;
+font-family: var(–font-b); font-weight: 700; font-size: 0.8rem;
+cursor: pointer; transition: all 0.2s;
+}
+.copy-link-btn:hover { filter: brightness(1.1); }
+
+/* ═══════════════════════════════════════════
+PHOTO VIEWER (full screen)
+═══════════════════════════════════════════ */
+#photo-viewer {
+display: none; position: fixed; inset: 0; z-index: 600;
+background: rgba(0,0,0,0.97);
+align-items: center; justify-content: center;
+animation: fadeInBg 0.2s ease;
+}
+#photo-viewer.open { display: flex; }
+#photo-viewer img {
+max-width: 100%; max-height: 100vh;
+object-fit: contain;
+animation: zoomIn 0.3s cubic-bezier(0.34,1.56,0.64,1);
+}
+@keyframes zoomIn { from{transform:scale(0.8);opacity:0} to{transform:scale(1);opacity:1} }
+.photo-close {
+position: absolute; top: 20px; right: 20px;
+width: 40px; height: 40px; border-radius: 50%;
+background: rgba(255,255,255,0.15); border: none;
+color: white; font-size: 1.1rem; cursor: pointer;
+display: flex; align-items: center; justify-content: center;
+}
+
+/* ═══════════════════════════════════════════
+FOLLOWERS PANEL (slide-in)
+═══════════════════════════════════════════ */
+.followers-panel {
+position: fixed; inset: 0; z-index: 400;
+display: none;
+}
+.followers-panel.open { display: block; }
+.fp-backdrop {
+position: absolute; inset: 0;
+background: rgba(8,12,18,0.6); backdrop-filter: blur(8px);
+}
+.fp-sheet {
+position: absolute; bottom: 0; left: 0; right: 0;
+background: white; border-radius: 28px 28px 0 0;
+max-height: 70vh; overflow: hidden;
+display: flex; flex-direction: column;
+animation: sheetUp 0.35s cubic-bezier(0.34,1.56,0.64,1);
+}
+.fp-header {
+padding: 20px 20px 12px;
+border-bottom: 1px solid #EEF2F7;
+flex-shrink: 0;
+}
+.fp-title { font-family: var(–font-d); font-weight: 700; font-size: 1rem; text-align: center; }
+.fp-list { overflow-y: auto; flex: 1; scrollbar-width: none; }
+.fp-list::-webkit-scrollbar { display: none; }
+.fp-user {
+display: flex; align-items: center; gap: 12px;
+padding: 12px 20px; cursor: pointer;
+transition: background 0.15s; border-bottom: 1px solid #F7F9FB;
+}
+.fp-user:hover { background: #F5FAFF; }
+.fp-user-av {
+width: 44px; height: 44px; border-radius: 50%;
+object-fit: cover; background: var(–sky);
+display: flex; align-items: center; justify-content: center;
+color: white; font-weight: 700; font-size: 1rem;
+overflow: hidden; flex-shrink: 0;
+}
+.fp-user-av img { width:100%; height:100%; object-fit:cover; }
+.fp-user-name { font-weight: 600; font-size: 0.9rem; }
+.fp-user-sub { font-size: 0.73rem; color: var(–mist); margin-top: 1px; }
+.fp-follow-btn {
+margin-left: auto;
+padding: 6px 14px; border-radius: 20px;
+background: rgba(10,175,255,0.08); border: 1.5px solid rgba(10,175,255,0.2);
+color: var(–sky); font-family: var(–font-b); font-weight: 700; font-size: 0.75rem;
+cursor: pointer; transition: all 0.2s; flex-shrink: 0;
+}
+.fp-follow-btn:hover { background: var(–sky); color: white; }
+
+/* ── Entrance animations ── */
+.anim-in {
+opacity: 0; transform: translateY(22px);
+animation: animIn 0.5s ease forwards;
+}
+@keyframes animIn { to { opacity:1; transform:translateY(0); } }
+
+/* ═══════════════════════════════════════════
+RESPONSIVE
+═══════════════════════════════════════════ */
+@media (max-width:360px) {
+.p-name { font-size: 1.3rem; }
+.stat-num { font-size: 1.2rem; }
+.products-grid, .likes-grid { grid-template-columns: repeat(3,1fr); }
+}
+</style>
+
+</head>
+<body>
+
+<!-- LOADING -->
+
+<div id="loading-screen">
+  <div class="load-logo"><span>Compra</span>Ya</div>
+  <div class="load-bar"><div class="load-bar-fill"></div></div>
+  <div class="load-dots"><span></span><span></span><span></span></div>
+</div>
+
+<!-- TOP NAV (sticky, appears on scroll) -->
+
+<div class="top-nav" id="top-nav">
+  <button class="back-btn" onclick="history.back()"><i class="fas fa-arrow-left"></i></button>
+  <div class="nav-user-info">
+    <div class="nav-user-name" id="nav-name">—</div>
+    <div class="nav-user-sub" id="nav-sub">—</div>
+  </div>
+  <div class="nav-logo"><span>Compra</span>Ya</div>
+  <button class="nav-more-btn" onclick="abrirShare()"><i class="fas fa-share-nodes"></i></button>
+</div>
+
+<!-- COVER -->
+
+<div class="profile-cover" id="profile-cover">
+  <div class="cover-canvas"></div>
+  <div class="cover-grid"></div>
+  <div class="cover-orb cover-orb-1"></div>
+  <div class="cover-orb cover-orb-2"></div>
+  <div class="cover-orb cover-orb-3"></div>
+  <div class="cover-particles" id="cover-particles"></div>
+  <button class="cover-back-btn" onclick="history.back()"><i class="fas fa-arrow-left"></i></button>
+  <button class="cover-more-btn" onclick="abrirShare()"><i class="fas fa-share-nodes"></i></button>
+  <div class="cover-online" id="cover-online">
+    <div class="online-dot pulse"></div>
+    <span>En línea</span>
+  </div>
+</div>
+
+<!-- AVATAR SECTION -->
+
+<div class="avatar-section" id="avatar-section">
+  <div class="avatar-outer">
+    <div class="story-ring" id="story-ring"></div>
+    <div class="story-ring-inner"></div>
+    <img id="public-avatar"
+         src="https://ui-avatars.com/api/?name=CY&background=0088D4&color=fff&size=200&bold=true"
+         alt="Foto"
+         onclick="verFotoCompleta()">
+    <div class="avatar-verified" id="avatar-verified">
+      <i class="fas fa-check"></i>
+    </div>
+  </div>
+  <div class="avatar-actions">
+    <button class="aa-btn aa-follow" id="follow-btn" onclick="toggleFollow()">
+      <i class="fas fa-user-plus"></i> Seguir
+    </button>
+    <button class="aa-btn aa-chat" id="chat-btn" onclick="irAlChat()">
+      <i class="fas fa-comment"></i> Chatear
+    </button>
+    <button class="aa-btn aa-more" onclick="abrirShare()">
+      <i class="fas fa-ellipsis"></i>
+    </button>
+  </div>
+</div>
+
+<!-- PROFILE INFO -->
+
+<div class="profile-info anim-in" style="animation-delay:0.1s">
+  <div class="profile-name-row">
+    <div class="p-name" id="p-name">Cargando...</div>
+    <div class="p-verified-icon" id="p-verified"><i class="fas fa-check"></i></div>
+  </div>
+  <div class="p-username" id="p-username">@—</div>
+  <div class="p-bio" id="p-bio"></div>
+  <div class="p-meta" id="p-meta">
+    <div class="p-meta-item"><i class="fas fa-map-marker-alt"></i><span id="p-location">—</span></div>
+    <div class="p-meta-item"><i class="fas fa-calendar-alt"></i><span id="p-joined">—</span></div>
+    <div class="p-meta-item" id="p-phone-row" style="display:none"><i class="fab fa-whatsapp" style="color:#25D366"></i><span id="p-phone">—</span></div>
+  </div>
+</div>
+
+<!-- STATS BAR -->
+
+<div class="stats-bar anim-in" style="animation-delay:0.15s">
+  <div class="stat-pill" onclick="abrirSeguidores('publicaciones')">
+    <span class="stat-num" id="s-products">—</span>
+    <span class="stat-lbl">Publicaciones</span>
+  </div>
+  <div class="stat-pill" onclick="abrirSeguidores('seguidores')">
+    <span class="stat-num" id="s-followers">—</span>
+    <span class="stat-lbl">Seguidores</span>
+  </div>
+  <div class="stat-pill" onclick="abrirSeguidores('siguiendo')">
+    <span class="stat-num" id="s-following">—</span>
+    <span class="stat-lbl">Siguiendo</span>
+  </div>
+  <div class="stat-pill">
+    <span class="stat-num" id="s-sales">—</span>
+    <span class="stat-lbl">Ventas</span>
+  </div>
+</div>
+
+<!-- STORY HIGHLIGHTS -->
+
+<div class="highlights-section anim-in" style="animation-delay:0.2s">
+  <div class="highlights-scroll" id="highlights-scroll">
+    <!-- dynamic -->
+    <div class="skel" style="width:64px;height:64px;border-radius:50%;flex-shrink:0;"></div>
+    <div class="skel" style="width:64px;height:64px;border-radius:50%;flex-shrink:0;"></div>
+    <div class="skel" style="width:64px;height:64px;border-radius:50%;flex-shrink:0;"></div>
+  </div>
+</div>
+
+<!-- CONTENT TABS -->
+
+<div class="content-tabs anim-in" style="animation-delay:0.25s">
+  <button class="c-tab active" data-panel="products" onclick="switchTab('products',this)">
+    <i class="fas fa-grid-2"></i> Productos
+  </button>
+  <button class="c-tab" data-panel="likes" onclick="switchTab('likes',this)">
+    <i class="fas fa-heart"></i> Likes
+  </button>
+  <button class="c-tab" data-panel="reviews" onclick="switchTab('reviews',this)">
+    <i class="fas fa-star"></i> Reseñas
+  </button>
+</div>
+
+<!-- PRODUCTS TAB -->
+
+<div class="tab-panel active" id="panel-products">
+  <div class="products-grid" id="products-grid">
+    <div class="skel" style="aspect-ratio:1;border-radius:0;"></div>
+    <div class="skel" style="aspect-ratio:1;border-radius:0;"></div>
+    <div class="skel" style="aspect-ratio:1;border-radius:0;"></div>
+    <div class="skel" style="aspect-ratio:1;border-radius:0;"></div>
+    <div class="skel" style="aspect-ratio:1;border-radius:0;"></div>
+    <div class="skel" style="aspect-ratio:1;border-radius:0;"></div>
+  </div>
+</div>
+
+<!-- LIKES TAB -->
+
+<div class="tab-panel" id="panel-likes">
+  <div class="likes-grid" id="likes-grid">
+    <div class="skel" style="aspect-ratio:1;border-radius:0;"></div>
+    <div class="skel" style="aspect-ratio:1;border-radius:0;"></div>
+    <div class="skel" style="aspect-ratio:1;border-radius:0;"></div>
+  </div>
+</div>
+
+<!-- REVIEWS TAB -->
+
+<div class="tab-panel" id="panel-reviews">
+  <div class="reviews-panel" id="reviews-panel">
+    <div class="rating-summary">
+      <div class="rating-big" id="r-score">—</div>
+      <div class="rating-stars-col">
+        <div class="stars-row" id="r-stars"></div>
+        <div class="rating-count" id="r-count">0 reseñas</div>
+      </div>
+      <div class="rating-bars" id="r-bars">
+        <div class="rb-row"><span class="rb-num">5</span><div class="rb-track"><div class="rb-fill" id="rb5"></div></div></div>
+        <div class="rb-row"><span class="rb-num">4</span><div class="rb-track"><div class="rb-fill" id="rb4"></div></div></div>
+        <div class="rb-row"><span class="rb-num">3</span><div class="rb-track"><div class="rb-fill" id="rb3"></div></div></div>
+        <div class="rb-row"><span class="rb-num">2</span><div class="rb-track"><div class="rb-fill" id="rb2"></div></div></div>
+        <div class="rb-row"><span class="rb-num">1</span><div class="rb-track"><div class="rb-fill" id="rb1"></div></div></div>
+      </div>
+    </div>
+    <div id="reviews-list">
+      <div class="skel" style="height:90px;border-radius:12px;margin-bottom:10px;"></div>
+      <div class="skel" style="height:90px;border-radius:12px;margin-bottom:10px;"></div>
+    </div>
+  </div>
+</div>
+
+<!-- PRODUCT DETAIL MODAL -->" "> 
+
+<div class="modal-backdrop" id="modal-product">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <img id="pm-img" class="prod-modal-img" src="" alt="" onerror="this.src='https:/via.placeholder.com/480x360/E5ECF6/8A9BB0?text=Sin+imagen'">
+    <div class="prod-modal-body">
+      <div class="prod-modal-name" id="pm-name">—</div>
+      <div class="prod-modal-price" id="pm-price">—</div>
+      <div class="prod-modal-desc" id="pm-desc">—</div>
+      <div class="prod-modal-tags" id="pm-tags"></div>
+      <div class="prod-modal-actions">
+        <button class="pma-btn pma-chat" id="pm-chat-btn" onclick="irAlChatDesdeProducto()">
+          <i class="fas fa-comment-dots"></i> Chatear con vendedor
+        </button>
+        <button class="pma-btn pma-like" id="pm-like-btn" onclick="toggleProductLike()">
+          <i class="fas fa-heart"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SHARE MODAL -->
+
+<div class="modal-backdrop" id="modal-share">
+  <div class="modal-sheet" style="padding:0 20px 48px;">
+    <div class="modal-handle" style="margin-bottom:16px;"></div>
+    <div style="font-family:var(--font-d);font-weight:800;font-size:1.1rem;text-align:center;margin-bottom:18px;">Compartir perfil</div>
+    <div class="share-grid">
+      <div class="share-item" onclick="shareWhatsApp()">
+        <div class="share-icon" style="background:#25D366"><i class="fab fa-whatsapp"></i></div>
+        <span>WhatsApp</span>
+      </div>
+      <div class="share-item" onclick="shareTelegram()">
+        <div class="share-icon" style="background:#2CA5E0"><i class="fab fa-telegram"></i></div>
+        <span>Telegram</span>
+      </div>
+      <div class="share-item" onclick="shareTwitter()">
+        <div class="share-icon" style="background:#1DA1F2"><i class="fab fa-twitter"></i></div>
+        <span>Twitter</span>
+      </div>
+      <div class="share-item" onclick="copiarEnlace()">
+        <div class="share-icon" style="background:var(--sky)"><i class="fas fa-link"></i></div>
+        <span>Copiar</span>
+      </div>
+    </div>
+    <div class="copy-link-row">
+      <input type="text" class="copy-link-input" id="share-url" readonly>
+      <button class="copy-link-btn" onclick="copiarEnlace()">Copiar</button>
+    </div>
+    <button style="width:100%;height:50px;border:none;border-radius:14px;background:#F4F6F9;color:var(--slate);font-family:var(--font-d);font-weight:700;font-size:0.9rem;cursor:pointer;margin-top:10px;" onclick="cerrarModal('modal-share')">Cancelar</button>
+  </div>
+</div>
+
+<!-- FOLLOWERS PANEL -->
+
+<div class="followers-panel" id="followers-panel">
+  <div class="fp-backdrop" onclick="cerrarFollowers()"></div>
+  <div class="fp-sheet">
+    <div class="fp-header">
+      <div class="modal-handle" style="margin-top:0;margin-bottom:10px;"></div>
+      <div class="fp-title" id="fp-title">Seguidores</div>
+    </div>
+    <div class="fp-list" id="fp-list">
+      <div style="padding:20px;text-align:center;color:var(--mist);font-size:0.88rem;">Cargando...</div>
+    </div>
+  </div>
+</div>
+
+<!-- PHOTO VIEWER -->
+
+<div id="photo-viewer">
+  <img id="photo-viewer-img" src="" alt="">
+  <button class="photo-close" onclick="cerrarFoto()"><i class="fas fa-times"></i></button>
+</div>
+
+<!-- TOAST -->
+
+<div class="toast-stack" id="toast-stack"></div>
+
+<!-- FIREBASE -->
+
+<script type="module">
+import { initializeApp }      from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+import { getAuth, onAuthStateChanged }
+  from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+import {
+  getFirestore, doc, getDoc, setDoc, collection,
+  query, where, getDocs, updateDoc, addDoc,
+  serverTimestamp, orderBy, limit, arrayUnion,
+  arrayRemove, increment, onSnapshot
+} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+
+import { firebaseConfig } from './js/config.js';
+
+ 
+
+const app  = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db   = getFirestore(app);
+
+let currentUser  = null;
+let targetUID    = null;
+let targetData   = null;
+let isFollowing  = false;
+let currentProductId = null;
+let likedProducts = new Set();
+
+/* ─── URL param ─── */
+const params = new URLSearchParams(location.search);
+targetUID = params.get('uid');
+
+if (!targetUID) {
+  document.body.innerHTML = `<div style="display:flex;height:100vh;align-items:center;justify-content:center;flex-direction:column;gap:12px;color:#8A9BB0;font-family:sans-serif;"><i class="fas fa-user-slash" style="font-size:3rem;opacity:0.3;"></i><p>Usuario no encontrado</p><a href="index.html" style="color:#0AAFFF;">Ir al inicio</a></div>`;
+}
+
+/* ─── Toast ─── */
+window.showToast = (type, msg, dur=3200) => {
+  const icons = { success:'fa-circle-check', error:'fa-circle-xmark', info:'fa-circle-info' };
+  const stack = document.getElementById('toast-stack');
+  const el = document.createElement('div');
+  el.className = `toast-item t-${type}`;
+  el.innerHTML = `<i class="fas ${icons[type]||'fa-circle-info'}"></i>${msg}`;
+  stack.appendChild(el);
+  setTimeout(() => { el.style.animation='toastOut 0.3s ease forwards'; setTimeout(()=>el.remove(),300); }, dur);
+};
+
+/* ─── Particles ─── */
+function spawnParticles() {
+  const cont = document.getElementById('cover-particles');
+  for (let i=0;i<18;i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.cssText = `left:${Math.random()*100}%;bottom:${Math.random()*30}px;animation-delay:${Math.random()*6}s;animation-duration:${4+Math.random()*4}s;width:${1+Math.random()*3}px;height:${1+Math.random()*3}px;opacity:${0.3+Math.random()*0.5}`;
+    cont.appendChild(p);
+  }
+}
+spawnParticles();
+
+/* ─── Sticky nav on scroll ─── */
+const topNav = document.getElementById('top-nav');
+window.addEventListener('scroll', () => {
+  topNav.classList.toggle('visible', window.scrollY > 180);
+});
+
+/* ─── Auth + Load ─── */
+onAuthStateChanged(auth, async (user) => {
+  if (user && !user.isAnonymous) currentUser = user;
+  hideLoader();
+  if (targetUID) {
+    await loadProfile();
+    await loadProducts();
+    loadReviews();
+    if (currentUser) {
+      loadLikes();
+      checkFollowing();
+    }
+  }
+});
+
+function hideLoader() {
+  setTimeout(() => document.getElementById('loading-screen').classList.add('hidden'), 1300);
+}
+
+/* ══════════════════════════════════════
+   LOAD PROFILE DATA
+══════════════════════════════════════ */
+async function loadProfile() {
+  try {
+    const snap = await getDoc(doc(db,'usuarios', targetUID));
+    if (!snap.exists()) {
+      showToast('error','❌ Usuario no encontrado'); return;
+    }
+    targetData = snap.data();
+    const d = targetData;
+
+    /* Set cover color from photoURL dominant (fallback gradient) */
+    const nameVal   = d.nombre   || d.email?.split('@')[0] || 'Usuario';
+    const emailVal  = d.email    || '';
+    const photoVal  = d.photoURL || '';
+    const phoneVal  = d.telefono || '';
+    const bioVal    = d.bio      || '';
+    const locVal    = d.ubicacion|| '';
+    const premium   = d.premium  || false;
+
+    /* Avatar */
+    const avatarEl = document.getElementById('public-avatar');
+    if (photoVal) {
+      avatarEl.src = photoVal;
+    } else {
+      const ini = nameVal.split(' ').map(w=>w[0]).slice(0,2).join('');
+      avatarEl.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(ini)}&background=0088D4&color=fff&size=200&bold=true`;
+    }
+
+    /* Name + Username */
+    document.getElementById('p-name').textContent   = nameVal;
+    document.getElementById('nav-name').textContent = nameVal;
+    document.getElementById('p-username').textContent = `@${nameVal.toLowerCase().replace(/\s+/g,'_')}`;
+    document.getElementById('nav-sub').textContent   = `${d.seguidores||0} seguidores`;
+    document.title = `${nameVal} | Compra Ya`;
+
+    /* Verified */
+    if (premium) {
+      document.getElementById('p-verified').style.display = 'flex';
+      document.getElementById('avatar-verified').style.display = 'flex';
+    }
+
+    /* Bio */
+    if (bioVal) document.getElementById('p-bio').textContent = bioVal;
+
+    /* Meta */
+    if (locVal) document.getElementById('p-location').textContent = locVal;
+    if (d.creadoEn?.toDate) {
+      const dt = d.creadoEn.toDate();
+      document.getElementById('p-joined').textContent =
+        `Desde ${dt.toLocaleDateString('es-ES',{month:'long',year:'numeric'})}`;
+    }
+    if (phoneVal) {
+      document.getElementById('p-phone').textContent = phoneVal;
+      document.getElementById('p-phone-row').style.display = 'flex';
+    }
+
+    /* Stats */
+    animCount('s-followers', d.seguidores||0);
+    animCount('s-following', d.siguiendo||0);
+    animCount('s-sales',     d.ventas||0);
+
+    /* Online indicator */
+    if (d.ultimaVez?.toDate) {
+      const diff = Date.now() - d.ultimaVez.toDate().getTime();
+      if (diff < 5*60*1000) {
+        document.getElementById('cover-online').style.display = 'flex';
+      }
+    }
+
+    /* Story ring — stop spinning if no products */
+    buildHighlights(d);
+
+    /* Share URL */
+    document.getElementById('share-url').value = `${location.origin}/perfil-usuario.html?uid=${targetUID}`;
+
+  } catch(e) {
+    console.error('loadProfile:', e);
+    showToast('error','Error al cargar el perfil');
+  }
+}
+
+/* ─── Highlights / categories from products ─── */
+async function buildHighlights(userData) {
+  const cont = document.getElementById('highlights-scroll');
+  cont.innerHTML = '';
+
+  const emojis = {
+    tecnologia:'📱', moda:'👗', hogar:'🏠', autos:'🚗',
+    servicios:'🔧', general:'🛍️', default:'✨'
+  };
+
+  try {
+    const q = query(
+      collection(db,'Producto'),
+      where('vendedorId','==',targetUID),
+      where('vendido','==',false),
+      limit(20)
+    );
+    const snap = await getDocs(q);
+    const cats = {};
+    snap.forEach(d => {
+      const cat = (d.data().categoria||'general').toLowerCase();
+      if (!cats[cat]) cats[cat] = [];
+      cats[cat].push(d.data());
+    });
+
+    const catKeys = Object.keys(cats);
+    if (catKeys.length === 0) {
+      // default highlight
+      addHighlight(cont, '🛍️', 'Productos', emojis.default);
+      animCount('s-products', snap.size);
+      return;
+    }
+    animCount('s-products', snap.size);
+
+    catKeys.slice(0,6).forEach(cat => {
+      const item = cats[cat][0];
+      const hl = document.createElement('div');
+      hl.className = 'highlight-item';
+      const emoji = emojis[cat] || emojis.default;
+      hl.innerHTML = `
+        <div class="hl-ring">
+          <div class="hl-ring-inner">
+            ${item.url_imagen ? `<img src="${item.url_imagen}" alt="">` : emoji}
+          </div>
+        </div>
+        <span class="hl-label">${cat.charAt(0).toUpperCase()+cat.slice(1)}</span>
+      `;
+      hl.onclick = () => filterByCategory(cat);
+      cont.appendChild(hl);
+    });
+
+  } catch(e) { console.error(e); }
+}
+
+function addHighlight(cont, emoji, label) {
+  const hl = document.createElement('div');
+  hl.className = 'highlight-item';
+  hl.innerHTML = `
+    <div class="hl-ring"><div class="hl-ring-inner">${emoji}</div></div>
+    <span class="hl-label">${label}</span>
+  `;
+  cont.appendChild(hl);
+}
+
+function filterByCategory(cat) {
+  // Scroll to products tab and highlight category
+  switchTab('products', document.querySelector('[data-panel="products"]'));
+  document.getElementById('products-grid').querySelectorAll('.pg-item').forEach(el => {
+    el.style.opacity = (el.dataset.cat === cat || cat === 'all') ? '1' : '0.25';
+  });
+  showToast('info', `📂 Filtrando: ${cat}`);
+}
+
+/* ══════════════════════════════════════
+   LOAD PRODUCTS GRID
+══════════════════════════════════════ */
+async function loadProducts() {
+  const grid = document.getElementById('products-grid');
+  grid.innerHTML = '';
+  try {
+    const q = query(
+      collection(db,'Producto'),
+      where('vendedorId','==',targetUID),
+      orderBy('creadoEn','desc'),
+      limit(30)
+    );
+    const snap = await getDocs(q);
+    animCount('s-products', snap.size);
+
+    if (snap.empty) {
+      grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><i class="fas fa-box-open"></i><p>Sin publicaciones aún</p><small>Este usuario no ha publicado nada</small></div>`;
+      return;
+    }
+
+    snap.forEach((d,i) => {
+      const p = d.data();
+      const item = document.createElement('div');
+      item.className = `pg-item${p.vendido?' sold':''}`;
+      item.dataset.cat = (p.categoria||'general').toLowerCase();
+      item.dataset.id  = d.id;
+      item.innerHTML = `
+        <img src="${p.url_imagen||'https://via.placeholder.com/300x300/E5ECF6/8A9BB0?text=📦'}"
+             alt="${p.Título||p.titulo||''}" loading="lazy"
+             onerror="this.src='https://via.placeholder.com/300x300/E5ECF6/8A9BB0?text=📦'">
+        <div class="pg-sold-tag">Vendido</div>
+        <div class="pg-item-overlay">
+          <span>${Number(p.precio||0).toLocaleString('es-ES')} FCFA</span>
+          <small>${p.Título||p.titulo||'Producto'}</small>
+        </div>
+      `;
+      item.style.cssText = `opacity:0;transform:scale(0.9);transition:opacity 0.35s ease,transform 0.35s ease;transition-delay:${i*30}ms`;
+      setTimeout(() => { item.style.opacity='1'; item.style.transform='scale(1)'; }, 50);
+      item.onclick = () => abrirProducto(d.id, p);
+      grid.appendChild(item);
+    });
+
+  } catch(e) {
+    console.error(e);
+    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><i class="fas fa-exclamation-triangle"></i><p>Error al cargar</p></div>`;
+  }
+}
+
+/* ══════════════════════════════════════
+   LOAD LIKES
+══════════════════════════════════════ */
+async function loadLikes() {
+  const grid = document.getElementById('likes-grid');
+  grid.innerHTML = '';
+  try {
+    const snap = await getDoc(doc(db,'likes', targetUID));
+    if (!snap.exists() || !snap.data().productos?.length) {
+      grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><i class="far fa-heart"></i><p>Sin productos con like</p></div>`;
+      return;
+    }
+    const likedIds = snap.data().productos || [];
+    const promises = likedIds.slice(0,24).map(id => getDoc(doc(db,'Producto',id)));
+    const docs = await Promise.all(promises);
+
+    docs.forEach((d,i) => {
+      if (!d.exists()) return;
+      const p = d.data();
+      const item = document.createElement('div');
+      item.className = 'lg-item';
+      item.innerHTML = `
+        <img src="${p.url_imagen||'https://via.placeholder.com/300x300/E5ECF6/8A9BB0?text=📦'}"
+             alt="" loading="lazy"
+             onerror="this.src='https://via.placeholder.com/300x300/E5ECF6/8A9BB0?text=📦'">
+        <div class="lg-heart"><i class="fas fa-heart"></i></div>
+      `;
+      item.style.cssText = `opacity:0;transform:scale(0.9);transition:all 0.3s ease;transition-delay:${i*40}ms`;
+      setTimeout(()=>{ item.style.opacity='1'; item.style.transform='scale(1)'; }, 50);
+      item.onclick = () => abrirProducto(d.id, p);
+      grid.appendChild(item);
+    });
+  } catch(e) {
+    console.error(e);
+    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><i class="fas fa-exclamation-triangle"></i><p>Error al cargar</p></div>`;
+  }
+}
+
+/* ══════════════════════════════════════
+   REVIEWS
+══════════════════════════════════════ */
+async function loadReviews() {
+  const list = document.getElementById('reviews-list');
+  list.innerHTML = '';
+  try {
+    const q = query(
+      collection(db,'resenas'),
+      where('vendedorId','==',targetUID),
+      orderBy('creadoEn','desc'),
+      limit(20)
+    );
+    const snap = await getDocs(q);
+
+    if (snap.empty) {
+      document.getElementById('r-score').textContent = '—';
+      document.getElementById('r-count').textContent = '0 reseñas';
+      document.getElementById('r-stars').innerHTML = '<span style="color:var(--mist);font-size:0.8rem;">Sin reseñas aún</span>';
+      list.innerHTML = `<div class="empty-state"><i class="far fa-star"></i><p>Sin reseñas aún</p><small>¡Compra un producto para dejar tu reseña!</small></div>`;
+      return;
+    }
+
+    const counts = {1:0,2:0,3:0,4:0,5:0};
+    let total = 0;
+    snap.forEach(d => { const r=d.data().calificacion||5; counts[r]=(counts[r]||0)+1; total+=r; });
+    const avg = (total/snap.size).toFixed(1);
+    const maxCount = Math.max(...Object.values(counts));
+
+    document.getElementById('r-score').textContent = avg;
+    document.getElementById('r-count').textContent = `${snap.size} reseña${snap.size!==1?'s':''}`;
+
+    // Stars
+    const starsEl = document.getElementById('r-stars');
+    starsEl.innerHTML = '';
+    for(let i=1;i<=5;i++) {
+      const ic = document.createElement('i');
+      ic.className = i<=Math.round(avg) ? 'fas fa-star' : 'far fa-star';
+      starsEl.appendChild(ic);
+    }
+
+    // Bars
+    [5,4,3,2,1].forEach(n => {
+      const pct = maxCount ? Math.round((counts[n]/maxCount)*100) : 0;
+      const bar = document.getElementById(`rb${n}`);
+      if (bar) setTimeout(()=>{ bar.style.width=`${pct}%`; }, 300);
+    });
+
+    snap.forEach(d => {
+      const r = d.data();
+      const card = document.createElement('div');
+      card.className = 'review-card anim-in';
+      const ini = (r.compradorNombre||'?').charAt(0).toUpperCase();
+      let starsHtml = '';
+      for(let i=1;i<=5;i++) starsHtml += `<i class="${i<=(r.calificacion||5)?'fas':'far'} fa-star"></i>`;
+      card.innerHTML = `
+        <div class="rev-header">
+          <div class="rev-avatar">
+            ${r.compradorFoto ? `<img src="${r.compradorFoto}" alt="">` : ini}
+          </div>
+          <div>
+            <div class="rev-name">${r.compradorNombre||'Comprador'}</div>
+            <div class="rev-stars">${starsHtml}</div>
+            <div class="rev-date">${r.creadoEn?.toDate?.().toLocaleDateString('es-ES')||''}</div>
+          </div>
+        </div>
+        <div class="rev-text">${r.comentario||''}</div>
+      `;
+      list.appendChild(card);
+    });
+
+  } catch(e) {
+    console.error(e);
+    list.innerHTML = `<div class="empty-state"><i class="fas fa-exclamation-triangle"></i><p>Error al cargar reseñas</p></div>`;
+  }
+}
+
+/* ══════════════════════════════════════
+   FOLLOW SYSTEM
+══════════════════════════════════════ */
+async function checkFollowing() {
+  if (!currentUser || !targetUID) return;
+  try {
+    const snap = await getDoc(doc(db,'seguidores',`${currentUser.uid}_${targetUID}`));
+    isFollowing = snap.exists();
+    updateFollowBtn();
+  } catch(e) {}
+}
+
+window.toggleFollow = async () => {
+  if (!currentUser) { showToast('info','💡 Inicia sesión para seguir a este usuario'); return; }
+  if (currentUser.uid === targetUID) { showToast('info','No puedes seguirte a ti mismo'); return; }
+
+  const followRef = doc(db,'seguidores',`${currentUser.uid}_${targetUID}`);
+  const targetRef = doc(db,'usuarios', targetUID);
+  const myRef     = doc(db,'usuarios', currentUser.uid);
+
+  try {
+    if (isFollowing) {
+      await Promise.all([
+        // Eliminar doc seguidor
+        import("https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js").then(m=>m.deleteDoc(followRef)),
+        updateDoc(targetRef, { seguidores: increment(-1) }),
+        updateDoc(myRef,     { siguiendo:  increment(-1) })
+      ]);
+      isFollowing = false;
+      animCount('s-followers', (targetData?.seguidores||1)-1);
+      showToast('info','❌ Dejaste de seguir a este usuario');
+    } else {
+      await Promise.all([
+        setDoc(followRef, {
+          seguidorId:  currentUser.uid,
+          seguidoId:   targetUID,
+          creadoEn:    serverTimestamp()
+        }),
+        updateDoc(targetRef, { seguidores: increment(1) }),
+        updateDoc(myRef,     { siguiendo:  increment(1) })
+      ]);
+      isFollowing = true;
+      animCount('s-followers', (targetData?.seguidores||0)+1);
+      showToast('success','✅ Ahora sigues a este usuario');
+    }
+    updateFollowBtn();
+  } catch(e) {
+    console.error(e); showToast('error','❌ Error');
+  }
+};
+
+function updateFollowBtn() {
+  const btn = document.getElementById('follow-btn');
+  if (isFollowing) {
+    btn.innerHTML = '<i class="fas fa-user-check"></i> Siguiendo';
+    btn.classList.add('following');
+  } else {
+    btn.innerHTML = '<i class="fas fa-user-plus"></i> Seguir';
+    btn.classList.remove('following');
+  }
+}
+
+/* ══════════════════════════════════════
+   CHAT — ir a chats.html con el targetUID
+══════════════════════════════════════ */
+window.irAlChat = async () => {
+  if (!currentUser) { showToast('info','💡 Inicia sesión para chatear'); return; }
+  if (currentUser.uid === targetUID) { showToast('info','No puedes chatear contigo mismo'); return; }
+
+  showToast('info','💬 Abriendo chat...');
+
+  try {
+    /* Buscar si ya existe chat entre ambos */
+    const q = query(
+      collection(db,'chats'),
+      where('participantes','array-contains', currentUser.uid),
+      limit(20)
+    );
+    const snap = await getDocs(q);
+    let chatId = null;
+
+    snap.forEach(d => {
+      const c = d.data();
+      if (c.participantes?.includes(targetUID)) chatId = d.id;
+    });
+
+    if (!chatId) {
+      /* Crear nuevo chat */
+      const mySnap     = await getDoc(doc(db,'usuarios', currentUser.uid));
+      const myData     = mySnap.data() || {};
+      const chatRef    = await addDoc(collection(db,'chats'), {
+        participantes:  [currentUser.uid, targetUID],
+        participantesInfo: {
+          [currentUser.uid]: {
+            nombre:    myData.nombre    || currentUser.displayName || 'Yo',
+            photoURL:  myData.photoURL  || currentUser.photoURL    || '',
+          },
+          [targetUID]: {
+            nombre:    targetData?.nombre   || 'Usuario',
+            photoURL:  targetData?.photoURL || '',
+          }
+        },
+        creadoEn:       serverTimestamp(),
+        ultimoMensaje:  '',
+        ultimaActividad:serverTimestamp(),
+        nombreOtro:     targetData?.nombre || 'Usuario',
+      });
+      chatId = chatRef.id;
+    }
+
+    setTimeout(() => {
+      window.location.href = `chats.html?id=${chatId}`;
+    }, 600);
+
+  } catch(e) {
+    console.error(e); showToast('error','❌ Error al abrir chat');
+  }
+};
+
+window.irAlChatDesdeProducto = () => {
+  cerrarModal('modal-product');
+  setTimeout(irAlChat, 300);
+};
+
+/* ══════════════════════════════════════
+   PRODUCT MODAL
+══════════════════════════════════════ */
+window.abrirProducto = (id, p) => {
+  currentProductId = id;
+  document.getElementById('pm-img').src    = p.url_imagen || '';
+  document.getElementById('pm-name').textContent  = p.Título || p.titulo || 'Producto';
+  document.getElementById('pm-price').textContent = `${Number(p.precio||0).toLocaleString('es-ES')} FCFA`;
+  document.getElementById('pm-desc').textContent  = p.descripcion || 'Sin descripción disponible.';
+
+  // Tags
+  const tagsEl = document.getElementById('pm-tags');
+  tagsEl.innerHTML = '';
+  if (p.categoria) {
+    const t = document.createElement('span'); t.className='prod-tag';
+    t.textContent = p.categoria; tagsEl.appendChild(t);
+  }
+  if (p.condicion) {
+    const t = document.createElement('span'); t.className='prod-tag';
+    t.textContent = p.condicion; tagsEl.appendChild(t);
+  }
+  if (p.vendido) {
+    const t = document.createElement('span'); t.className='prod-tag';
+    t.style.background = 'rgba(255,71,87,0.08)'; t.style.borderColor='rgba(255,71,87,0.3)'; t.style.color='var(--danger)';
+    t.textContent = 'Vendido'; tagsEl.appendChild(t);
+  }
+
+  // Like state
+  const likeBtn = document.getElementById('pm-like-btn');
+  if (likedProducts.has(id)) likeBtn.classList.add('liked');
+  else likeBtn.classList.remove('liked');
+
+  document.getElementById('modal-product').classList.add('open');
+};
+
+window.toggleProductLike = async () => {
+  if (!currentUser) { showToast('info','💡 Inicia sesión para dar like'); return; }
+  if (!currentProductId) return;
+
+  const likeRef = doc(db,'likes', currentUser.uid);
+  const prodRef = doc(db,'Producto', currentProductId);
+  const likeBtn = document.getElementById('pm-like-btn');
+  const isLiked = likedProducts.has(currentProductId);
+
+  try {
+    if (isLiked) {
+      await updateDoc(likeRef, { productos: arrayRemove(currentProductId) });
+      await updateDoc(prodRef, { likes: increment(-1) });
+      likedProducts.delete(currentProductId);
+      likeBtn.classList.remove('liked');
+      showToast('info','💔 Like eliminado');
+    } else {
+      const snap = await getDoc(likeRef);
+      if (snap.exists()) {
+        await updateDoc(likeRef, { productos: arrayUnion(currentProductId) });
+      } else {
+        await setDoc(likeRef, { productos: [currentProductId], uid: currentUser.uid });
+      }
+      await updateDoc(prodRef, { likes: increment(1) });
+      likedProducts.add(currentProductId);
+      likeBtn.classList.add('liked');
+      showToast('success','❤️ ¡Like dado!');
+    }
+  } catch(e) {
+    console.error(e); showToast('error','❌ Error');
+  }
+};
+
+/* ══════════════════════════════════════
+   FOLLOWERS PANEL
+══════════════════════════════════════ */
+window.abrirSeguidores = async (tipo) => {
+  const panel  = document.getElementById('followers-panel');
+  const title  = document.getElementById('fp-title');
+  const list   = document.getElementById('fp-list');
+
+  const labels = { seguidores:'Seguidores', siguiendo:'Siguiendo', publicaciones:'Publicaciones' };
+  title.textContent = labels[tipo] || tipo;
+  list.innerHTML = '<div style="padding:20px;text-align:center;color:var(--mist);">Cargando...</div>';
+  panel.classList.add('open');
+
+  try {
+    if (tipo === 'publicaciones') {
+      // Show products list instead
+      const q = query(collection(db,'Producto'), where('vendedorId','==',targetUID), orderBy('creadoEn','desc'), limit(20));
+      const snap = await getDocs(q);
+      list.innerHTML = '';
+      snap.forEach(d => {
+        const p = d.data();
+        const row = document.createElement('div');
+        row.className = 'fp-user';
+        row.innerHTML = `
+          <div class="fp-user-av" style="border-radius:10px;overflow:hidden;">
+            <img src="${p.url_imagen||'https://via.placeholder.com/44x44'}" alt="">
+          </div>
+          <div><div class="fp-user-name">${p.Título||p.titulo||'Producto'}</div>
+          <div class="fp-user-sub">${Number(p.precio||0).toLocaleString('es-ES')} FCFA · ${p.vendido?'Vendido':'Activo'}</div></div>
+        `;
+        row.onclick = () => { cerrarFollowers(); abrirProducto(d.id,p); };
+        list.appendChild(row);
+      });
+      if (snap.empty) list.innerHTML = `<div class="empty-state"><i class="fas fa-box-open"></i><p>Sin publicaciones</p></div>`;
+      return;
+    }
+
+    const field = tipo==='seguidores' ? 'seguidoId' : 'seguidorId';
+    const idField = tipo==='seguidores' ? 'seguidorId' : 'seguidoId';
+    const q = query(collection(db,'seguidores'), where(field,'==',targetUID), limit(30));
+    const snap = await getDocs(q);
+    list.innerHTML = '';
+
+    if (snap.empty) {
+      list.innerHTML = `<div class="empty-state"><i class="fas fa-user-group"></i><p>Nadie aquí aún</p></div>`;
+      return;
+    }
+
+    const promises = snap.docs.map(d => getDoc(doc(db,'usuarios', d.data()[idField])));
+    const users = await Promise.all(promises);
+    users.forEach(ud => {
+      if (!ud.exists()) return;
+      const u = ud.data();
+      const ini = (u.nombre||'?').charAt(0).toUpperCase();
+      const row = document.createElement('div');
+      row.className = 'fp-user';
+      row.innerHTML = `
+        <div class="fp-user-av">
+          ${u.photoURL ? `<img src="${u.photoURL}" alt="">` : ini}
+        </div>
+        <div>
+          <div class="fp-user-name">${u.nombre||'Usuario'}</div>
+          <div class="fp-user-sub">${u.email||''}</div>
+        </div>
+        <button class="fp-follow-btn" onclick="event.stopPropagation();this.textContent='✓';this.style.background='var(--mint)';this.style.color='#000';">Seguir</button>
+      `;
+      row.onclick = () => { cerrarFollowers(); window.location.href=`perfil-usuario.html?uid=${ud.id}`; };
+      list.appendChild(row);
+    });
+
+  } catch(e) {
+    console.error(e);
+    list.innerHTML = `<div class="empty-state"><i class="fas fa-exclamation-triangle"></i><p>Error al cargar</p></div>`;
+  }
+};
+
+window.cerrarFollowers = () => document.getElementById('followers-panel').classList.remove('open');
+
+/* ══════════════════════════════════════
+   MODALS
+══════════════════════════════════════ */
+window.cerrarModal = (id) => document.getElementById(id).classList.remove('open');
+document.querySelectorAll('.modal-backdrop').forEach(m => {
+  m.addEventListener('click', e => { if(e.target===m) m.classList.remove('open'); });
+});
+
+window.abrirShare = () => document.getElementById('modal-share').classList.add('open');
+
+/* ══════════════════════════════════════
+   PHOTO VIEWER
+══════════════════════════════════════ */
+window.verFotoCompleta = () => {
+  const src = document.getElementById('public-avatar').src;
+  document.getElementById('photo-viewer-img').src = src;
+  document.getElementById('photo-viewer').classList.add('open');
+  document.body.style.overflow = 'hidden';
+};
+window.cerrarFoto = () => {
+  document.getElementById('photo-viewer').classList.remove('open');
+  document.body.style.overflow = '';
+};
+document.getElementById('photo-viewer').addEventListener('click', e => {
+  if (e.target === e.currentTarget) cerrarFoto();
+});
+
+/* ══════════════════════════════════════
+   SHARE ACTIONS
+══════════════════════════════════════ */
+const shareURL = () => `${location.origin}/perfil-usuario.html?uid=${targetUID}`;
+const shareText = () => `¡Visita el perfil de ${targetData?.nombre||'este vendedor'} en Compra Ya!`;
+
+window.shareWhatsApp  = () => window.open(`https://wa.me/?text=${encodeURIComponent(shareText()+' '+shareURL())}`,'_blank');
+window.shareTelegram  = () => window.open(`https://t.me/share/url?url=${encodeURIComponent(shareURL())}&text=${encodeURIComponent(shareText())}`,'_blank');
+window.shareTwitter   = () => window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText())}&url=${encodeURIComponent(shareURL())}`,'_blank');
+window.copiarEnlace   = () => {
+  navigator.clipboard.writeText(shareURL()).then(()=> showToast('success','✅ Enlace copiado'));
+};
+
+/* ══════════════════════════════════════
+   TAB SWITCH
+══════════════════════════════════════ */
+window.switchTab = (panel, btn) => {
+  document.querySelectorAll('.c-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  btn?.classList.add('active');
+  document.getElementById(`panel-${panel}`)?.classList.add('active');
+};
+
+/* ══════════════════════════════════════
+   COUNT ANIMATION
+══════════════════════════════════════ */
+function animCount(elId, target) {
+  const el = document.getElementById(elId);
+  if (!el) return;
+  let cur = 0; const step = Math.ceil(Math.max(target/20,1));
+  const t = setInterval(() => {
+    cur = Math.min(cur+step, target);
+    el.textContent = cur >= 1000 ? `${(cur/1000).toFixed(1)}k` : cur;
+    if (cur>=target) clearInterval(t);
+  }, 40);
+}
+
+console.log('%c✅ Perfil Público CompraYa v2.0', 'color:#0AAFFF;font-weight:bold');
+</script>
+
+</body>
+</html>

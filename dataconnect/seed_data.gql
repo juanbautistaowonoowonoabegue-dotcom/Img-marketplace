@@ -1,0 +1,90 @@
+mutation CreateDemoData @transaction @auth(level: USER, insecureReason: "This is seed data creation, safe for authenticated users to perform once.") {
+  user_insertMany(data: [
+    {
+      id: "550e8400-e29b-41d4-a716-446655440000",
+      displayName: "Alice",
+      email: "alice@example.com",
+      createdAt: "2023-01-01T12:00:00Z",
+      bio: "A user who enjoys setting goals."
+    },
+    {
+      id: "550e8400-e29b-41d4-a716-446655440001",
+      displayName: "Bob",
+      email: "bob@example.com",
+      createdAt: "2023-01-02T13:00:00Z",
+      bio: "Another user focused on self-improvement."
+    }
+  ])
+  habit_insertMany(data: [
+    {
+      id: "6a6a8b7a-c3c7-4d4d-a9a9-8e8e7f7f6a6a",
+      userId: "550e8400-e29b-41d4-a716-446655440000",
+      name: "Drink water",
+      frequency: "Daily",
+      createdAt: "2023-01-03T08:00:00Z",
+      isPublic: true,
+      description: "Drink 8 glasses of water every day."
+    },
+    {
+      id: "7b7b9c9c-d4d4-e5e5-b0b0-9f9f8g8g7b7b",
+      userId: "550e8400-e29b-41d4-a716-446655440001",
+      name: "Meditate",
+      frequency: "Daily",
+      createdAt: "2023-01-04T07:00:00Z",
+      isPublic: false,
+      description: "Meditate for 15 minutes each morning."
+    },
+    {
+      id: "8c8c0d0d-e6e6-f7f7-c1c1-0g0g9h9h8c8c",
+      userId: "550e8400-e29b-41d4-a716-446655440000",
+      name: "Read a book",
+      frequency: "Weekly",
+      createdAt: "2023-01-05T20:00:00Z",
+      isPublic: true,
+      description: "Read for at least 30 minutes before bed."
+    }
+  ])
+  habitLog_insertMany(data: [
+    {
+      habitId: "6a6a8b7a-c3c7-4d4d-a9a9-8e8e7f7f6a6a",
+      userId: "550e8400-e29b-41d4-a716-446655440000",
+      logDate: "2023-01-06",
+      createdAt: "2023-01-06T09:00:00Z"
+    },
+    {
+      habitId: "7b7b9c9c-d4d4-e5e5-b0b0-9f9f8g8g7b7b",
+      userId: "550e8400-e29b-41d4-a716-446655440001",
+      logDate: "2023-01-07",
+      createdAt: "2023-01-07T07:30:00Z"
+    }
+  ])
+  group_insertMany(data: [
+    {
+      id: "9d9d1e1e-f8f8-0g0g-d2d2-1h1h0i0i9d9d",
+      ownerId: "550e8400-e29b-41d4-a716-446655440000",
+      name: "Healthy Habits Club",
+      createdAt: "2023-01-08T10:00:00Z",
+      description: "A group for sharing and tracking healthy habits."
+    }
+  ])
+  groupMembership_insertMany(data: [
+    {
+      userId: "550e8400-e29b-41d4-a716-446655440000",
+      groupId: "9d9d1e1e-f8f8-0g0g-d2d2-1h1h0i0i9d9d",
+      joinedAt: "2023-01-09T11:00:00Z"
+    },
+    {
+      userId: "550e8400-e29b-41d4-a716-446655440001",
+      groupId: "9d9d1e1e-f8f8-0g0g-d2d2-1h1h0i0i9d9d",
+      joinedAt: "2023-01-10T12:00:00Z"
+    }
+  ])
+  friendship_insertMany(data: [
+    {
+      user1Id: "550e8400-e29b-41d4-a716-446655440000",
+      user2Id: "550e8400-e29b-41d4-a716-446655440001",
+      status: "ACCEPTED",
+      createdAt: "2023-01-11T14:00:00Z"
+    }
+  ])
+}

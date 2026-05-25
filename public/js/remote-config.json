@@ -1,0 +1,15 @@
+{
+  "parameters": {
+    "GEMINI_API_KEY": {
+      "defaultValue": {
+        "value": "AIzaSyBsim7wJUb6STjC8ox08A9F9sh0NOExDP0"
+      }
+    },
+    "ENVIRONMENT": {
+      "defaultValue": {
+        "value": "production"
+      }
+    }
+  },
+  "conditions": []
+}

@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Notificaciones – Compra Ya</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+<style>
+:root{
+  --sky:#0AAFFF;--sky-dark:#0088D4;--sky-light:#E8F7FF;
+  --mint:#00E5A0;--mint-dark:#0d1c6b;
+  --coral:#FF5C5C;--amber:#FFB800;
+  --ink:#0D1117;--slate:#4A5568;--mist:#8A9BB0;
+  --cloud:#F0F5FB;--white:#FFFFFF;
+  --wa-dark:#075E54;
+  --font-display:'Syne',sans-serif;--font-body:'DM Sans',sans-serif;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:var(--font-body);background:var(--cloud);color:var(--ink);min-height:100vh;}
+/* Header */
+.top-bar{background:var(--wa-dark);padding:16px 20px;display:flex;align-items:center;gap:14px;position:sticky;top:0;z-index:100;}
+.back-btn{background:rgba(255,255,255,.15);border:none;color:white;width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1rem;transition:all .2s;}
+.back-btn:hover{background:rgba(255,255,255,.25);}
+.top-bar h1{font-family:var(--font-display);font-size:1.2rem;font-weight:800;color:white;flex:1;}
+.top-bar-actions{display:flex;gap:6px;}
+.top-btn{background:rgba(255,255,255,.1);border:none;color:rgba(255,255,255,.85);width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.9rem;transition:all .2s;}
+.top-btn:hover{background:rgba(255,255,255,.22);color:white;}
+/* Filter tabs */
+.filter-tabs{background:white;padding:0 20px;border-bottom:1px solid #eee;display:flex;gap:0;overflow-x:auto;scrollbar-width:none;}
+.filter-tabs::-webkit-scrollbar{display:none;}
+.filter-tab{padding:14px 18px;border:none;background:none;font-family:var(--font-body);font-weight:600;font-size:.88rem;color:var(--mist);cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap;transition:all .2s;}
+.filter-tab.active{color:var(--sky);border-bottom-color:var(--sky);}
+/* Notif list */
+.notif-list{max-width:700px;margin:0 auto;padding:16px 16px 80px;}
+.notif-item{
+  background:white;border-radius:14px;padding:16px;margin-bottom:10px;
+  display:flex;align-items:flex-start;gap:14px;
+  box-shadow:0 2px 8px rgba(0,0,0,.07);
+  cursor:pointer;transition:all .25s;border-left:4px solid transparent;
+}
+.notif-item:hover{transform:translateX(4px);box-shadow:0 4px 16px rgba(0,0,0,.1);}
+.notif-item.unread{border-left-color:var(--sky);background:linear-gradient(to right,var(--sky-light),white);}
+.notif-item.admin{border-left-color:var(--amber);}
+.notif-item.mensaje{border-left-color:var(--mint-dark);}
+.notif-icon{
+  width:44px;height:44px;border-radius:12px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:1.2rem;
+}
+.notif-icon.admin{background:linear-gradient(135deg,var(--amber),#e59400);}
+.notif-icon.mensaje{background:linear-gradient(135deg,var(--mint),var(--mint-dark));}
+.notif-icon.sistema{background:linear-gradient(135deg,var(--sky),var(--sky-dark));}
+.notif-content{flex:1;min-width:0;}
+.notif-title{font-weight:700;font-size:.92rem;margin-bottom:3px;}
+.notif-body{font-size:.82rem;color:var(--slate);line-height:1.5;}
+.notif-time{font-size:.72rem;color:var(--mist);margin-top:6px;}
+.unread-dot{width:9px;height:9px;border-radius:50%;background:var(--sky);flex-shrink:0;margin-top:6px;}
+/* Empty */
+.empty-state{text-align:center;padding:80px 20px;color:var(--mist);}
+.empty-state i{font-size:3.5rem;margin-bottom:16px;display:block;opacity:.4;}
+.empty-state h3{font-family:var(--font-display);font-size:1.2rem;font-weight:700;color:var(--slate);margin-bottom:8px;}
+/* Loading */
+.loading-state{text-align:center;padding:60px;color:var(--mist);}
+/* Mark all read */
+.action-bar{background:white;border-bottom:1px solid #eee;padding:10px 20px;display:flex;align-items:center;justify-content:space-between;max-width:700px;margin:0 auto;}
+.mark-all-btn{background:none;border:none;color:var(--sky);font-weight:600;font-size:.85rem;cursor:pointer;display:flex;align-items:center;gap:6px;}
+.count-badge{background:var(--coral);color:white;border-radius:10px;padding:2px 8px;font-size:.72rem;font-weight:700;}
+/* Toast */
+.toast-c{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:9999;pointer-events:none;}
+.toast{display:inline-flex;align-items:center;gap:8px;padding:12px 20px;background:var(--ink);color:white;border-radius:50px;font-weight:600;font-size:.85rem;box-shadow:0 8px 24px rgba(0,0,0,.25);animation:tin .35s cubic-bezier(.34,1.56,.64,1);}
+@keyframes tin{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <button class="back-btn" onclick="history.back()"><i class="fas fa-arrow-left"></i></button>
+  <h1><i class="fas fa-bell" style="color:var(--amber);margin-right:6px;"></i>Notificaciones</h1>
+  <div class="top-bar-actions">
+    <button class="top-btn" onclick="markAllRead()" title="Marcar todas leídas"><i class="fas fa-check-double"></i></button>
+    <button class="top-btn" onclick="deleteAllRead()" title="Borrar leídas"><i class="fas fa-trash"></i></button>
+  </div>
+</div>
+
+<div class="filter-tabs">
+  <button class="filter-tab active" data-filter="todas" onclick="setFilter('todas',this)">Todas</button>
+  <button class="filter-tab" data-filter="mensajes" onclick="setFilter('mensajes',this)">💬 Mensajes</button>
+  <button class="filter-tab" data-filter="admin" onclick="setFilter('admin',this)">📢 Avisos</button>
+  <button class="filter-tab" data-filter="sistema" onclick="setFilter('sistema',this)">⚙️ Sistema</button>
+</div>
+
+<div style="max-width:700px;margin:0 auto;">
+  <div class="action-bar">
+    <span style="font-size:.82rem;color:var(--mist);" id="notifCount">Cargando…</span>
+    <button class="mark-all-btn" onclick="markAllRead()"><i class="fas fa-check-double"></i> Marcar todas leídas</button>
+  </div>
+</div>
+
+<div class="notif-list" id="notifList">
+  <div class="loading-state"><i class="fas fa-circle-notch fa-spin" style="font-size:2rem;color:var(--sky);margin-bottom:12px;display:block;"></i>Cargando notificaciones…</div>
+</div>
+
+<div class="toast-c" id="toastC"></div>
+
+<script type="module">
+import { initializeApp }  from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+import {
+  getFirestore, collection, query, orderBy, where,
+  onSnapshot, updateDoc, deleteDoc, doc, writeBatch,
+  getDocs, serverTimestamp, limit
+} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+
+const app  = initializeApp({
+  apiKey:"AIzaSyDpC7nL90nEUjooE6tN6lxLVleddzvhKf8",
+  authDomain:"compraya-d0760.firebaseapp.com",
+  projectId:"compraya-d0760",
+  storageBucket:"compraya-d0760.firebasestorage.app",
+  messagingSenderId:"741576296960",
+  appId:"1:741576296960:web:46714b2a883293bc7d26e5"
+});
+const auth = getAuth(app);
+const db   = getFirestore(app);
+
+let allNotifs = [];
+let currentFilter = 'todas';
+let currentUser = null;
+
+onAuthStateChanged(auth, user => {
+  currentUser = user;
+  if (user) loadNotifs(user.uid);
+  else document.getElementById('notifList').innerHTML =
+    `<div class="empty-state"><i class="fas fa-lock"></i><h3>Inicia sesión para ver tus notificaciones</h3></div>`;
+});
+
+function loadNotifs(uid) {
+  // Listen to global + user-specific notifications
+  const q = query(
+    collection(db, 'notificaciones'),
+    orderBy('timestamp', 'desc'),
+    limit(100)
+  );
+
+  onSnapshot(q, snap => {
+    allNotifs = [];
+    snap.forEach(d => allNotifs.push({ id: d.id, ...d.data() }));
+    renderNotifs();
+  });
+}
+
+function renderNotifs() {
+  const list = document.getElementById('notifList');
+  const countEl = document.getElementById('notifCount');
+  let filtered = allNotifs;
+
+  if (currentFilter !== 'todas') {
+    filtered = allNotifs.filter(n => (n.tipo||'sistema') === currentFilter || 
+      (currentFilter === 'mensajes' && n.chatId));
+  }
+
+  const unread = allNotifs.filter(n => !n.leida).length;
+  countEl.innerHTML = `${filtered.length} notificaciones${unread > 0 ? ` <span class="count-badge">${unread} nuevas</span>` : ''}`;
+
+  if (filtered.length === 0) {
+    list.innerHTML = `<div class="empty-state">
+      <i class="fas fa-bell-slash"></i>
+      <h3>Sin notificaciones</h3>
+      <p>Aquí aparecerán tus avisos, mensajes y actualizaciones de Compra Ya.</p>
+    </div>`;
+    return;
+  }
+
+  list.innerHTML = '';
+  filtered.forEach(n => {
+    const item = document.createElement('div');
+    const tipo = n.tipo || (n.chatId ? 'mensaje' : 'sistema');
+    item.className = `notif-item ${!n.leida ? 'unread' : ''} ${tipo}`;
+    item.onclick = () => handleNotifClick(n);
+
+    const iconMap = {
+      admin:   { emoji:'📢', cls:'admin'   },
+      mensaje: { emoji:'💬', cls:'mensaje' },
+      sistema: { emoji:'⚙️', cls:'sistema' },
+    };
+    const icon = iconMap[tipo] || iconMap.sistema;
+    const time = n.timestamp?.toDate ? formatTime(n.timestamp.toDate()) : '';
+
+    item.innerHTML = `
+      <div class="notif-icon ${icon.cls}">${icon.emoji}</div>
+      <div class="notif-content">
+        <div class="notif-title">${n.title || n.titulo || 'Compra Ya'}</div>
+        <div class="notif-body">${n.body || n.mensaje || n.message || ''}</div>
+        <div class="notif-time"><i class="fas fa-clock" style="margin-right:4px;opacity:.6;"></i>${time}</div>
+      </div>
+      ${!n.leida ? '<div class="unread-dot"></div>' : ''}
+    `;
+    list.appendChild(item);
+  });
+}
+
+async function handleNotifClick(n) {
+  // Mark as read
+  try { await updateDoc(doc(db,'notificaciones',n.id), { leida: true }); } catch(e) {}
+  // Navigate
+  if (n.chatId) window.location.href = `chats.html?chat=${n.chatId}`;
+}
+
+window.markAllRead = async () => {
+  const batch = writeBatch(db);
+  allNotifs.filter(n => !n.leida).forEach(n => {
+    batch.update(doc(db,'notificaciones',n.id), { leida: true });
+  });
+  await batch.commit();
+  showToast('✅ Todas marcadas como leídas');
+};
+
+window.deleteAllRead = async () => {
+  if (!confirm('¿Borrar todas las notificaciones leídas?')) return;
+  const batch = writeBatch(db);
+  allNotifs.filter(n => n.leida).forEach(n => {
+    batch.delete(doc(db,'notificaciones',n.id));
+  });
+  await batch.commit();
+  showToast('🗑️ Notificaciones leídas eliminadas');
+};
+
+window.setFilter = (filter, btn) => {
+  currentFilter = filter;
+  document.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderNotifs();
+};
+
+function formatTime(d) {
+  const now = new Date();
+  const diff = Math.floor((now - d) / 1000);
+  if (diff < 60)    return 'Hace un momento';
+  if (diff < 3600)  return `Hace ${Math.floor(diff/60)} minutos`;
+  if (diff < 86400) return `Hace ${Math.floor(diff/3600)} horas`;
+  return d.toLocaleDateString('es',{day:'numeric',month:'long',year:'numeric'});
+}
+
+function showToast(msg) {
+  const c = document.getElementById('toastC');
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.innerHTML = msg;
+  c.appendChild(t);
+  setTimeout(() => t.remove(), 2800);
+}
+</script>
+
+</body>
+</html>
