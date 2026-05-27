@@ -1,0 +1,33 @@
+name: Compilar Web y Capacitor
+
+on:
+  push:
+    branches: [ "main" ] # Se ejecutará cada vez que subas cambios a la rama main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Descargar el código de tu repositorio
+      - name: Descargar repositorio
+        uses: actions/checkout@v4
+
+      # 2. Configurar Node.js (Usamos la versión 24 para evitar la advertencia)
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      # 3. Instalar las dependencias de tu proyecto (Gulp, Capacitor, etc.)
+      - name: Instalar dependencias
+        run: npm install
+
+      # 4. Ejecutar tu tarea de Gulp para compilar la web
+      - name: Ejecutar Gulp
+        run: npx gulp
+
+      # 5. Sincronizar los archivos compilados con Capacitor
+      - name: Sincronizar con Capacitor
+        run: npx cap sync
+
