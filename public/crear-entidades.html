@@ -1329,1174 +1329,826 @@ select.inp option{background:#1a2540;color:#e8f0ff}
 </div>
 <!-- SCRIPTS -->
  
+ /**
+ * ═══════════════════════════════════════════════════════════════
+ *  CREAR-ENTIDADES.JS  — Compra Ya GE
+ *  Página: crear-entidades.html
+ *  Función: Crear y editar servicios (con verificación premium/admin)
+ *  Interrelación:
+ *    ← login.html           (requiere auth)
+ *    ← servicios.html       (openModal → slug lookup → aquí si edit)
+ *    → detalle-servicio.html (tras guardar, redirige con ?id=)
+ *    → estadisticas.html    (desde panel admin)
+ * ═══════════════════════════════════════════════════════════════
+ */
 <script type="module">
+import { initializeApp }      from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+import {
+  getFirestore,
+  doc, getDoc, setDoc, addDoc, updateDoc,
+  collection, serverTimestamp, deleteDoc
+} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+import {
+  getAuth, onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+import {
+  getStorage, ref as storageRef,
+  uploadBytesResumable, getDownloadURL, deleteObject
+} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-storage.js";
+import { firebaseConfig } from './js/config.js';
 
-// ─────────────────────────────────────────────
-//  IMPORTS FIREBASE (descomentar cuando conectes)
-// ─────────────────────────────────────────────
- import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
- import { getFirestore, collection, addDoc, serverTimestamp, doc, getDoc }
-  from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
- import { getAuth, onAuthStateChanged }
-   from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
- import { firebaseConfig } from './js/config.js';
-  const app  = initializeApp(firebaseConfig);
-  const db   = getFirestore(app);
- const auth = getAuth(app);
+/* ══════════════════════════════════════════════════════
+   INIT
+══════════════════════════════════════════════════════ */
+const app     = initializeApp(firebaseConfig);
+const db      = getFirestore(app);
+const auth    = getAuth(app);
+const storage = getStorage(app);
 
-// ─────────────────────────────────────────────
-//  ESTADO GLOBAL
-// ─────────────────────────────────────────────
-let currentStep  = 0; // 0 = selección de tipo, 1-3 = pasos
-let tipoSeleccionado = null;
-let logoBlob     = null;
-let selectedHorarios = [];
-let selectedPagos    = [];
-let selectedZonas    = [];
-let toastTimer;
+/* ══════════════════════════════════════════════════════
+   URL PARAMS
+   ?edit=<servicioId>   → modo edición
+   ?tab=<tabName>       → abre pestaña concreta (ej: imagenes)
+══════════════════════════════════════════════════════ */
+const params    = new URLSearchParams(location.search);
+const editId    = params.get('edit');   // null = crear, string = editar
+const openTab   = params.get('tab');    // pestaña inicial opcional
 
-const TIPO_CONFIG = {
-  tienda: {
-    label: 'Tienda / Negocio',
-    badge: { text: 'Tienda oficial', bg: 'rgba(0,255,157,.12)', border: 'rgba(0,255,157,.3)', color: '#00ff9d' },
-    color: 'var(--lime)',
-    head2Title: 'Datos de tu tienda',
-    head2Sub: 'El nombre y la foto son lo primero que ven tus clientes.',
-    head2Bg: 'rgba(0,255,157,.08)',
-    head2Border: 'rgba(0,255,157,.2)',
-    head2SvgColor: 'var(--lime)',
-    head2SvgPath: '<path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/>',
-    successSub: 'Tu tienda queda en revisión. En menos de 24 horas estará visible en la sección de supermercados y tiendas de Compra Ya.',
-    showTiendaFields: true, showTaxiFields: false, showDeliveryFields: false, showHorario: true,
-  },
-  agencia: {
-    label: 'Agencia / Empresa',
-    badge: { text: 'Agencia verificada', bg: 'rgba(0,245,255,.12)', border: 'rgba(0,245,255,.3)', color: 'var(--cyan)' },
-    color: 'var(--cyan)',
-    head2Title: 'Datos de tu agencia',
-    head2Sub: 'Cuéntanos qué servicio ofreces y cómo te pueden contratar.',
-    head2Bg: 'rgba(0,245,255,.08)',
-    head2Border: 'rgba(0,245,255,.2)',
-    head2SvgColor: 'var(--cyan)',
-    head2SvgPath: '<rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/>',
-    successSub: 'Tu agencia queda en revisión. En menos de 24 horas aparecerá en la sección de agencias y servicios de Compra Ya.',
-    showTiendaFields: true, showTaxiFields: false, showDeliveryFields: false, showHorario: true,
-  },
-  taxi: {
-    label: 'Taxi / Transporte',
-    badge: { text: 'Taxista registrado', bg: 'rgba(255,215,0,.12)', border: 'rgba(255,215,0,.3)', color: 'var(--gold)' },
-    color: 'var(--gold)',
-    head2Title: 'Datos de tu servicio de taxi',
-    head2Sub: 'Tu matrícula y zona de trabajo para que los clientes te encuentren.',
-    head2Bg: 'rgba(255,215,0,.08)',
-    head2Border: 'rgba(255,215,0,.2)',
-    head2SvgColor: 'var(--gold)',
-    head2SvgPath: '<rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>',
-    successSub: 'Tu perfil de taxi queda en revisión. En menos de 24 horas aparecerás en la sección de taxis de Compra Ya.',
-    showTiendaFields: false, showTaxiFields: true, showDeliveryFields: false, showHorario: false,
-  },
-  delivery: {
-    label: 'Delivery / Reparto',
-    badge: { text: 'Servicio de reparto', bg: 'rgba(255,59,92,.12)', border: 'rgba(255,59,92,.3)', color: 'var(--red)' },
-    color: 'var(--red)',
-    head2Title: 'Datos de tu servicio de reparto',
-    head2Sub: 'Tu zona de cobertura y tipo de pedidos que aceptas.',
-    head2Bg: 'rgba(255,59,92,.08)',
-    head2Border: 'rgba(255,59,92,.2)',
-    head2SvgColor: 'var(--red)',
-    head2SvgPath: '<path d="M5 12H19M12 5l7 7-7 7"/><circle cx="5" cy="12" r="3"/>',
-    successSub: 'Tu servicio de reparto queda en revisión. En menos de 24 horas aparecerás en la sección de delivery de Compra Ya.',
-    showTiendaFields: false, showTaxiFields: false, showDeliveryFields: true, showHorario: false,
-  },
-};
+const isEdit    = !!editId;
 
-const STEP_LABELS = [
-  'Elige qué quieres crear',
-  'Información básica',
-  'Contacto y horario',
-  'Revisa y publica',
+/* ══════════════════════════════════════════════════════
+   STATE
+══════════════════════════════════════════════════════ */
+let currentUser  = null;
+let isAdmin      = false;
+let isPremium    = false;
+let canManage    = false;          // true si puede crear/editar
+let servicioData = null;           // datos existentes en modo edit
+let uploadedImages = [];           // URLs definitivas ya subidas
+let pendingFiles   = [];           // File[] pendientes de subir
+let logoFile       = null;         // File del logo
+let logoUrl        = '';           // URL definitiva del logo
+let activeTab      = 'info';       // pestaña activa
+
+/* ══════════════════════════════════════════════════════
+   CATEGORÍAS (sincronizado con servicios.html)
+══════════════════════════════════════════════════════ */
+const CATEGORIAS = [
+  { value: 'restaurantes',    label: 'Restaurantes & Cafés',    color: '#F43F5E' },
+  { value: 'hoteles',         label: 'Hoteles & Alojamiento',   color: '#1A73E8' },
+  { value: 'vuelos',          label: 'Vuelos & Agencias',       color: '#0EA5E9' },
+  { value: 'ministerios',     label: 'Ministerios & Gobierno',  color: '#8B5CF6' },
+  { value: 'supermercados',   label: 'Supermercados & Tiendas', color: '#F97316' },
+  { value: 'becas',           label: 'Becas & Educación',       color: '#10B981' },
+  { value: 'remesas',         label: 'Remesas & Banca',         color: '#F59E0B' },
+  { value: 'gasolineras',     label: 'Gasolineras',             color: '#ED1C24' },
+  { value: 'delivery',        label: 'Delivery & Mensajería',   color: '#EC4899' },
+  { value: 'telecomunicaciones', label: 'Telecomunicaciones',   color: '#06B6D4' },
+  { value: 'salud',           label: 'Salud & Farmacia',        color: '#22C55E' },
+  { value: 'otro',            label: 'Otro',                    color: '#6B7280' },
 ];
 
-// ─────────────────────────────────────────────
-//  TOAST
-// ─────────────────────────────────────────────
-window.showToast = function(msg, type='info', dur=3500) {
-  const el = document.getElementById('toast');
-  el.textContent = msg; el.className = `show ${type}`;
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => el.className = '', dur);
-};
+const DIAS = ['lunes','martes','miercoles','jueves','viernes','sabado','domingo'];
+const DIAS_LABELS = ['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'];
 
-// ─────────────────────────────────────────────
-//  SELECCIÓN DE TIPO
-// ─────────────────────────────────────────────
-window.selectTipo = function(tipo, card) {
-  tipoSeleccionado = tipo;
-  document.querySelectorAll('.tipo-card').forEach(c => {
-    c.style.borderColor = '';
-    c.style.boxShadow   = '';
-  });
-  const cfg = TIPO_CONFIG[tipo];
-  card.style.borderColor = cfg.color;
-  card.style.boxShadow   = `0 0 0 3px ${cfg.color}22, 0 12px 32px ${cfg.color}18`;
-
-  // Actualizar icono y textos del paso 2
-  const icon2 = document.getElementById('stepHeadIcon2');
-  icon2.style.background  = cfg.head2Bg;
-  icon2.style.border      = `1px solid ${cfg.head2Border}`;
-  icon2.innerHTML = `<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="${cfg.head2SvgColor}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${cfg.head2SvgPath}</svg>`;
-  document.getElementById('stepHeadTitle2').textContent = cfg.head2Title;
-  document.getElementById('stepHeadSub2').textContent   = cfg.head2Sub;
-
-  // Mostrar/ocultar campos específicos
-  document.getElementById('tiendaFields').style.display  = cfg.showTiendaFields  ? 'block' : 'none';
-  document.getElementById('taxiFields').style.display    = cfg.showTaxiFields    ? 'block' : 'none';
-  document.getElementById('deliveryFields').style.display= cfg.showDeliveryFields ? 'block' : 'none';
-  document.getElementById('horarioGroup').style.display  = cfg.showHorario       ? 'block' : 'none';
-
-  // Avanzar automáticamente después de un breve delay
-  setTimeout(() => goNext(), 220);
-};
-
-// ─────────────────────────────────────────────
-//  NAVEGACIÓN POR PASOS
-// ─────────────────────────────────────────────
-function updateUI() {
-  // Nodos
-  [1,2,3,4].forEach(n => {
-    const node = document.getElementById(`node${n}`);
-    if (!node) return;
-    node.classList.remove('active','done');
-    const step = currentStep + 1; // step 1=pantalla tipo, 2-4=formularios
-    if (n < step)        node.classList.add('done');
-    else if (n === step) node.classList.add('active');
-  });
-  // Líneas
-  [1,2,3].forEach(n => {
-    const line = document.getElementById(`line${n}`);
-    if (line) line.classList.toggle('done', n < currentStep + 1);
-  });
-  // Barra
-  const pct = (currentStep / 3) * 100;
-  document.getElementById('progFill').style.width = pct + '%';
-  // Label
-  document.getElementById('stepLabel').textContent = STEP_LABELS[currentStep] || '';
-  // Botones
-  document.getElementById('btnBack').style.display = currentStep > 0 ? 'flex' : 'none';
-  document.getElementById('btnNext').style.display = currentStep > 0 ? 'flex' : 'none';
-  if (currentStep === 3) {
-    document.getElementById('btnNext').innerHTML = `
-      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-      Enviar y publicar`;
-  } else {
-    document.getElementById('btnNext').innerHTML = `Continuar
-      <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="#000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>`;
-  }
-}
-
-function showScreen(n) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  const sc = document.getElementById(`screen${n}`);
-  if (sc) sc.classList.add('active');
-  window.scrollTo({top:0,behavior:'smooth'});
-  if (n === 4) buildPreview();
-}
-
-window.goNext = function() {
-  if (currentStep === 0) {
-    if (!tipoSeleccionado) { showToast('Elige primero qué tipo de negocio quieres crear','bad'); return; }
-    currentStep = 1;
-    showScreen(2); updateUI(); return;
-  }
-  if (currentStep === 1) {
-    if (!validateStep2()) return;
-    currentStep = 2;
-    showScreen(3); updateUI(); return;
-  }
-  if (currentStep === 2) {
-    if (!validateStep3()) return;
-    currentStep = 3;
-    showScreen(4); updateUI(); return;
-  }
-  if (currentStep === 3) {
-    submitForm(); return;
-  }
-};
-
-window.goBack = function() {
-  if (currentStep <= 0) return;
-  currentStep--;
-  showScreen(currentStep === 0 ? 1 : currentStep + 1);
-  updateUI();
-};
-
-// ─────────────────────────────────────────────
-//  VALIDACIONES
-// ─────────────────────────────────────────────
-function showErr(id, show=true) {
-  const el = document.getElementById(`err-${id}`);
-  const inp = document.getElementById(id);
-  if (el)  el.classList.toggle('show', show);
-  if (inp) inp.classList.toggle('error', show);
-}
-function clearErr(id) { showErr(id, false); }
-
-function validateStep2() {
-  let ok = true;
-  const nombre = (document.getElementById('nombreNegocio').value || '').trim();
-  const desc   = (document.getElementById('descNegocio').value || '').trim();
-  if (!nombre) { showErr('nombre'); ok = false; } else clearErr('nombre');
-  if (!desc)   { showErr('desc');   ok = false; } else clearErr('desc');
-  if (tipoSeleccionado === 'taxi') {
-    const mat = (document.getElementById('matricula').value || '').trim();
-    if (!mat) { showErr('matricula'); ok = false; } else clearErr('matricula');
-  }
-  return ok;
-}
-
-function validateStep3() {
-  let ok = true;
-  const tel = (document.getElementById('telefono').value || '').trim();
-  const ubi = (document.getElementById('ubicacion').value || '').trim();
-  if (!tel) { showErr('telefono'); ok = false; } else clearErr('telefono');
-  if (!ubi) { showErr('ubicacion'); ok = false; } else clearErr('ubicacion');
-  return ok;
-}
-
-// ─────────────────────────────────────────────
-//  IMAGEN LOGO
-// ─────────────────────────────────────────────
-window.triggerLogo = function() { document.getElementById('logoInput').click(); };
-
-window.handleImg = function(e, previewId, imgId, zoneId) {
-  const file = e.target.files[0]; if (!file) return;
-  logoBlob = file;
-  const url = URL.createObjectURL(file);
-  document.getElementById(imgId).src = url;
-  document.getElementById(previewId).style.display = 'block';
-  document.getElementById(zoneId).classList.add('has-img');
-};
-
-window.removeImg = function(previewId, inputId) {
-  document.getElementById(previewId).style.display = 'none';
-  document.getElementById(inputId).value = '';
-  logoBlob = null;
-};
-
-window.dzDrag  = (e, id) => { e.preventDefault(); document.getElementById(id).classList.add('drag'); };
-window.dzLeave = (id)    => document.getElementById(id).classList.remove('drag');
-window.dzDrop  = (e, id, inputId) => {
-  e.preventDefault(); document.getElementById(id).classList.remove('drag');
-  const file = e.dataTransfer.files[0];
-  if (!file || !file.type.startsWith('image/')) return;
-  logoBlob = file;
-  document.getElementById('logoImg').src = URL.createObjectURL(file);
-  document.getElementById('logoPreview').style.display = 'block';
-};
-
-// ─────────────────────────────────────────────
-//  CHIPS INTERACTIVOS
-// ─────────────────────────────────────────────
-window.toggleChip = function(el, group) {
-  el.classList.toggle('sel');
-  const val = el.textContent.trim();
-  if (group === 'zonas' || group === 'zonasD') {
-    selectedZonas = el.classList.contains('sel')
-      ? [...selectedZonas, val]
-      : selectedZonas.filter(x => x !== val);
-  }
-};
-
-window.toggleHorario = function(el) {
-  el.classList.toggle('sel');
-  const val = el.dataset.val;
-  selectedHorarios = el.classList.contains('sel')
-    ? [...selectedHorarios, val]
-    : selectedHorarios.filter(x => x !== val);
-};
-
-window.togglePago = function(el) {
-  el.classList.toggle('sel');
-  const val = el.dataset.val || el.textContent.trim();
-  selectedPagos = el.classList.contains('sel')
-    ? [...selectedPagos, val]
-    : selectedPagos.filter(x => x !== val);
-};
-
-// ─────────────────────────────────────────────
-//  CONSTRUIR VISTA PREVIA
-// ─────────────────────────────────────────────
-function buildPreview() {
-  const cfg     = TIPO_CONFIG[tipoSeleccionado];
-  const nombre  = document.getElementById('nombreNegocio').value || 'Mi Negocio';
-  const desc    = document.getElementById('descNegocio').value   || '';
-  const tel     = document.getElementById('telefono').value       || '—';
-  const ubi     = document.getElementById('ubicacion').value      || '';
-  const ciudad  = document.getElementById('ciudad').value         || '';
-
-  // Badge
-  const badge = document.getElementById('previewBadge');
-  badge.textContent    = cfg.badge.text;
-  badge.style.background   = cfg.badge.bg;
-  badge.style.border        = `1px solid ${cfg.badge.border}`;
-  badge.style.color         = cfg.badge.color;
-
-  document.getElementById('previewName').textContent = nombre;
-  document.getElementById('previewDesc').textContent = desc.slice(0,120) + (desc.length>120?'…':'');
-  document.getElementById('previewUbi').textContent  = [ubi, ciudad].filter(Boolean).join(', ');
-  document.getElementById('previewTel').textContent  = tel;
-
-  // Logo en preview
-  if (logoBlob) {
-    const url = URL.createObjectURL(logoBlob);
-    document.getElementById('previewLogoImg').src = url;
-    document.getElementById('previewLogoImg').style.display = 'block';
-    document.getElementById('previewLogoPlaceholder').style.display = 'none';
-    document.getElementById('previewBannerBg').style.backgroundImage = `url(${url})`;
-  }
-
-  // Lista de confirmación
-  const confirmData = [
-    { ico: '<path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/>', label: 'Tipo', val: cfg.label },
-    { ico: '<path d="M20.59 13.41l-7.17 7.17"/>', label: 'Nombre', val: nombre },
-    { ico: '<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/>', label: 'Ubicación', val: [ubi, ciudad].filter(Boolean).join(', ') || '—' },
-    { ico: '<path d="M22 16.92v3a2 2 0 01-2.18 2"/>', label: 'WhatsApp', val: tel },
-  ];
-
-  if (tipoSeleccionado === 'taxi') {
-    const mat = document.getElementById('matricula').value;
-    const tv  = document.getElementById('tipoVehiculo');
-    confirmData.push({ ico: '<rect x="1" y="3" width="15" height="13" rx="2"/>', label: 'Matrícula', val: mat });
-    confirmData.push({ ico: '<rect x="1" y="3" width="15" height="13" rx="2"/>', label: 'Vehículo', val: tv.options[tv.selectedIndex]?.text || '' });
-  }
-
-  if (selectedZonas.length)    confirmData.push({ ico: '<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/>', label: 'Zonas', val: selectedZonas.join(', ') });
-  if (selectedHorarios.length) confirmData.push({ ico: '<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>', label: 'Horario', val: selectedHorarios.join(', ') });
-  if (selectedPagos.length)    confirmData.push({ ico: '<rect x="1" y="4" width="22" height="16" rx="2" ry="2"/>', label: 'Pagos', val: selectedPagos.join(', ') });
-
-  document.getElementById('confirmList').innerHTML = confirmData.map(d => `
-    <div class="confirm-row">
-      <div class="confirm-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${d.ico}</svg>
-      </div>
-      <div class="confirm-info">
-        <div class="confirm-label">${d.label}</div>
-        <div class="confirm-val">${d.val || '—'}</div>
-      </div>
-    </div>`).join('');
-}
-
-// 1. Configuración de la automatización
-async function publicarEntidadAutomatica(datosEntidad) {
-    showLoading(true, "Validando con IA...");
-
-    try {
-        // PASO 1: Moderación de Contenido Automática
-        // Enviamos el texto a un endpoint de moderación (puedes usar Gemini o una función simple)
-        const esValido = await moderarContenidoIA(datosEntidad.nombre, datosEntidad.descripcion);
-
-        if (!esValido) {
-            showToast("Contenido no permitido o incoherente. Revisa tu descripción.", "bad");
-            return;
-        }
-
-        // PASO 2: Verificación de Suscripción Premium (Firebase)
-        const userStatus = await checkPremiumStatus(auth.currentUser.uid);
-        
-        if (userStatus !== 'active') {
-            showToast("Tu suscripción Premium no está activa.", "bad");
-            return;
-        }
-
-        // PASO 3: Publicación Instantánea
-        // Guardamos con estado 'activo' directamente, sin pasar por 'pendiente'
-        await db.collection('entidades').add({
-            ...datosEntidad,
-            status: 'activo', // Publicado automáticamente
-            fechaCreacion: new Date().toISOString(),
-            verificadoPorIA: true
-        });
-
-        mostrarPantallaExito();
-
-    } catch (error) {
-        console.error(error);
-        showToast("Error en el servidor", "bad");
-    } finally {
-        showLoading(false);
-    }
-}
-
-// 2. Función de Moderación (Lógica de IA)
-async function moderarContenidoIA(titulo, texto) {
-    // Aquí puedes llamar a tu Cloud Function que usa Gemini
-    // Por ahora, simulamos filtros básicos:
-    const palabrasProhibidas = ["insulto1", "estafa", "asdfgh"];
-    const contenidoLimpio = !palabrasProhibidas.some(p => texto.toLowerCase().includes(p));
-    
-    // Validamos longitud mínima para evitar registros "basura"
-    const tieneSentido = texto.split(' ').length > 5;
-
-    return contenidoLimpio && tieneSentido;
-}
-// ─────────────────────────────────────────────
-//  NAVEGACIÓN A OTRAS PÁGINAS
-// ─────────────────────────────────────────────
-window.goToServicios = function() { window.location.href = 'serviciosygestiones.html'; };
-window.goToHome      = function() { window.location.href = 'index-comprador.html'; };
-// ─────────────────────────────────────────────
-//  HELPERS UI
-// ─────────────────────────────────────────────
-function showLoading(active, msg = 'Registrando tu negocio…') {
-  const ov = document.getElementById('loadingOv');
-  document.getElementById('loadingMsg').textContent = msg;
-  ov.classList.toggle('active', active);
-}
-
-// ─────────────────────────────────────────────
-//  CHECK PREMIUM (Firestore)
-// ─────────────────────────────────────────────
-async function checkPremiumStatus(uid) {
-  try {
-    const snap = await getDoc(doc(db, 'usuarios', uid));
-    if (!snap.exists()) return 'none';
-    return snap.data()?.suscripcion?.estado || 'none'; // 'active' | 'none' | 'expired'
-  } catch (e) {
-    console.warn('[CY] checkPremiumStatus error:', e);
-    return 'none';
-  }
-}
-
-// ─────────────────────────────────────────────
-//  MODERACIÓN BÁSICA
-// ─────────────────────────────────────────────
- 
-
-// ─────────────────────────────────────────────
-//  SUBIDA DE IMAGEN (Firebase Storage opcional)
-//  Si no tienes Storage configurado, se guarda null
-// ─────────────────────────────────────────────
-async function subirLogo(uid) {
-  if (!logoBlob) return null;
-  try {
-    // Descomenta si tienes Firebase Storage:
-    // const { getStorage, ref, uploadBytes, getDownloadURL } =
-    //   await import("https://www.gstatic.com/firebasejs/10.14.1/firebase-storage.js");
-    // const storage  = getStorage(app);
-    // const logoRef  = ref(storage, `logos/${uid}_${Date.now()}`);
-    // const snapshot = await uploadBytes(logoRef, logoBlob);
-    // return await getDownloadURL(snapshot.ref);
-    return null; // sin Storage → guardamos sin foto por ahora
-  } catch (e) {
-    console.warn('[CY] subirLogo error:', e);
-    return null;
-  }
-}
-
-// ─────────────────────────────────────────────
-//  SUBMIT PRINCIPAL
-// ─────────────────────────────────────────────
-async function submitForm() {
-  // 0. Usuario autenticado
-  const user = auth.currentUser;
+/* ══════════════════════════════════════════════════════
+   AUTH GUARD
+══════════════════════════════════════════════════════ */
+onAuthStateChanged(auth, async user => {
   if (!user) {
-    showToast('Debes iniciar sesión para publicar.', 'bad');
+    // No autenticado → login
+    location.href = `login.html?redirect=${encodeURIComponent(location.href)}`;
     return;
   }
+  currentUser = user;
 
-  // 1. Recoger datos del formulario
-  const cfg         = TIPO_CONFIG[tipoSeleccionado];
-  const nombre      = document.getElementById('nombreNegocio').value.trim();
-  const descripcion = document.getElementById('descNegocio').value.trim();
-  const telefono    = document.getElementById('telefono').value.trim();
-  const ubicacion   = document.getElementById('ubicacion').value.trim();
-  const ciudad      = document.getElementById('ciudad').value;
-  const email       = document.getElementById('emailNegocio').value.trim();
-
-  // Campos específicos
-  const matricula     = tipoSeleccionado === 'taxi'
-    ? document.getElementById('matricula').value.trim() : null;
-  const tipoVehiculo  = tipoSeleccionado === 'taxi'
-    ? document.getElementById('tipoVehiculo').value : null;
-  const categoria     = ['tienda','agencia'].includes(tipoSeleccionado)
-    ? document.getElementById('categoriaNegocio').value : null;
-  const web           = ['tienda','agencia'].includes(tipoSeleccionado)
-    ? document.getElementById('webNegocio').value.trim() : null;
-  const horaAbre      = document.getElementById('horaAbre')?.value  || null;
-  const horaCierra    = document.getElementById('horaCierra')?.value || null;
-
-  // 2. Moderación de contenido
-  showLoading(true, 'Validando contenido…');
-  const esValido = await moderarContenidoIA(nombre, descripcion);
-  if (!esValido) {
-    showLoading(false);
-    showToast('El contenido no supera la validación. Revisa el nombre y la descripción.', 'bad');
-    return;
-  }
-
-  // 3. Verificar suscripción Premium
-  showLoading(true, 'Verificando tu cuenta Premium…');
-  const estadoPremium = await checkPremiumStatus(user.uid);
-  const esPremium     = estadoPremium === 'active';
-
-  // 4. Subir logo (si existe)
-  showLoading(true, 'Subiendo imagen…');
-  const logoUrl = await subirLogo(user.uid);
-
-  // 5. Construir documento Firestore
-  const entidad = {
-    // Identificación
-    uid:            user.uid,
-    tipo:           tipoSeleccionado,
-
-    // Datos básicos
-    nombre,
-    descripcion,
-    logoUrl,
-
-    // Contacto
-    telefono,
-    ubicacion,
-    ciudad,
-    email:          email || null,
-    web:            web   || null,
-
-    // Campos por tipo
-    categoria:      categoria  || null,
-    matricula:      matricula  || null,
-    tipoVehiculo:   tipoVehiculo || null,
-
-    // Horario y operación
-    horario: {
-      dias:   selectedHorarios,
-      abre:   horaAbre,
-      cierra: horaCierra,
-    },
-    zonas:          selectedZonas,
-    metodosPago:    selectedPagos,
-
-    // Estado de publicación
-    // Premium → activo de inmediato; free → pendiente de revisión manual
-    status:         esPremium ? 'activo' : 'pendiente',
-    verificadoPorIA: true,
-    esPremium,
-
-    // Timestamps
-    creadoEn:       serverTimestamp(),
-    actualizadoEn:  serverTimestamp(),
-  };
-
-  // 6. Guardar en Firestore
-  showLoading(true, esPremium ? 'Publicando al instante…' : 'Enviando para revisión…');
   try {
-    const ref = await addDoc(collection(db, 'entidades'), entidad);
-    console.log('[CY] Entidad creada:', ref.id);
-
-    // 7. Mostrar éxito
-    showLoading(false);
-    document.getElementById('successSub').textContent = esPremium
-      ? cfg.successSub.replace('queda en revisión', 'ya está publicado')
-      : cfg.successSub;
-    document.getElementById('successScreen').classList.add('active');
-
-  } catch (err) {
-    showLoading(false);
-    console.error('[CY] submitForm error:', err);
-    showToast('Error al guardar. Inténtalo de nuevo.', 'bad');
+    const uSnap = await getDoc(doc(db, 'usuarios', user.uid));
+    const uData = uSnap.data() || {};
+    isAdmin   = uData.role === 'admin' || uData.isAdmin === true;
+    isPremium = isAdmin
+      || uData.isPremium === true
+      || ['premium','store','entity','ministry'].includes(uData.role);
+  } catch(e) {
+    console.warn('No se pudo leer perfil de usuario:', e);
   }
+
+  if (isEdit) {
+    // Modo edición: verificar que el usuario puede editar este servicio
+    await loadServicioForEdit(editId);
+  } else {
+    // Modo creación: requiere premium
+    if (!isPremium) {
+      showPremiumGate();
+      return;
+    }
+    canManage = true;
+    initUI();
+  }
+});
+
+/* ══════════════════════════════════════════════════════
+   PREMIUM GATE  (solo en creación)
+══════════════════════════════════════════════════════ */
+function showPremiumGate() {
+  document.getElementById('pageLoading').style.display = 'none';
+  document.getElementById('premiumGate').style.display = 'flex';
+  // El HTML de premiumGate debe tener:
+  //   <div id="premiumGate">
+  //     <h2>Necesitas Premium para publicar un servicio</h2>
+  //     <p>Actualiza tu cuenta para aparecer en el directorio de Compra Ya GE.</p>
+  //     <button onclick="openWA('Hola, quiero suscribirme a Premium para publicar mi negocio')">
+  //       Solicitar Premium por WhatsApp
+  //     </button>
+  //     <a href="servicios.html">Volver al directorio</a>
+  //   </div>
 }
-// ─────────────────────────────────────────────
-//  PARTE 1 — CARGAR MIS ESPACIOS AL INICIO
-// ─────────────────────────────────────────────
-import { query, where, getDocs }
-  from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 
-async function cargarMisEspacios(uid) {
-  const section  = document.getElementById('misEspaciosSection');
-  const loading  = document.getElementById('misEspaciosLoading');
-  const cards    = document.getElementById('misEspaciosCards');
-  const counter  = document.getElementById('misEspaciosCount');
+window.openWA = function(msg) {
+  window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank', 'noopener');
+};
 
-  // Mostrar spinner, ocultar sección hasta saber si hay datos
-  loading.style.display = 'block';
-
+/* ══════════════════════════════════════════════════════
+   CARGAR SERVICIO PARA EDICIÓN
+══════════════════════════════════════════════════════ */
+async function loadServicioForEdit(id) {
   try {
-    const q      = query(collection(db, 'entidades'),
-                         where('uid',    '==', uid),
-                         where('status', '==', 'activo'));
-    const snap   = await getDocs(q);
+    const snap = await getDoc(doc(db, 'servicios', id));
+    if (!snap.exists()) {
+      showToast('Servicio no encontrado', 'bad');
+      setTimeout(() => location.href = 'servicios.html', 1800);
+      return;
+    }
+    servicioData = { id: snap.id, ...snap.data() };
 
-    loading.style.display = 'none';
+    // Verificar permisos
+    const isOwner  = servicioData.creadorUID === currentUser.uid;
+    const isCoAdmin = Array.isArray(servicioData.adminUIDs)
+      && servicioData.adminUIDs.includes(currentUser.uid);
 
-    if (snap.empty) {
-      // Sin entidades activas → sección invisible
-      section.style.display = 'none';
+    canManage = isAdmin || isOwner || isCoAdmin;
+
+    if (!canManage) {
+      showToast('No tienes permiso para editar este servicio', 'bad');
+      setTimeout(() => location.href = 'servicios.html', 1800);
       return;
     }
 
-    // Hay entidades → mostrar sección
-    section.style.display = 'block';
-    counter.textContent   = `${snap.size} activo${snap.size > 1 ? 's' : ''}`;
-    cards.innerHTML       = '';
+    uploadedImages = Array.isArray(servicioData.imagenes) ? [...servicioData.imagenes] : [];
+    logoUrl        = servicioData.logo || '';
 
-    snap.forEach(docSnap => {
-      const e  = docSnap.data();
-      const id = docSnap.id;
-      cards.insertAdjacentHTML('beforeend', buildEspacioCard(e, id));
-    });
+    initUI();
+    populateForm(servicioData);
 
-  } catch (err) {
-    console.error('[CY] cargarMisEspacios:', err);
-    loading.style.display = 'none';
+  } catch(e) {
+    console.error('loadServicioForEdit:', e);
+    showToast('Error al cargar el servicio', 'bad');
   }
 }
 
-// Llama a la función cuando el usuario está autenticado
-onAuthStateChanged(auth, user => {
-  if (user) cargarMisEspacios(user.uid);
-});
-// ─────────────────────────────────────────────
-//  PARTE 2 — CONSTRUIR TARJETA DE ESPACIO
-// ─────────────────────────────────────────────
+/* ══════════════════════════════════════════════════════
+   INIT UI  — construye toda la interfaz
+══════════════════════════════════════════════════════ */
+function initUI() {
+  document.getElementById('pageLoading').style.display = 'none';
+  document.getElementById('pageContent').style.display = 'block';
 
-// Colores y labels por tipo
-const TIPO_UI = {
-  tienda:   { label:'Tienda',   bg:'rgba(0,255,157,.1)',  border:'rgba(0,255,157,.25)',  color:'var(--lime)',   icon:'#00ff9d' },
-  agencia:  { label:'Agencia',  bg:'rgba(0,245,255,.1)',  border:'rgba(0,245,255,.25)',  color:'var(--cyan)',   icon:'#00f5ff' },
-  taxi:     { label:'Taxi',     bg:'rgba(255,215,0,.1)',  border:'rgba(255,215,0,.25)',  color:'var(--gold)',   icon:'#ffd700' },
-  delivery: { label:'Reparto',  bg:'rgba(255,59,92,.1)',  border:'rgba(255,59,92,.25)',  color:'var(--red)',    icon:'#ff3b5c' },
+  // Título dinámico
+  document.getElementById('formTitle').textContent = isEdit
+    ? 'Editar servicio'
+    : 'Publicar nuevo servicio';
+  document.getElementById('formSubtitle').textContent = isEdit
+    ? 'Actualiza la información de tu negocio.'
+    : 'Completa los datos para aparecer en el directorio.';
+
+  buildCategorySelect();
+  buildHorarioGrid();
+  buildImageZone();
+  buildLogoZone();
+  buildTabNav();
+  setupFormListeners();
+
+  // Si venimos con ?tab=imagenes, abrir esa pestaña
+  if (openTab) switchTab(openTab);
+
+  // Botón eliminar (solo en edición y admin/owner)
+  if (isEdit) {
+    const delBtn = document.getElementById('deleteBtn');
+    if (delBtn) delBtn.style.display = 'inline-flex';
+  }
+
+  // Admin: mostrar campo adminUIDs
+  if (isAdmin) {
+    const adminFields = document.getElementById('adminFields');
+    if (adminFields) adminFields.style.display = 'block';
+  }
+}
+
+/* ══════════════════════════════════════════════════════
+   CATEGORÍAS SELECT
+══════════════════════════════════════════════════════ */
+function buildCategorySelect() {
+  const sel = document.getElementById('inputCategoria');
+  if (!sel) return;
+  sel.innerHTML = '<option value="">Selecciona una categoría…</option>'
+    + CATEGORIAS.map(c =>
+        `<option value="${c.value}" data-color="${c.color}">${c.label}</option>`
+      ).join('');
+}
+
+/* ══════════════════════════════════════════════════════
+   HORARIO GRID
+══════════════════════════════════════════════════════ */
+function buildHorarioGrid() {
+  const grid = document.getElementById('horarioGrid');
+  if (!grid) return;
+  grid.innerHTML = DIAS.map((dia, i) => `
+    <div class="h-row" id="hrow-${dia}">
+      <label class="h-toggle">
+        <input type="checkbox" id="hcheck-${dia}" onchange="toggleDia('${dia}')">
+        <span class="h-day">${DIAS_LABELS[i]}</span>
+      </label>
+      <div class="h-times" id="htimes-${dia}" style="display:none">
+        <input type="time" class="h-input" id="hopen-${dia}"  value="08:00">
+        <span class="h-sep">–</span>
+        <input type="time" class="h-input" id="hclose-${dia}" value="18:00">
+        <label class="h-cerrado">
+          <input type="checkbox" id="hcerrado-${dia}" onchange="toggleCerrado('${dia}')">
+          Cerrado
+        </label>
+      </div>
+    </div>`
+  ).join('');
+}
+
+window.toggleDia = function(dia) {
+  const checked = document.getElementById(`hcheck-${dia}`).checked;
+  document.getElementById(`htimes-${dia}`).style.display = checked ? 'flex' : 'none';
 };
 
-function buildEspacioCard(e, id) {
-  const ui  = TIPO_UI[e.tipo] || TIPO_UI.tienda;
+window.toggleCerrado = function(dia) {
+  const cerrado = document.getElementById(`hcerrado-${dia}`).checked;
+  document.getElementById(`hopen-${dia}`).disabled  = cerrado;
+  document.getElementById(`hclose-${dia}`).disabled = cerrado;
+};
+
+/* ══════════════════════════════════════════════════════
+   IMÁGENES — zona drag & drop
+══════════════════════════════════════════════════════ */
+function buildImageZone() {
+  const zone = document.getElementById('imageZone');
+  if (!zone) return;
+
+  zone.addEventListener('dragover',  e => { e.preventDefault(); zone.classList.add('drag-over'); });
+  zone.addEventListener('dragleave', ()  => zone.classList.remove('drag-over'));
+  zone.addEventListener('drop', e => {
+    e.preventDefault();
+    zone.classList.remove('drag-over');
+    handleImageFiles([...e.dataTransfer.files]);
+  });
+
+  document.getElementById('imageInput')?.addEventListener('change', e => {
+    handleImageFiles([...e.target.files]);
+  });
+
+  renderImagePreviews();
+}
+
+function handleImageFiles(files) {
+  const allowed = files.filter(f => f.type.startsWith('image/'));
+  const remaining = 8 - uploadedImages.length - pendingFiles.length;
+  if (remaining <= 0) { showToast('Máximo 8 imágenes', 'bad'); return; }
+  pendingFiles.push(...allowed.slice(0, remaining));
+  renderImagePreviews();
+}
+
+function renderImagePreviews() {
+  const wrap = document.getElementById('imagePreviews');
+  if (!wrap) return;
+  wrap.innerHTML = '';
+
+  // Ya subidas
+  uploadedImages.forEach((url, i) => {
+    const div = document.createElement('div');
+    div.className = 'img-thumb';
+    div.innerHTML = `
+      <img src="${url}" alt="Imagen ${i+1}">
+      <button class="img-remove" onclick="removeUploadedImage(${i})" title="Eliminar">×</button>
+      <span class="img-badge">Subida</span>`;
+    wrap.appendChild(div);
+  });
+
+  // Pendientes
+  pendingFiles.forEach((file, i) => {
+    const div = document.createElement('div');
+    div.className = 'img-thumb pending';
+    const reader = new FileReader();
+    reader.onload = e2 => {
+      const img = div.querySelector('img');
+      if (img) img.src = e2.target.result;
+    };
+    reader.readAsDataURL(file);
+    div.innerHTML = `
+      <img src="" alt="Pendiente">
+      <button class="img-remove" onclick="removePendingImage(${i})" title="Eliminar">×</button>
+      <span class="img-badge pending-badge">Pendiente</span>`;
+    wrap.appendChild(div);
+  });
+
+  // Contador
+  const total = uploadedImages.length + pendingFiles.length;
+  const counter = document.getElementById('imageCounter');
+  if (counter) counter.textContent = `${total}/8 imágenes`;
+}
+
+window.removeUploadedImage = function(i) {
+  uploadedImages.splice(i, 1);
+  renderImagePreviews();
+};
+window.removePendingImage = function(i) {
+  pendingFiles.splice(i, 1);
+  renderImagePreviews();
+};
+
+/* ══════════════════════════════════════════════════════
+   LOGO
+══════════════════════════════════════════════════════ */
+function buildLogoZone() {
+  document.getElementById('logoInput')?.addEventListener('change', e => {
+    const file = e.target.files[0];
+    if (!file || !file.type.startsWith('image/')) return;
+    logoFile = file;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      const preview = document.getElementById('logoPreview');
+      if (preview) { preview.src = ev.target.result; preview.style.display = 'block'; }
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+/* ══════════════════════════════════════════════════════
+   TABS
+══════════════════════════════════════════════════════ */
+function buildTabNav() {
+  const tabs = ['info', 'contacto', 'horario', 'imagenes', 'ubicacion'];
+  tabs.forEach(t => {
+    const btn = document.getElementById(`tab-btn-${t}`);
+    if (btn) btn.onclick = () => switchTab(t);
+  });
+  switchTab(activeTab);
+}
+
+window.switchTab = function(tab) {
+  activeTab = tab;
+  document.querySelectorAll('.tab-panel').forEach(p => p.style.display = 'none');
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+
+  const panel = document.getElementById(`panel-${tab}`);
+  const btn   = document.getElementById(`tab-btn-${tab}`);
+  if (panel) panel.style.display = 'block';
+  if (btn)   btn.classList.add('active');
+};
+
+/* ══════════════════════════════════════════════════════
+   LISTENERS DEL FORMULARIO
+══════════════════════════════════════════════════════ */
+function setupFormListeners() {
+  // Auto-generar slug desde nombre
+  document.getElementById('inputNombre')?.addEventListener('input', e => {
+    const slugEl = document.getElementById('inputSlug');
+    if (slugEl && !isEdit) {
+      slugEl.value = toSlug(e.target.value);
+    }
+  });
+
+  // Color de categoría — actualizar swatch
+  document.getElementById('inputCategoria')?.addEventListener('change', e => {
+    const opt   = e.target.options[e.target.selectedIndex];
+    const color = opt?.dataset?.color || '#1A73E8';
+    const swatch = document.getElementById('colorSwatch');
+    if (swatch) {
+      swatch.style.background = color;
+      const colorInput = document.getElementById('inputColorCategoria');
+      if (colorInput) colorInput.value = color;
+    }
+  });
+
+  // Servicios — chips dinámicos
+  document.getElementById('addServicioBtn')?.addEventListener('click', addServicioChip);
+  document.getElementById('inputServicioNuevo')?.addEventListener('keydown', e => {
+    if (e.key === 'Enter') { e.preventDefault(); addServicioChip(); }
+  });
+
+  // Mapa — preview URL embed
+  document.getElementById('inputLat')?.addEventListener('input', updateMapPreview);
+  document.getElementById('inputLng')?.addEventListener('input', updateMapPreview);
+
+  // Botón guardar
+  document.getElementById('saveBtn')?.addEventListener('click', handleSave);
+
+  // Botón cancelar
+  document.getElementById('cancelBtn')?.addEventListener('click', () => {
+    if (isEdit) {
+      location.href = `detalle-servicio.html?id=${editId}`;
+    } else {
+      history.back();
+    }
+  });
+
+  // Botón eliminar
+  document.getElementById('deleteBtn')?.addEventListener('click', handleDelete);
+}
+
+/* ══════════════════════════════════════════════════════
+   SLUGIFY
+══════════════════════════════════════════════════════ */
+function toSlug(str) {
+  return str
+    .toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '')
+    .slice(0, 60);
+}
+
+/* ══════════════════════════════════════════════════════
+   CHIPS DE SERVICIOS
+══════════════════════════════════════════════════════ */
+function addServicioChip() {
+  const input = document.getElementById('inputServicioNuevo');
+  if (!input) return;
+  const val = input.value.trim();
+  if (!val) return;
+  const container = document.getElementById('serviciosChips');
+  if (!container) return;
+  const chip = document.createElement('span');
+  chip.className = 'chip';
+  chip.innerHTML = `${val} <button onclick="this.parentElement.remove()" title="Quitar">×</button>`;
+  container.appendChild(chip);
+  input.value = '';
+}
+
+function getServicios() {
+  return [...document.querySelectorAll('#serviciosChips .chip')]
+    .map(c => c.textContent.replace('×','').trim())
+    .filter(Boolean);
+}
+
+function renderServiciosChips(arr) {
+  const container = document.getElementById('serviciosChips');
+  if (!container || !Array.isArray(arr)) return;
+  container.innerHTML = '';
+  arr.forEach(val => {
+    const chip = document.createElement('span');
+    chip.className = 'chip';
+    chip.innerHTML = `${val} <button onclick="this.parentElement.remove()" title="Quitar">×</button>`;
+    container.appendChild(chip);
+  });
+}
+
+/* ══════════════════════════════════════════════════════
+   MAPA PREVIEW
+══════════════════════════════════════════════════════ */
+function updateMapPreview() {
+  const lat = document.getElementById('inputLat')?.value?.trim();
+  const lng = document.getElementById('inputLng')?.value?.trim();
+  const wrap = document.getElementById('mapPreview');
+  if (!wrap) return;
+  if (lat && lng) {
+    wrap.innerHTML = `<iframe
+      src="https://maps.google.com/maps?q=${lat},${lng}&z=16&output=embed"
+      loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade"
+      title="Vista previa del mapa" style="width:100%;height:180px;border:0;border-radius:8px">
+    </iframe>`;
+  } else {
+    wrap.innerHTML = '';
+  }
+}
+
+/* ══════════════════════════════════════════════════════
+   POBLAR FORMULARIO EN MODO EDICIÓN
+══════════════════════════════════════════════════════ */
+function populateForm(d) {
+  const set = (id, val) => {
+    const el = document.getElementById(id);
+    if (!el || val == null) return;
+    if (el.type === 'checkbox') el.checked = !!val;
+    else el.value = val;
+  };
+
+  set('inputNombre',     d.nombre);
+  set('inputSlug',       d.slug);
+  set('inputDescripcion',d.descripcion);
+  set('inputCategoria',  d.categoria);
+  set('inputCategoriaLabel', d.categoriaLabel);
+  set('inputColorCategoria', d.colorCategoria || d.colorFondo || '#1A73E8');
+  set('inputColorFondo', d.colorFondo);
+
+  set('inputTelefono',   d.telefono);
+  set('inputWhatsapp',   d.whatsapp);
+  set('inputEmail',      d.email);
+  set('inputWeb',        d.web);
+
+  set('inputDireccion',  d.direccion);
+  set('inputCiudad',     d.ciudad);
+  set('inputPais',       d.pais);
+  set('inputRuc',        d.ruc);
+
+  set('inputLat',  d.ubicacion?.lat);
+  set('inputLng',  d.ubicacion?.lng);
+  updateMapPreview();
+
+  set('inputVerificado', d.verificado);
+  set('inputActivo',     d.activo !== false);
+
+  // Admin: adminUIDs como texto separado por comas
+  if (isAdmin && d.adminUIDs) {
+    set('inputAdminUIDs', d.adminUIDs.join(', '));
+  }
 
   // Logo
-  const logoHtml = e.logoUrl
-    ? `<img src="${e.logoUrl}" alt="logo">`
-    : `<div class="ec-logo-ph">
-         <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"
-           stroke-linecap="round" stroke-linejoin="round">
-           <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
-           <line x1="3" y1="6" x2="21" y2="6"/>
-           <path d="M16 10a4 4 0 01-8 0"/>
-         </svg>
-       </div>`;
-
-  // Stats avanzadas: bloqueadas por defecto, admin puede poner statsDesbloqueadas:true en Firestore
-  const advUnlocked = e.statsDesbloqueadas === true;
-  const advClass    = advUnlocked ? 'ec-stats-adv unlocked' : 'ec-stats-adv';
-  const lockIcon    = advUnlocked
-    ? `<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-         <polyline points="20 6 9 17 4 12"/>
-       </svg>`
-    : `<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-         <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-         <path d="M7 11V7a5 5 0 0110 0v4"/>
-       </svg>`;
-  const advTitle    = advUnlocked ? 'Estadísticas avanzadas activas' : 'Estadísticas avanzadas';
-  const advSub      = advUnlocked
-    ? 'Accede a métricas completas de rendimiento'
-    : 'Visitas detalladas, conversión y más — disponibles con plan Pro';
-  const advClick    = advUnlocked
-    ? `onclick="abrirStatsAvanzadas('${id}')"`
-    : `onclick="showToast('Las estadísticas avanzadas se desbloquean con el plan Pro.','info')"`;
-
-  return `
-  <div class="espacio-card" id="ec-${id}">
-
-    <!-- HEADER -->
-    <div class="ec-header">
-      <div class="ec-logo">${logoHtml}</div>
-      <div class="ec-meta">
-        <div class="ec-nombre">${e.nombre || 'Sin nombre'}</div>
-        <div class="ec-badge"
-          style="background:${ui.bg};border:1px solid ${ui.border};color:${ui.color}">
-          ${ui.label}
-        </div>
-      </div>
-      <div class="ec-status" title="Activo"></div>
-    </div>
-
-    <!-- STATS BÁSICAS (gratis, siempre visibles) -->
-    <div class="ec-stats">
-      <div class="ec-stat">
-        <div class="ec-stat-val" id="stat-vistas-${id}">—</div>
-        <div class="ec-stat-lbl">Visitas hoy</div>
-      </div>
-      <div class="ec-stat">
-        <div class="ec-stat-val" id="stat-contactos-${id}">—</div>
-        <div class="ec-stat-lbl">Contactos</div>
-      </div>
-      <div class="ec-stat">
-        <div class="ec-stat-val" id="stat-productos-${id}">—</div>
-        <div class="ec-stat-lbl">Productos</div>
-      </div>
-    </div>
-
-    <!-- STATS AVANZADAS (bloqueadas hasta que admin desbloquee) -->
-    <div class="${advClass}" ${advClick}>
-      <div class="ec-adv-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="2"
-          stroke-linecap="round" stroke-linejoin="round">
-          <line x1="18" y1="20" x2="18" y2="10"/>
-          <line x1="12" y1="20" x2="12" y2="4"/>
-          <line x1="6"  y1="20" x2="6"  y2="14"/>
-        </svg>
-      </div>
-      <div class="ec-adv-text">
-        <div class="ec-adv-title">${advTitle}</div>
-        <div class="ec-adv-sub">${advSub}</div>
-      </div>
-      <div class="ec-adv-lock">${lockIcon}</div>
-    </div>
-
-    <!-- ACCIONES -->
-    <div class="ec-actions">
-      <button class="ec-btn ec-btn-publish"
-        onclick="abrirPublicar('${id}','${e.tipo}')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2.5"
-          stroke-linecap="round" stroke-linejoin="round">
-          <line x1="12" y1="5" x2="12" y2="19"/>
-          <line x1="5"  y1="12" x2="19" y2="12"/>
-        </svg>
-        Publicar
-      </button>
-      <button class="ec-btn ec-btn-edit"
-        onclick="showToast('Editor de ficha próximamente.','info')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-          stroke-linecap="round" stroke-linejoin="round">
-          <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
-          <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
-        </svg>
-        Editar
-      </button>
-      <button class="ec-btn ec-btn-view"
-        onclick="verEspacio('${id}')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-          stroke-linecap="round" stroke-linejoin="round">
-          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-          <circle cx="12" cy="12" r="3"/>
-        </svg>
-        Ver
-      </button>
-    </div>
-
-  </div>`;
-}
-
-// ─────────────────────────────────────────────
-//  CARGAR STATS BÁSICAS POR ENTIDAD
-// ─────────────────────────────────────────────
-async function cargarStatsBasicas(id) {
-  try {
-    // Visitas de hoy
-    const hoy  = new Date().toISOString().slice(0,10); // "2026-05-19"
-    const snapV = await getDocs(
-      query(collection(db, 'entidades', id, 'visitas'),
-            where('fecha', '==', hoy))
-    );
-    document.getElementById(`stat-vistas-${id}`).textContent = snapV.size;
-
-    // Contactos totales (clics en WhatsApp guardados)
-    const snapC = await getDocs(
-      collection(db, 'entidades', id, 'contactos')
-    );
-    document.getElementById(`stat-contactos-${id}`).textContent = snapC.size;
-
-    // Productos publicados
-    const snapP = await getDocs(
-      query(collection(db, 'entidades', id, 'productos'),
-            where('activo', '==', true))
-    );
-    document.getElementById(`stat-productos-${id}`).textContent = snapP.size;
-
-  } catch (err) {
-    console.warn('[CY] cargarStatsBasicas:', err);
+  if (d.logo) {
+    const preview = document.getElementById('logoPreview');
+    if (preview) { preview.src = d.logo; preview.style.display = 'block'; }
+    logoUrl = d.logo;
   }
-  snap.forEach(docSnap => {
-  const e  = docSnap.data();
-  const id = docSnap.id;
-  cards.insertAdjacentHTML('beforeend', buildEspacioCard(e, id));
-  cargarStatsBasicas(id); // ← añade esta línea
-});
-}
 
-// ─────────────────────────────────────────────
-//  STUBS — se desarrollan en Parte 3 y 4
-// ─────────────────────────────────────────────
-window.abrirPublicar      = (id, tipo) => showToast('Panel de publicación — Parte 3 próximamente', 'info');
-window.verEspacio         = (id)       => showToast('Vista pública — Parte 4 próximamente', 'info');
-window.abrirStatsAvanzadas= (id)       => showToast('Estadísticas avanzadas desbloqueadas — próximamente', 'ok');
-// ─────────────────────────────────────────────
-//  PARTE 3 — MODAL PUBLICAR
-// ─────────────────────────────────────────────
-import { deleteDoc }
-  from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+  // Servicios chips
+  renderServiciosChips(d.servicios);
 
-let _pubEntidadId   = null;
-let _pubTipo        = null;
-let _pubTabActual   = 'producto';
-let _pubImgBlobs    = [];   // máx 3 imágenes
-let _pubCatSel      = null;
-let _pubDisponible  = true;
-
-// Categorías rápidas por tipo
-const PUB_CATS = {
-  tienda:   ['Alimentación','Bebidas','Ropa','Electrónica','Hogar','Belleza','Otros'],
-  agencia:  ['Viajes','Inmobiliaria','Limpieza','Eventos','Legal','Marketing','Otros'],
-  taxi:     ['Aeropuerto','Ciudad','Excursión','Mudanza','Otros'],
-  delivery: ['Comida','Compras','Documentos','Medicamentos','Otros'],
-};
-
-const PUB_TABS = {
-  tienda:   [{ id:'producto',  label:'Producto' },
-             { id:'oferta',    label:'Oferta'   }],
-  agencia:  [{ id:'servicio',  label:'Servicio' },
-             { id:'oferta',    label:'Promoción'}],
-  taxi:     [{ id:'servicio',  label:'Ruta'     },
-             { id:'oferta',    label:'Tarifa'   }],
-  delivery: [{ id:'servicio',  label:'Servicio' },
-             { id:'oferta',    label:'Oferta'   }],
-};
-
-// ── Abrir modal ──────────────────────────────
-window.abrirPublicar = function(entidadId, tipo) {
-  _pubEntidadId  = entidadId;
-  _pubTipo       = tipo;
-  _pubImgBlobs   = [];
-  _pubCatSel     = null;
-  _pubDisponible = true;
-
-  // Título
-  const ui = TIPO_UI[tipo] || TIPO_UI.tienda;
-  document.getElementById('modalPubTitle').textContent =
-    `Publicar en ${ui.label}`;
-
-  // Tabs
-  const tabs = PUB_TABS[tipo] || PUB_TABS.tienda;
-  document.getElementById('pubTabs').innerHTML = tabs.map((t,i) =>
-    `<button class="pub-tab ${i===0?'active':''}"
-       onclick="switchPubTab('${t.id}',this)">${t.label}</button>`
-  ).join('');
-  _pubTabActual = tabs[0].id;
-
-  // Categorías
-  const cats = PUB_CATS[tipo] || PUB_CATS.tienda;
-  document.getElementById('pubCatPills').innerHTML = cats.map(c =>
-    `<div class="cat-pill" onclick="selCat(this,'${c}')">${c}</div>`
-  ).join('');
-
-  // Reset formulario
-  ['pubNombre','pubDesc','pubPrecio'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.value = '';
-  });
-  document.getElementById('pubImgRow').innerHTML = `
-    <div class="pub-img-slot" onclick="addPubImg(this)">
-      <svg viewBox="0 0 24 24" fill="none" stroke-width="2"
-        stroke-linecap="round" stroke-linejoin="round">
-        <rect x="3" y="3" width="18" height="18" rx="2"/>
-        <circle cx="8.5" cy="8.5" r="1.5"/>
-        <polyline points="21 15 16 10 5 21"/>
-      </svg>
-    </div>`;
-  resetToggle();
-
-  // Cargar ítems ya publicados
-  cargarItemsPublicados(entidadId);
-
-  document.getElementById('modalPublicar').classList.add('open');
-  document.body.style.overflow = 'hidden';
-};
-
-window.cerrarModalPublicar = function() {
-  document.getElementById('modalPublicar').classList.remove('open');
-  document.body.style.overflow = '';
-};
-
-// Cerrar al tocar el overlay
-document.getElementById('modalPublicar')
-  .addEventListener('click', e => {
-    if (e.target === e.currentTarget) cerrarModalPublicar();
-  });
-
-// ── Tabs ─────────────────────────────────────
-window.switchPubTab = function(tabId, btn) {
-  _pubTabActual = tabId;
-  document.querySelectorAll('.pub-tab')
-    .forEach(t => t.classList.remove('active'));
-  btn.classList.add('active');
-  // Ajustar placeholder de nombre según tab
-  const placeholders = {
-    producto: 'Ej: Arroz basmati 5 kg',
-    servicio: 'Ej: Limpieza de hogar completa',
-    oferta:   'Ej: 2x1 en refrescos este fin de semana',
-  };
-  document.getElementById('pubNombre').placeholder =
-    placeholders[tabId] || 'Nombre…';
-};
-
-// ── Imágenes ─────────────────────────────────
-window.addPubImg = function(slot) {
-  if (_pubImgBlobs.length >= 3) {
-    showToast('Máximo 3 fotos por publicación','info'); return;
-  }
-  document.getElementById('pubImgInput').click();
-  // guardamos referencia al slot
-  document.getElementById('pubImgInput')._slot = slot;
-};
-
-window.handlePubImg = function(e) {
-  const file = e.target.files[0];
-  if (!file) return;
-  if (file.size > 5 * 1024 * 1024) {
-    showToast('La imagen no puede superar 5 MB','bad'); return;
-  }
-  const idx = _pubImgBlobs.length;
-  _pubImgBlobs.push(file);
-
-  const reader = new FileReader();
-  reader.onload = ev => {
-    const row  = document.getElementById('pubImgRow');
-    // Reemplazar el slot de "+" o añadir nuevo
-    const slot = document.getElementById('pubImgInput')._slot;
-    slot.innerHTML = `
-      <img src="${ev.target.result}" alt="">
-      <button class="rm-img" onclick="event.stopPropagation();removePubImg(this,${idx})">
-        <svg width="9" height="9" viewBox="0 0 24 24" fill="none"
-          stroke="currentColor" stroke-width="3" stroke-linecap="round">
-          <line x1="18" y1="6" x2="6" y2="18"/>
-          <line x1="6" y1="6" x2="18" y2="18"/>
-        </svg>
-      </button>`;
-    slot.onclick = null; // ya no es el slot de añadir
-
-    // Añadir nuevo slot "+" si quedan huecos
-    if (_pubImgBlobs.length < 3) {
-      const newSlot = document.createElement('div');
-      newSlot.className = 'pub-img-slot';
-      newSlot.onclick   = () => addPubImg(newSlot);
-      newSlot.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke-width="2"
-        stroke-linecap="round" stroke-linejoin="round">
-        <rect x="3" y="3" width="18" height="18" rx="2"/>
-        <circle cx="8.5" cy="8.5" r="1.5"/>
-        <polyline points="21 15 16 10 5 21"/>
-      </svg>`;
-      row.appendChild(newSlot);
-    }
-  };
-  reader.readAsDataURL(file);
-  e.target.value = '';
-};
-
-window.removePubImg = function(btn, idx) {
-  _pubImgBlobs.splice(idx, 1);
-  btn.closest('.pub-img-slot').remove();
-};
-
-// ── Categoría ────────────────────────────────
-window.selCat = function(el, cat) {
-  document.querySelectorAll('.cat-pill')
-    .forEach(p => p.classList.remove('sel'));
-  el.classList.add('sel');
-  _pubCatSel = cat;
-};
-
-// ── Toggle disponible ────────────────────────
-window.toggleDisponible = function() {
-  _pubDisponible = !_pubDisponible;
-  const span = document.getElementById('toggleDisp');
-  const dot  = span.querySelector('span');
-  if (_pubDisponible) {
-    span.style.background = 'var(--cyan)';
-    dot.style.marginLeft  = 'auto';
-    dot.style.marginRight = '0';
-  } else {
-    span.style.background = 'rgba(255,255,255,.12)';
-    dot.style.marginLeft  = '0';
-    dot.style.marginRight = 'auto';
-  }
-};
-function resetToggle() {
-  _pubDisponible = true;
-  const span = document.getElementById('toggleDisp');
-  if (!span) return;
-  const dot = span.querySelector('span');
-  span.style.background = 'var(--cyan)';
-  dot.style.marginLeft  = 'auto';
-  dot.style.marginRight = '0';
-}
-
-// ── Guardar ítem en Firestore ────────────────
-window.guardarItem = async function() {
-  const nombre = document.getElementById('pubNombre').value.trim();
-  if (!nombre) {
-    document.getElementById('err-pubNombre').classList.add('show');
-    document.getElementById('pubNombre').classList.add('error');
-    return;
-  }
-  document.getElementById('err-pubNombre').classList.remove('show');
-  document.getElementById('pubNombre').classList.remove('error');
-
-  const btn = document.getElementById('btnPubSave');
-  btn.disabled = true;
-
-  const precio  = parseFloat(document.getElementById('pubPrecio').value) || 0;
-  const unidad  = document.getElementById('pubUnidad').value;
-  const desc    = document.getElementById('pubDesc').value.trim();
-
-  // Subir imágenes (stub — sin Storage guardamos null)
-  const fotos = [];
-  // Si tienes Firebase Storage, aquí harías el upload de _pubImgBlobs
-
-  const item = {
-    nombre,
-    descripcion: desc || null,
-    precio,
-    unidad,
-    categoria:   _pubCatSel || null,
-    tab:         _pubTabActual,    // 'producto' | 'servicio' | 'oferta'
-    activo:      _pubDisponible,
-    fotos,
-    entidadId:   _pubEntidadId,
-    creadoEn:    serverTimestamp(),
-  };
-
-  try {
-    await addDoc(
-      collection(db, 'entidades', _pubEntidadId, 'productos'),
-      item
-    );
-    showToast('¡Publicado correctamente!', 'ok');
-
-    // Actualizar contador de la tarjeta
-    const statEl = document.getElementById(`stat-productos-${_pubEntidadId}`);
-    if (statEl) statEl.textContent =
-      (parseInt(statEl.textContent) || 0) + 1;
-
-    // Resetear form y recargar lista
-    document.getElementById('pubNombre').value = '';
-    document.getElementById('pubDesc').value   = '';
-    document.getElementById('pubPrecio').value = '';
-    _pubImgBlobs = [];
-    _pubCatSel   = null;
-    document.querySelectorAll('.cat-pill')
-      .forEach(p => p.classList.remove('sel'));
-
-    cargarItemsPublicados(_pubEntidadId);
-
-  } catch (err) {
-    console.error('[CY] guardarItem:', err);
-    showToast('Error al publicar. Inténtalo de nuevo.', 'bad');
-  } finally {
-    btn.disabled = false;
-  }
-};
-
-// ── Cargar ítems ya publicados ───────────────
-async function cargarItemsPublicados(entidadId) {
-  const lista  = document.getElementById('pubItemsList');
-  const count  = document.getElementById('pubListCount');
-  const empty  = document.getElementById('pubListEmpty');
-
-  lista.innerHTML = `<div style="text-align:center;padding:14px 0;
-    font-size:.78rem;color:var(--muted)">Cargando…</div>`;
-
-  try {
-    const snap = await getDocs(
-      collection(db, 'entidades', entidadId, 'productos')
-    );
-
-    if (snap.empty) {
-      lista.innerHTML = '';
-      if (empty) empty.style.display = 'block';
-      count.textContent = '0';
-      return;
-    }
-
-    if (empty) empty.style.display = 'none';
-    count.textContent = snap.size;
-    lista.innerHTML   = '';
-
-    snap.forEach(d => {
-      const it = d.data();
-      const id = d.id;
-      const precioStr = it.unidad === 'gratis' || it.precio === 0
-        ? 'Gratis / Consultar'
-        : `${it.precio?.toLocaleString('es-GQ')} XAF`;
-      const precioClass = (it.unidad === 'gratis' || it.precio === 0)
-        ? 'pub-item-price free' : 'pub-item-price';
-
-      lista.insertAdjacentHTML('beforeend', `
-        <div class="pub-item-row" id="pi-${id}">
-          <div class="pub-item-thumb">
-            ${it.fotos?.[0]
-              ? `<img src="${it.fotos[0]}" alt="">`
-              : `<svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"
-                   stroke-linecap="round" stroke-linejoin="round">
-                   <rect x="3" y="3" width="18" height="18" rx="2"/>
-                   <circle cx="8.5" cy="8.5" r="1.5"/>
-                   <polyline points="21 15 16 10 5 21"/>
-                 </svg>`}
-          </div>
-          <div class="pub-item-info">
-            <div class="pub-item-name">${it.nombre}</div>
-            <div class="${precioClass}">${precioStr}</div>
-          </div>
-          <button class="pub-item-del"
-            onclick="eliminarItem('${entidadId}','${id}')">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
-              stroke="currentColor" stroke-width="2.5"
-              stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="3 6 5 6 21 6"/>
-              <path d="M19 6l-1 14H6L5 6"/>
-              <path d="M10 11v6M14 11v6"/>
-            </svg>
-          </button>
-        </div>`);
+  // Horario
+  if (d.horario) {
+    DIAS.forEach(dia => {
+      const h = d.horario[dia];
+      if (!h) return;
+      const check = document.getElementById(`hcheck-${dia}`);
+      if (check) { check.checked = true; toggleDia(dia); }
+      if (h.cerrado) {
+        const cerradoEl = document.getElementById(`hcerrado-${dia}`);
+        if (cerradoEl) { cerradoEl.checked = true; toggleCerrado(dia); }
+      } else {
+        const openEl  = document.getElementById(`hopen-${dia}`);
+        const closeEl = document.getElementById(`hclose-${dia}`);
+        if (openEl  && h.open)  openEl.value  = h.open;
+        if (closeEl && h.close) closeEl.value = h.close;
+      }
     });
-
-  } catch (err) {
-    console.error('[CY] cargarItemsPublicados:', err);
-    lista.innerHTML = `<div style="font-size:.78rem;color:var(--red);
-      text-align:center;padding:12px">Error al cargar. Recarga la página.</div>`;
   }
+
+  // Color swatch
+  const swatch = document.getElementById('colorSwatch');
+  if (swatch) swatch.style.background = d.colorCategoria || d.colorFondo || '#1A73E8';
 }
 
-// ── Eliminar ítem ────────────────────────────
-window.eliminarItem = async function(entidadId, itemId) {
-  try {
-    await deleteDoc(
-      doc(db, 'entidades', entidadId, 'productos', itemId)
-    );
-    document.getElementById(`pi-${itemId}`)?.remove();
-    showToast('Eliminado correctamente', 'ok');
+/* ══════════════════════════════════════════════════════
+   LEER HORARIO DEL FORMULARIO
+══════════════════════════════════════════════════════ */
+function readHorario() {
+  const horario = {};
+  DIAS.forEach(dia => {
+    const check = document.getElementById(`hcheck-${dia}`);
+    if (!check?.checked) return;
+    const cerrado = document.getElementById(`hcerrado-${dia}`)?.checked;
+    if (cerrado) {
+      horario[dia] = { cerrado: true };
+    } else {
+      horario[dia] = {
+        open:  document.getElementById(`hopen-${dia}`)?.value  || '',
+        close: document.getElementById(`hclose-${dia}`)?.value || '',
+      };
+    }
+  });
+  return horario;
+}
 
-    // Actualizar contador
-    const statEl = document.getElementById(`stat-productos-${entidadId}`);
-    if (statEl) {
-      const v = Math.max(0, (parseInt(statEl.textContent) || 1) - 1);
-      statEl.textContent = v;
+/* ══════════════════════════════════════════════════════
+   SUBIR IMÁGENES A STORAGE
+══════════════════════════════════════════════════════ */
+async function uploadPendingImages(servicioId) {
+  const progressBar = document.getElementById('uploadProgress');
+  const progressEl  = document.getElementById('uploadPct');
+
+  for (let i = 0; i < pendingFiles.length; i++) {
+    const file = pendingFiles[i];
+    const path = `servicios/${servicioId}/img_${Date.now()}_${i}`;
+    const sRef = storageRef(storage, path);
+
+    await new Promise((resolve, reject) => {
+      const task = uploadBytesResumable(sRef, file);
+      task.on('state_changed',
+        snap => {
+          const pct = Math.round(snap.bytesTransferred / snap.totalBytes * 100);
+          if (progressBar) progressBar.style.width = pct + '%';
+          if (progressEl)  progressEl.textContent  = pct + '%';
+        },
+        reject,
+        async () => {
+          const url = await getDownloadURL(task.snapshot.ref);
+          uploadedImages.push(url);
+          resolve();
+        }
+      );
+    });
+  }
+  pendingFiles = [];
+}
+
+async function uploadLogo(servicioId) {
+  if (!logoFile) return;
+  const path = `servicios/${servicioId}/logo_${Date.now()}`;
+  const sRef = storageRef(storage, path);
+  const task = uploadBytesResumable(sRef, logoFile);
+  await new Promise((resolve, reject) => {
+    task.on('state_changed', null, reject, async () => {
+      logoUrl = await getDownloadURL(task.snapshot.ref);
+      resolve();
+    });
+  });
+  logoFile = null;
+}
+
+/* ══════════════════════════════════════════════════════
+   VALIDAR FORMULARIO
+══════════════════════════════════════════════════════ */
+function validateForm() {
+  const errors = [];
+  const nombre    = document.getElementById('inputNombre')?.value?.trim();
+  const categoria = document.getElementById('inputCategoria')?.value;
+  const desc      = document.getElementById('inputDescripcion')?.value?.trim();
+
+  if (!nombre)    errors.push('El nombre del servicio es obligatorio.');
+  if (!categoria) errors.push('Selecciona una categoría.');
+  if (!desc)      errors.push('La descripción es obligatoria.');
+
+  if (errors.length) {
+    showToast(errors[0], 'bad');
+    // Ir a la pestaña info
+    switchTab('info');
+    return false;
+  }
+  return true;
+}
+
+/* ══════════════════════════════════════════════════════
+   GUARDAR (CREAR / ACTUALIZAR)
+══════════════════════════════════════════════════════ */
+window.handleSave = async function() {
+  if (!canManage) { showToast('Sin permisos', 'bad'); return; }
+  if (!validateForm()) return;
+
+  const saveBtn = document.getElementById('saveBtn');
+  setSaving(true, saveBtn);
+
+  try {
+    // Determinar ID
+    let servicioId = editId;
+
+    // Si creación: pre-crear doc para obtener ID para storage
+    if (!isEdit) {
+      const newRef = doc(collection(db, 'servicios'));
+      servicioId = newRef.id;
     }
 
-    // Actualizar contador del modal
-    const count = document.getElementById('pubListCount');
-    if (count) count.textContent =
-      Math.max(0, (parseInt(count.textContent) || 1) - 1);
+    // Subir imágenes y logo
+    if (pendingFiles.length) await uploadPendingImages(servicioId);
+    if (logoFile)            await uploadLogo(servicioId);
 
-  } catch (err) {
-    console.error('[CY] eliminarItem:', err);
-    showToast('No se pudo eliminar', 'bad');
+    // Construir objeto
+    const nombre    = document.getElementById('inputNombre')?.value?.trim()    || '';
+    const catEl     = document.getElementById('inputCategoria');
+    const catOpt    = catEl?.options[catEl?.selectedIndex];
+    const categoria = catEl?.value || '';
+    const catColor  = document.getElementById('inputColorCategoria')?.value
+                   || catOpt?.dataset?.color
+                   || '#1A73E8';
+
+    const slug = document.getElementById('inputSlug')?.value?.trim()
+              || toSlug(nombre);
+
+    const payload = {
+      nombre,
+      slug,
+      descripcion:    document.getElementById('inputDescripcion')?.value?.trim()  || '',
+      categoria,
+      categoriaLabel: document.getElementById('inputCategoriaLabel')?.value?.trim()
+                   || catOpt?.text || '',
+      colorCategoria: catColor,
+      colorFondo:     document.getElementById('inputColorFondo')?.value?.trim()   || catColor,
+
+      telefono:  document.getElementById('inputTelefono')?.value?.trim()   || '',
+      whatsapp:  document.getElementById('inputWhatsapp')?.value?.trim()   || '',
+      email:     document.getElementById('inputEmail')?.value?.trim()      || '',
+      web:       document.getElementById('inputWeb')?.value?.trim()        || '',
+
+      direccion: document.getElementById('inputDireccion')?.value?.trim()  || '',
+      ciudad:    document.getElementById('inputCiudad')?.value?.trim()     || '',
+      pais:      document.getElementById('inputPais')?.value?.trim()       || 'Guinea Ecuatorial',
+      ruc:       document.getElementById('inputRuc')?.value?.trim()        || '',
+
+      verificado: document.getElementById('inputVerificado')?.checked || false,
+      activo:     document.getElementById('inputActivo')?.checked     !== false,
+
+      logo:      logoUrl,
+      imagenes:  uploadedImages,
+      servicios: getServicios(),
+      horario:   readHorario(),
+
+      ubicacion: {
+        lat: parseFloat(document.getElementById('inputLat')?.value) || null,
+        lng: parseFloat(document.getElementById('inputLng')?.value) || null,
+      },
+
+      updatedAt: serverTimestamp(),
+    };
+
+    // Admin extras
+    if (isAdmin) {
+      const rawUIDs = document.getElementById('inputAdminUIDs')?.value || '';
+      payload.adminUIDs = rawUIDs.split(',').map(s => s.trim()).filter(Boolean);
+    }
+
+    if (!isEdit) {
+      // Creación
+      payload.creadorUID = currentUser.uid;
+      payload.createdAt  = serverTimestamp();
+      payload.vistas     = 0;
+      payload.ratingPromedio = 0;
+      payload.totalResenas   = 0;
+
+      await setDoc(doc(db, 'servicios', servicioId), payload);
+      showToast('¡Servicio publicado!', 'ok');
+    } else {
+      // Actualización
+      await updateDoc(doc(db, 'servicios', servicioId), payload);
+      showToast('Cambios guardados', 'ok');
+    }
+
+    // Redirigir a la ficha
+    setTimeout(() => {
+      location.href = `detalle-servicio.html?id=${servicioId}`;
+    }, 1000);
+
+  } catch(e) {
+    console.error('handleSave:', e);
+    showToast('Error al guardar: ' + e.message, 'bad');
+    setSaving(false, saveBtn);
   }
 };
 
+function setSaving(saving, btn) {
+  if (!btn) return;
+  if (saving) {
+    btn.disabled = true;
+    btn.dataset.original = btn.innerHTML;
+    btn.innerHTML = `
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="2" stroke-linecap="round"
+        style="animation:spin .7s linear infinite">
+        <polyline points="23 4 23 10 17 10"/>
+        <path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/>
+      </svg>
+      Guardando…`;
+  } else {
+    btn.disabled = false;
+    btn.innerHTML = btn.dataset.original || 'Guardar';
+  }
+}
 
-// ─────────────────────────────────────────────
-//  INIT
-// ─────────────────────────────────────────────
-updateUI();
-console.log('%c[Compra Ya] crear-entidad.html listo', 'color:#00f5ff;font-weight:bold');
+/* ══════════════════════════════════════════════════════
+   ELIMINAR SERVICIO
+══════════════════════════════════════════════════════ */
+window.handleDelete = async function() {
+  if (!isEdit || !canManage) return;
+  const confirm1 = confirm(
+    `¿Eliminar permanentemente "${servicioData?.nombre || 'este servicio'}"?\n\n` +
+    'Esta acción no se puede deshacer. Se eliminarán también las reseñas.'
+  );
+  if (!confirm1) return;
 
+  try {
+    await deleteDoc(doc(db, 'servicios', editId));
+    showToast('Servicio eliminado', 'ok');
+    setTimeout(() => location.href = 'servicios.html', 1200);
+  } catch(e) {
+    console.error('handleDelete:', e);
+    showToast('Error al eliminar: ' + e.message, 'bad');
+  }
+};
+
+/* ══════════════════════════════════════════════════════
+   TOAST
+══════════════════════════════════════════════════════ */
+let _toastTimer;
+function showToast(msg, type = 'info') {
+  const t = document.getElementById('toast');
+  if (!t) return;
+  t.textContent = msg;
+  t.className   = 'show ' + type;
+  clearTimeout(_toastTimer);
+  _toastTimer = setTimeout(() => { t.className = ''; }, 3400);
+}
+window.showToast = showToast;
 </script>
 </body>
 </html>

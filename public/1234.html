@@ -33,35 +33,30 @@
   <meta http-equiv="X-XSS-Protection" content="1; mode=block">
 
   <!-- CSP adaptado para Firebase + Compra Ya -->
-  <meta http-equiv="Content-Security-Policy" content="
-    default-src 'self';
-    script-src 'self' 'unsafe-inline' 'unsafe-eval'
-      https://www.gstatic.com
-      https://cdnjs.cloudflare.com
-      https://generativelanguage.googleapis.com;
-    style-src 'self' 'unsafe-inline'
-      https://fonts.googleapis.com
-      https://cdnjs.cloudflare.com;
-    font-src 'self'
-      https://fonts.gstatic.com
-      https://cdnjs.cloudflare.com;
-    img-src 'self' data: blob: https:;
-    connect-src 'self'
-      https://*.googleapis.com
-      https://*.firebaseio.com
-      https://firestore.googleapis.com
-      https://identitytoolkit.googleapis.com
-      https://storage.googleapis.com;
-    media-src 'self' blob:;
-    frame-ancestors 'none';
-    upgrade-insecure-requests;
- 
-  script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net ;
-  connect-src 'self'   https://generativelanguage.googleapis.com   https://firestore.googleapis.com;
-  img-src 'self' data: https: blob:;
-   ">
-  
-
+ <meta http-equiv="Content-Security-Policy" content="
+  default-src 'self';
+  script-src 'self' 'unsafe-inline' 'unsafe-eval'
+    https://www.gstatic.com
+    https://cdnjs.cloudflare.com
+    https://cdn.jsdelivr.net;
+  style-src 'self' 'unsafe-inline'
+    https://fonts.googleapis.com
+    https://cdnjs.cloudflare.com;
+  font-src 'self'
+    https://fonts.gstatic.com
+    https://cdnjs.cloudflare.com;
+  img-src 'self' data: blob: https:;
+  connect-src 'self'
+    https://*.googleapis.com
+    https://*.firebaseio.com
+    https://firestore.googleapis.com
+    https://identitytoolkit.googleapis.com
+    https://storage.googleapis.com
+    https://generativelanguage.googleapis.com;
+  media-src 'self' blob:;
+  frame-ancestors 'none';
+  upgrade-insecure-requests;
+">
   <!-- ══ FIN SEGURIDAD ══════════════════════════════ -->
 
 <style>
@@ -473,8 +468,11 @@ select.form-input option{background:var(--bg3);color:var(--text)}
       <div class="sb-section">Operaciones</div>
       <button class="nav-btn" onclick="showSec('analytics',this)"><i class="ni fas fa-chart-line"></i> Analytics CY-tend</button>
       <button class="nav-btn" onclick="showSec('marketing',this)"><i class="ni fas fa-bullhorn"></i> Marketing CY-public</button>
+     
       <button class="nav-btn" onclick="showSec('cart',this)"><i class="ni fas fa-shopping-cart"></i> Carritos / Pagos</button>
+      <button class="nav-btn" onclick="showSec('servicios',this)"><i class="ni fas fa-concierge-bell"></i> Servicios &amp; Gestiones<span class="nbadge mint" id="nb-servicios">—</span></button>
       <button class="nav-btn" onclick="showSec('banners',this)"><i class="ni fas fa-image"></i> Banners CY-admin</button>
+      
       <button class="nav-btn" onclick="showSec('notifs',this)"><i class="ni fas fa-bell"></i> Notificaciones<span class="nbadge" id="nb-notif" style="display:none">0</span></button>
       <div class="sb-section">Sistema</div>
       <button class="nav-btn" onclick="showSec('delete',this)"><i class="ni fas fa-trash-alt"></i> Eliminación Selectiva</button>
@@ -721,29 +719,147 @@ select.form-input option{background:var(--bg3);color:var(--text)}
         <div class="card"><div class="card-head"><div class="card-title"><i class="fas fa-shopping-cart"></i> Carritos abandonados</div><button class="btn btn-cyan btn-sm" onclick="sendAbandonedReminders()"><i class="fas fa-bell"></i> Enviar recordatorios</button></div><div class="tbl-wrap"><table class="tbl"><thead><tr><th>Usuario</th><th>Artículos</th><th>Total estimado</th><th>Última actividad</th><th>Acción</th></tr></thead><tbody id="abandoned-table"><tr><td colspan="5"><div class="loading-state"><div class="spin"></div></div></td></tr></tbody></table></div></div>
       </div>
  
-
-<!-- BANNERS -->
-<div id="sec-banners" class="sec">
+<!-- SERVICIOS & GESTIONES -->
+<div id="sec-servicios" class="sec">
   <div class="page-hdr">
-    <div class="page-title">Administración de Banners · CY-admin</div>
-    <div class="page-sub">Banners para chats.html, index-comprador.html y servicios.html</div>
+    <div class="page-title">Servicios &amp; Gestiones · CY-admin</div>
+    <div class="page-sub">Activa, desactiva y asigna operadores a cada servicio</div>
   </div>
 
-  <div class="grid-2" style="margin-bottom:13px">
-    <button class="btn btn-cyan" onclick="openBannerModal()">
-      <i class="fas fa-plus"></i> Nuevo banner
-    </button>
-    <span class="nb" id="nb-banners" style="display:none">0</span>
+  <!-- Estadísticas rápidas -->
+  <div class="grid-3" style="margin-bottom:14px">
+    <div class="stat-card sc-cyan"><span class="sc-icon">🛎️</span><div class="sc-val" id="srv-total">—</div><div class="sc-label">Servicios registrados</div></div>
+    <div class="stat-card sc-mint"><span class="sc-icon">✅</span><div class="sc-val" id="srv-activos">—</div><div class="sc-label">Activos</div></div>
+    <div class="stat-card sc-red"><span class="sc-icon">🔒</span><div class="sc-val" id="srv-inactivos">—</div><div class="sc-label">Inactivos</div></div>
   </div>
 
-  <!-- Lista de banners existentes -->
-  <div id="banners-list"></div>
+  <!-- Controles -->
+  <div style="display:flex;gap:10px;margin-bottom:13px;flex-wrap:wrap;align-items:center">
+    <div class="search-box" style="flex:1;min-width:200px">
+      <i class="fas fa-search"></i>
+      <input type="text" id="srv-search" placeholder="Buscar servicio…" oninput="filterServicios()">
+    </div>
+    <select class="form-input" id="srv-filter-cat" onchange="filterServicios()" style="width:160px;height:42px">
+      <option value="">Todas las categorías</option>
+      <option value="cy">Servicios CY</option>
+      <option value="ministerios">Ministerios</option>
+      <option value="becas">Becas</option>
+      <option value="vuelos">Vuelos</option>
+      <option value="remesas">Remesas</option>
+      <option value="delivery">Delivery</option>
+      <option value="emergencias">Emergencias</option>
+    </select>
+    <select class="form-input" id="srv-filter-estado" onchange="filterServicios()" style="width:130px;height:42px">
+      <option value="">Todos</option>
+      <option value="activo">Activos</option>
+      <option value="inactivo">Inactivos</option>
+    </select>
+    <button class="btn btn-cyan btn-sm" onclick="openServicioModal()"><i class="fas fa-plus"></i> Nuevo servicio</button>
+    <button class="btn btn-ghost btn-sm" onclick="loadServicios()"><i class="fas fa-sync-alt"></i></button>
+  </div>
+
+  <!-- Tabla -->
+  <div class="card">
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <thead>
+          <tr>
+            <th>Icono</th><th>Nombre</th><th>Categoría</th><th>Operador asignado</th>
+            <th>Estado</th><th>Visibilidad</th><th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody id="servicios-table">
+          <tr><td colspan="7"><div class="loading-state"><div class="spin"></div></div></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
 </div>
 
+<!-- MODAL SERVICIO -->
+<div id="srv-modal-bg" style="position:fixed;inset:0;background:rgba(0,0,0,.65);backdrop-filter:blur(14px);
+  z-index:800;display:flex;align-items:center;justify-content:center;padding:16px;
+  opacity:0;pointer-events:none;transition:opacity .3s"
+  onclick="if(event.target===this)closeSrvModal()">
+  <div style="background:var(--bg2);border:1px solid var(--border);border-radius:20px;
+    width:100%;max-width:520px;max-height:90vh;overflow-y:auto;box-shadow:0 24px 80px rgba(0,0,0,.6)">
 
-<!-- ══════════════════════════════════════════════
-     MODAL BANNER — Crear / Editar
-══════════════════════════════════════════════ -->
+    <div style="padding:18px 20px 0;display:flex;align-items:center;justify-content:space-between">
+      <span id="srv-modal-title" style="font-size:1rem;font-weight:700">Nuevo servicio</span>
+      <button onclick="closeSrvModal()" style="background:none;border:none;color:var(--muted);font-size:1.2rem;cursor:pointer"><i class="fas fa-times"></i></button>
+    </div>
+
+    <div style="padding:16px 20px 20px;display:flex;flex-direction:column;gap:13px">
+
+      <div>
+        <label style="font-size:.72rem;color:var(--cyan);font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:5px;display:block">Nombre del servicio *</label>
+        <input id="srv-nombre" type="text" placeholder="Ej: Reserva de Vuelos" style="width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:9px 12px;color:var(--text);font-size:.83rem;outline:none">
+      </div>
+
+      <div>
+        <label style="font-size:.72rem;color:var(--cyan);font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:5px;display:block">Descripción</label>
+        <textarea id="srv-desc" placeholder="Descripción visible al usuario…" style="width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:9px 12px;color:var(--text);font-size:.83rem;outline:none;min-height:72px;resize:vertical"></textarea>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div>
+          <label style="font-size:.72rem;color:var(--cyan);font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:5px;display:block">Categoría</label>
+          <select id="srv-categoria" style="width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:9px 12px;color:var(--text);font-size:.83rem;outline:none">
+            <option value="cy">Servicios CY</option>
+            <option value="ministerios">Ministerios</option>
+            <option value="becas">Becas</option>
+            <option value="vuelos">Vuelos</option>
+            <option value="remesas">Remesas</option>
+            <option value="delivery">Delivery</option>
+            <option value="emergencias">Emergencias</option>
+          </select>
+        </div>
+        <div>
+          <label style="font-size:.72rem;color:var(--cyan);font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:5px;display:block">Icono (FontAwesome)</label>
+          <input id="srv-icono" type="text" placeholder="fa-plane, fa-hospital…" style="width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:9px 12px;color:var(--text);font-size:.83rem;outline:none">
+        </div>
+      </div>
+
+      <div>
+        <label style="font-size:.72rem;color:var(--cyan);font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:5px;display:block">UID del operador asignado</label>
+        <input id="srv-uid" type="text" placeholder="UID de Firebase del operador…" style="width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:9px 12px;color:var(--text);font-size:.83rem;outline:none">
+        <p style="font-size:.67rem;color:var(--muted);margin-top:4px">El operador podrá gestionar este servicio desde su panel personal.</p>
+      </div>
+
+      <div>
+        <label style="font-size:.72rem;color:var(--cyan);font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:5px;display:block">Email del operador</label>
+        <input id="srv-email" type="email" placeholder="operador@email.com" style="width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:9px 12px;color:var(--text);font-size:.83rem;outline:none">
+      </div>
+
+      <div>
+        <label style="font-size:.72rem;color:var(--cyan);font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:5px;display:block">URL de la página del servicio</label>
+        <input id="srv-url" type="text" placeholder="https://… o /servicios.html?id=…" style="width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:9px 12px;color:var(--text);font-size:.83rem;outline:none">
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div>
+          <label style="font-size:.72rem;color:var(--cyan);font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:5px;display:block">Orden en app</label>
+          <input id="srv-orden" type="number" value="0" min="0" style="width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:9px 12px;color:var(--text);font-size:.83rem;outline:none">
+        </div>
+        <div style="display:flex;flex-direction:column;justify-content:flex-end">
+          <label style="font-size:.72rem;color:var(--cyan);font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:5px;display:block">Visible en app</label>
+          <label style="display:flex;align-items:center;gap:9px;cursor:pointer">
+            <input type="checkbox" id="srv-activo" checked style="width:17px;height:17px;accent-color:var(--cyan)">
+            <span style="font-size:.8rem;color:var(--muted)">Activo</span>
+          </label>
+        </div>
+      </div>
+
+      <button id="btn-save-srv" onclick="saveServicio()" style="
+        width:100%;height:46px;background:linear-gradient(135deg,var(--cyan),#0a8aff);
+        border:none;border-radius:12px;color:#fff;font-weight:700;font-size:.9rem;
+        cursor:pointer;box-shadow:0 4px 18px rgba(0,212,255,.25)">
+        <i class="fas fa-save" style="margin-right:7px"></i> Guardar servicio
+      </button>
+    </div>
+  </div>
+</div>
+
 <div id="banner-modal-bg" style="
   position:fixed;inset:0;background:rgba(0,0,0,.65);backdrop-filter:blur(14px);
   z-index:800;display:flex;align-items:center;justify-content:center;padding:16px;
@@ -754,7 +870,6 @@ select.form-input option{background:var(--bg3);color:var(--text)}
     width:100%;max-width:560px;max-height:92vh;overflow-y:auto;
     box-shadow:0 24px 80px rgba(0,0,0,.6);">
 
-    <!-- Cabecera -->
     <div style="padding:18px 20px 0;display:flex;align-items:center;justify-content:space-between">
       <span id="banner-modal-title" style="font-size:1rem;font-weight:700">Nuevo banner</span>
       <button onclick="closeBannerModal()" style="background:none;border:none;color:var(--muted);font-size:1.2rem;cursor:pointer">
@@ -764,7 +879,7 @@ select.form-input option{background:var(--bg3);color:var(--text)}
 
     <div style="padding:16px 20px 20px;display:flex;flex-direction:column;gap:13px">
 
-      <!-- ── 1. PÁGINA DESTINO (NUEVO) ── -->
+      <!-- PÁGINA DESTINO -->
       <div>
         <label style="font-size:.72rem;color:var(--cyan);font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:5px;display:block">
           <i class="fas fa-globe" style="margin-right:5px"></i>Página destino
@@ -776,70 +891,55 @@ select.form-input option{background:var(--bg3);color:var(--text)}
           <option value="servicios">🛎️ servicios.html — Servicios &amp; Gestiones</option>
           <option value="chat">💬 chats.html — Chat</option>
         </select>
-        <p style="font-size:.67rem;color:var(--muted);margin-top:4px">
-          El banner solo aparecerá en la página seleccionada.
-        </p>
       </div>
 
-      <!-- ── 2. TÍTULO ── -->
+      <!-- TÍTULO -->
       <div>
-        <label style="font-size:.72rem;color:var(--cyan);font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:5px;display:block">
-          Título *
-        </label>
+        <label style="font-size:.72rem;color:var(--cyan);font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:5px;display:block">Título *</label>
         <input id="banner-titulo" type="text" placeholder="Ej: ¡Nuevas ofertas disponibles!"
           oninput="updateBannerLivePreview()" style="
           width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:10px;
           padding:9px 12px;color:var(--text);font-size:.83rem;outline:none">
       </div>
 
-      <!-- ── 3. SUBTÍTULO ── -->
+      <!-- SUBTÍTULO -->
       <div>
-        <label style="font-size:.72rem;color:var(--cyan);font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:5px;display:block">
-          Subtítulo
-        </label>
+        <label style="font-size:.72rem;color:var(--cyan);font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:5px;display:block">Subtítulo</label>
         <input id="banner-subtitulo" type="text" placeholder="Texto secundario del banner"
           oninput="updateBannerLivePreview()" style="
           width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:10px;
           padding:9px 12px;color:var(--text);font-size:.83rem;outline:none">
       </div>
 
-      <!-- ── 4. TAG / ETIQUETA ── -->
+      <!-- TAG -->
       <div>
-        <label style="font-size:.72rem;color:var(--cyan);font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:5px;display:block">
-          Etiqueta (Tag)
-        </label>
+        <label style="font-size:.72rem;color:var(--cyan);font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:5px;display:block">Etiqueta (Tag)</label>
         <input id="banner-tag" type="text" placeholder="Ej: NUEVO · OFERTA · PROMO"
           oninput="updateBannerLivePreview()" style="
           width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:10px;
           padding:9px 12px;color:var(--text);font-size:.83rem;outline:none">
       </div>
 
-      <!-- ── 5. TEXTO DEL BOTÓN ── -->
+      <!-- TEXTO BOTÓN -->
       <div>
-        <label style="font-size:.72rem;color:var(--cyan);font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:5px;display:block">
-          Texto del botón
-        </label>
+        <label style="font-size:.72rem;color:var(--cyan);font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:5px;display:block">Texto del botón</label>
         <input id="banner-btn-txt" type="text" placeholder="Ej: Ver ahora"
           oninput="updateBannerLivePreview()" style="
           width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:10px;
           padding:9px 12px;color:var(--text);font-size:.83rem;outline:none">
       </div>
 
-      <!-- ── 6. ACCIÓN DEL BOTÓN ── -->
+      <!-- ACCIÓN BOTÓN -->
       <div>
-        <label style="font-size:.72rem;color:var(--cyan);font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:5px;display:block">
-          Acción del botón
-        </label>
-        <select id="banner-btn-accion" style="
+        <label style="font-size:.72rem;color:var(--cyan);font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:5px;display:block">Acción del botón</label>
+        <select id="banner-btn-accion" onchange="document.getElementById('banner-btn-accion-custom').style.display=this.value==='__custom__'?'block':'none'" style="
           width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:10px;
           padding:9px 12px;color:var(--text);font-size:.83rem;outline:none;cursor:pointer">
-          <!-- Acciones para index-comprador.html -->
           <optgroup label="— index-comprador.html —">
             <option value="switchTab('explore')">Ir a Explorar</option>
             <option value="switchTab('orders')">Ir a Pedidos</option>
             <option value="switchTab('chat')">Ir a Chat</option>
           </optgroup>
-          <!-- Acciones para servicios.html -->
           <optgroup label="— servicios.html —">
             <option value="setFilter('servicios',this)">Filtrar: Servicios CY</option>
             <option value="setFilter('becas',this)">Filtrar: Becas</option>
@@ -849,31 +949,26 @@ select.form-input option{background:var(--bg3);color:var(--text)}
             <option value="setFilter('delivery',this)">Filtrar: Delivery</option>
             <option value="setFilter('emergencias',this)">Filtrar: Emergencias</option>
           </optgroup>
-          <!-- Enlace externo -->
           <optgroup label="— Externo —">
             <option value="openExt('https://comprayage.com')">Abrir comprayage.com</option>
             <option value="__custom__">URL personalizada…</option>
           </optgroup>
         </select>
-
-        <!-- Campo URL personalizada (se muestra solo si elige __custom__) -->
         <input id="banner-btn-accion-custom" type="text" placeholder="Ej: openExt('https://...')"
           style="display:none;width:100%;background:var(--bg3);border:1px solid var(--border);
           border-radius:10px;padding:9px 12px;color:var(--text);font-size:.83rem;outline:none;margin-top:7px">
       </div>
 
-      <!-- ── 7. IMAGEN ── -->
+      <!-- IMAGEN -->
       <div>
-        <label style="font-size:.72rem;color:var(--cyan);font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:5px;display:block">
-          Imagen del banner
-        </label>
+        <label style="font-size:.72rem;color:var(--cyan);font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:5px;display:block">Imagen del banner</label>
         <input id="banner-img-url" type="text" placeholder="https://... o sube un archivo"
           oninput="updateBannerLivePreview()" style="
           width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:10px;
           padding:9px 12px;color:var(--text);font-size:.83rem;outline:none;margin-bottom:7px">
         <label style="display:inline-flex;align-items:center;gap:7px;cursor:pointer;
           background:var(--bg3);border:1px solid var(--border);border-radius:9px;
-          padding:7px 13px;font-size:.76rem;color:var(--muted);transition:all .2s">
+          padding:7px 13px;font-size:.76rem;color:var(--muted)">
           <i class="fas fa-upload"></i> Subir imagen
           <input type="file" accept="image/*" style="display:none" onchange="handleBannerFile(this)">
         </label>
@@ -881,65 +976,29 @@ select.form-input option{background:var(--bg3);color:var(--text)}
           style="display:none;width:100%;max-height:110px;object-fit:cover;border-radius:10px;margin-top:8px;border:1px solid var(--border)">
       </div>
 
-      <!-- ── 8. GRADIENTE DE FONDO ── -->
+      <!-- GRADIENTE -->
       <div>
-        <label style="font-size:.72rem;color:var(--cyan);font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:8px;display:block">
-          Color de fondo
-        </label>
+        <label style="font-size:.72rem;color:var(--cyan);font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:8px;display:block">Color de fondo</label>
         <div style="display:flex;flex-wrap:wrap;gap:8px">
-          <div class="grad-swatch" data-g="linear-gradient(135deg,#0D1117,#0a2744,#0D2B60)"
-            onclick="selectGradient(this)"
-            style="width:36px;height:36px;border-radius:9px;cursor:pointer;border:2px solid transparent;
-            background:linear-gradient(135deg,#0D1117,#0a2744,#0D2B60);transition:all .2s"></div>
-          <div class="grad-swatch" data-g="linear-gradient(135deg,#1A73E8,#0D47A1)"
-            onclick="selectGradient(this)"
-            style="width:36px;height:36px;border-radius:9px;cursor:pointer;border:2px solid transparent;
-            background:linear-gradient(135deg,#1A73E8,#0D47A1);transition:all .2s"></div>
-          <div class="grad-swatch" data-g="linear-gradient(135deg,#10B981,#065F46)"
-            onclick="selectGradient(this)"
-            style="width:36px;height:36px;border-radius:9px;cursor:pointer;border:2px solid transparent;
-            background:linear-gradient(135deg,#10B981,#065F46);transition:all .2s"></div>
-          <div class="grad-swatch" data-g="linear-gradient(135deg,#F59E0B,#B45309)"
-            onclick="selectGradient(this)"
-            style="width:36px;height:36px;border-radius:9px;cursor:pointer;border:2px solid transparent;
-            background:linear-gradient(135deg,#F59E0B,#B45309);transition:all .2s"></div>
-          <div class="grad-swatch" data-g="linear-gradient(135deg,#F43F5E,#9F1239)"
-            onclick="selectGradient(this)"
-            style="width:36px;height:36px;border-radius:9px;cursor:pointer;border:2px solid transparent;
-            background:linear-gradient(135deg,#F43F5E,#9F1239);transition:all .2s"></div>
-          <div class="grad-swatch" data-g="linear-gradient(135deg,#8B5CF6,#4C1D95)"
-            onclick="selectGradient(this)"
-            style="width:36px;height:36px;border-radius:9px;cursor:pointer;border:2px solid transparent;
-            background:linear-gradient(135deg,#8B5CF6,#4C1D95);transition:all .2s"></div>
-          <div class="grad-swatch" data-g="linear-gradient(135deg,#0EA5E9,#0369A1)"
-            onclick="selectGradient(this)"
-            style="width:36px;height:36px;border-radius:9px;cursor:pointer;border:2px solid transparent;
-            background:linear-gradient(135deg,#0EA5E9,#0369A1);transition:all .2s"></div>
-          <div class="grad-swatch" data-g="linear-gradient(135deg,#F97316,#9A3412)"
-            onclick="selectGradient(this)"
-            style="width:36px;height:36px;border-radius:9px;cursor:pointer;border:2px solid transparent;
-            background:linear-gradient(135deg,#F97316,#9A3412);transition:all .2s"></div>
+          <div class="grad-swatch sel" data-g="linear-gradient(135deg,#0D1117,#0a2744,#0D2B60)" onclick="selectGradient(this)" style="width:36px;height:36px;border-radius:9px;cursor:pointer;border:2px solid transparent;background:linear-gradient(135deg,#0D1117,#0a2744,#0D2B60)"></div>
+          <div class="grad-swatch" data-g="linear-gradient(135deg,#1A73E8,#0D47A1)" onclick="selectGradient(this)" style="width:36px;height:36px;border-radius:9px;cursor:pointer;border:2px solid transparent;background:linear-gradient(135deg,#1A73E8,#0D47A1)"></div>
+          <div class="grad-swatch" data-g="linear-gradient(135deg,#10B981,#065F46)" onclick="selectGradient(this)" style="width:36px;height:36px;border-radius:9px;cursor:pointer;border:2px solid transparent;background:linear-gradient(135deg,#10B981,#065F46)"></div>
+          <div class="grad-swatch" data-g="linear-gradient(135deg,#F59E0B,#B45309)" onclick="selectGradient(this)" style="width:36px;height:36px;border-radius:9px;cursor:pointer;border:2px solid transparent;background:linear-gradient(135deg,#F59E0B,#B45309)"></div>
+          <div class="grad-swatch" data-g="linear-gradient(135deg,#F43F5E,#9F1239)" onclick="selectGradient(this)" style="width:36px;height:36px;border-radius:9px;cursor:pointer;border:2px solid transparent;background:linear-gradient(135deg,#F43F5E,#9F1239)"></div>
+          <div class="grad-swatch" data-g="linear-gradient(135deg,#8B5CF6,#4C1D95)" onclick="selectGradient(this)" style="width:36px;height:36px;border-radius:9px;cursor:pointer;border:2px solid transparent;background:linear-gradient(135deg,#8B5CF6,#4C1D95)"></div>
         </div>
-        <!-- Estilo seleccionado -->
-        <style>
-          .grad-swatch.sel { border-color: #00d4ff !important; box-shadow: 0 0 0 3px rgba(0,212,255,.25); transform: scale(1.12); }
-        </style>
       </div>
 
-      <!-- ── 9. ORDEN + ACTIVO ── -->
+      <!-- ORDEN + ACTIVO -->
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
         <div>
-          <label style="font-size:.72rem;color:var(--cyan);font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:5px;display:block">
-            Orden
-          </label>
+          <label style="font-size:.72rem;color:var(--cyan);font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:5px;display:block">Orden</label>
           <input id="banner-orden" type="number" placeholder="0" min="0" style="
             width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:10px;
             padding:9px 12px;color:var(--text);font-size:.83rem;outline:none">
         </div>
         <div style="display:flex;flex-direction:column;justify-content:flex-end">
-          <label style="font-size:.72rem;color:var(--cyan);font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:5px;display:block">
-            Visible
-          </label>
+          <label style="font-size:.72rem;color:var(--cyan);font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:5px;display:block">Visible</label>
           <label style="display:flex;align-items:center;gap:9px;cursor:pointer">
             <input type="checkbox" id="banner-activo" checked style="width:17px;height:17px;accent-color:var(--cyan)">
             <span style="font-size:.8rem;color:var(--muted)">Mostrar en app</span>
@@ -947,156 +1006,39 @@ select.form-input option{background:var(--bg3);color:var(--text)}
         </div>
       </div>
 
-      <!-- ── 10. LIVE PREVIEW ── -->
+      <!-- LIVE PREVIEW -->
       <div>
         <label style="font-size:.72rem;color:var(--cyan);font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:8px;display:block">
           Preview en vivo
           <span id="lp-pagina-badge" style="margin-left:8px;font-size:.65rem;padding:2px 8px;
             border-radius:99px;background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.2);
-            color:var(--cyan);letter-spacing:.3px;font-weight:600">comprador</span>
+            color:var(--cyan)">comprador</span>
         </label>
         <div id="lp-bg" style="border-radius:14px;overflow:hidden;position:relative;height:120px;
           background:linear-gradient(135deg,#0D1117,#0a2744,#0D2B60);border:1px solid var(--border)">
           <img id="lp-img" src="" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none">
-          <div style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(26,115,232,.75),rgba(14,165,233,.6));
-            display:flex;flex-direction:column;justify-content:flex-end;padding:12px 14px;z-index:1">
-            <span id="lp-tag" style="font-size:.58rem;font-weight:700;letter-spacing:.6px;
-              text-transform:uppercase;color:rgba(255,255,255,.7);margin-bottom:2px">TAG</span>
-            <span id="lp-titulo" style="font-size:.95rem;font-weight:800;color:#fff;line-height:1.2;margin-bottom:5px">
-              Título del banner
-            </span>
+          <div style="position:absolute;inset:0;padding:12px 14px;display:flex;flex-direction:column;justify-content:flex-end;z-index:1">
+            <span id="lp-tag" style="font-size:.58rem;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:rgba(255,255,255,.7);margin-bottom:2px">TAG</span>
+            <span id="lp-titulo" style="font-size:.95rem;font-weight:800;color:#fff;line-height:1.2;margin-bottom:5px">Título del banner</span>
             <span id="lp-sub" style="font-size:.7rem;color:rgba(255,255,255,.8);margin-bottom:7px">Subtítulo aquí</span>
             <span id="lp-btn" style="display:inline-flex;align-items:center;padding:4px 12px;
               background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.35);
-              border-radius:50px;color:#fff;font-size:.65rem;font-weight:700;width:fit-content">
-              Botón
-            </span>
+              border-radius:50px;color:#fff;font-size:.65rem;font-weight:700;width:fit-content">Botón</span>
           </div>
         </div>
       </div>
 
-      <!-- ── BOTÓN GUARDAR ── -->
+      <!-- GUARDAR -->
       <button id="btn-save-banner" onclick="saveBannerNew()" style="
         width:100%;height:46px;background:linear-gradient(135deg,var(--cyan),#0a8aff);
         border:none;border-radius:12px;color:#fff;font-weight:700;font-size:.9rem;
         cursor:pointer;transition:all .25s;box-shadow:0 4px 18px rgba(0,212,255,.25)">
-        <i class="fas fa-save" style="margin-right:7px"></i>
-        Guardar banner
+        <i class="fas fa-save" style="margin-right:7px"></i> Guardar banner
       </button>
 
-     
- 
- 
-      
-    <div style="padding:20px 22px">
-
-      <!-- PREVIEW LIVE -->
-      <div style="height:120px;border-radius:14px;overflow:hidden;position:relative;margin-bottom:18px;border:1px solid var(--border)">
-        <div id="lp-bg" style="position:absolute;inset:0;background:linear-gradient(135deg,#0D1117,#0a2744);transition:background .3s"></div>
-        <img id="lp-img" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none" alt="">
-        <div style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,10,40,.70),transparent 65%);z-index:1"></div>
-        <div style="position:relative;z-index:2;padding:12px 16px">
-          <div id="lp-tag" style="display:inline-block;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:#fff;padding:2px 10px;border-radius:99px;font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">TAG</div>
-          <div id="lp-titulo" style="font-weight:900;font-size:.95rem;color:#fff;margin-bottom:3px;text-shadow:0 2px 8px rgba(0,0,0,.3)">Título del banner</div>
-          <div id="lp-sub" style="font-size:.66rem;color:rgba(255,255,255,.75);margin-bottom:7px">Subtítulo aquí</div>
-          <div id="lp-btn" style="display:inline-block;background:#fff;color:#0A84FF;padding:4px 14px;border-radius:99px;font-size:.65rem;font-weight:800">Botón</div>
-        </div>
-      </div>
-
-      <!-- IMAGEN -->
-      <div style="margin-bottom:14px">
-        <div class="form-label" style="margin-bottom:6px"> Imagen de fondo</div>
-        <label style="display:block;border:2px dashed rgba(0,220,255,.25);border-radius:12px;padding:14px;text-align:center;cursor:pointer;background:rgba(0,220,255,.03);transition:all .2s;position:relative">
-          <input type="file" accept="image/*" onchange="handleBannerFile(this)" style="position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%">
-          <img id="banner-img-preview" src="" alt="" style="display:none;width:100%;height:90px;object-fit:cover;border-radius:8px;margin-bottom:8px">
-          <div style="font-size:.75rem;color:var(--muted)">
-            <span style="color:var(--cyan);font-weight:700">Subir imagen</span> · JPG, PNG, WebP · Max 5MB
-          </div>
-        </label>
-        <div style="margin-top:8px;display:flex;align-items:center;gap:8px">
-          <span style="font-size:.70rem;color:var(--muted);white-space:nowrap">o URL:</span>
-          <input type="text" id="banner-img-url" class="form-input" placeholder="https://…" oninput="updateBannerLivePreview()" style="flex:1;height:34px;font-size:.78rem">
-        </div>
-      </div>
-
-      <!-- GRADIENTE -->
-      <div style="margin-bottom:14px">
-        <div class="form-label" style="margin-bottom:8px">🎨 Color de fondo</div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap">
-          <div class="grad-swatch sel" data-g="linear-gradient(135deg,#0D1117,#0a2744,#0D2B60)" onclick="selectGradient(this)"
-            style="width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#0D1117,#0a2744,#0D2B60);cursor:pointer;border:2px solid transparent;transition:all .2s"></div>
-          <div class="grad-swatch" data-g="linear-gradient(135deg,#0a2a0a,#0a3a1a,#0a4422)" onclick="selectGradient(this)"
-            style="width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#0a2a0a,#0a3a1a,#0a4422);cursor:pointer;border:2px solid transparent;transition:all .2s"></div>
-          <div class="grad-swatch" data-g="linear-gradient(135deg,#2a0a0a,#3a1a0a,#44200a)" onclick="selectGradient(this)"
-            style="width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#2a0a0a,#3a1a0a,#44200a);cursor:pointer;border:2px solid transparent;transition:all .2s"></div>
-          <div class="grad-swatch" data-g="linear-gradient(135deg,#1a0a2a,#2a1a3a,#3a1a50)" onclick="selectGradient(this)"
-            style="width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#1a0a2a,#2a1a3a,#3a1a50);cursor:pointer;border:2px solid transparent;transition:all .2s"></div>
-          <div class="grad-swatch" data-g="linear-gradient(135deg,#0a1a2a,#0a2a3a,#0a3a44)" onclick="selectGradient(this)"
-            style="width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#0a1a2a,#0a2a3a,#0a3a44);cursor:pointer;border:2px solid transparent;transition:all .2s"></div>
-        </div>
-      </div>
-
-      <!-- CAMPOS TEXTO -->
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px">
-        <div style="grid-column:1/-1">
-          <div class="form-label">Título *</div>
-          <input type="text" id="banner-titulo" class="form-input" placeholder="Compra y vende en tu ciudad" oninput="updateBannerLivePreview()">
-        </div>
-        <div style="grid-column:1/-1">
-          <div class="form-label">Subtítulo</div>
-          <input type="text" id="banner-subtitulo" class="form-input" placeholder="Miles de productos en Malabo…" oninput="updateBannerLivePreview()">
-        </div>
-        <div>
-          <div class="form-label">Etiqueta (tag)</div>
-          <input type="text" id="banner-tag" class="form-input" placeholder="ENA Delivery" oninput="updateBannerLivePreview()">
-        </div>
-        <div>
-          <div class="form-label">Orden en carrusel</div>
-          <input type="number" id="banner-orden" class="form-input" value="0" min="0">
-        </div>
-        <div>
-          <div class="form-label">Texto del botón</div>
-          <input type="text" id="banner-btn-txt" class="form-input" placeholder="Explorar" oninput="updateBannerLivePreview()">
-        </div>
-        <div>
-          <div class="form-label">Acción del botón</div>
-          <select id="banner-btn-accion" class="form-input">
-            <option value="switchTab('explore')">→ Explorar</option>
-            <option value="setFilter('ofertas')">→ Ofertas</option>
-            <option value="switchTab('home')">→ Inicio</option>
-            <option value="switchTab('cart')">→ Carrito</option>
-          </select>
-        </div>
-      </div>
-
-      <!-- TOGGLE ACTIVO -->
-      <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-top:1px solid var(--border)">
-        <span style="font-size:.83rem;font-weight:600">Visible en la app</span>
-        <label style="position:relative;width:42px;height:24px;flex-shrink:0">
-          <input type="checkbox" id="banner-activo" checked style="opacity:0;width:0;height:0">
-          <span onclick="this.previousElementSibling.click()" style="position:absolute;inset:0;background:rgba(0,220,255,.2);border-radius:99px;cursor:pointer;transition:all .3s">
-            <span style="position:absolute;width:18px;height:18px;border-radius:50%;background:#fff;top:3px;left:3px;transition:all .3s;box-shadow:0 1px 4px rgba(0,0,0,.3)"></span>
-          </span>
-        </label>
-      </div>
-    </div>
-
-    <!-- Footer -->
-    <div style="padding:14px 22px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end;position:sticky;bottom:0;background:var(--bg2)">
-      <button class="btn btn-ghost" onclick="closeBannerModal()">Cancelar</button>
-      <button class="btn btn-cyan" id="btn-save-banner" onclick="saveBannerNew()">
-        <i class="fas fa-check"></i> Guardar banner
-      </button>
     </div>
   </div>
 </div>
-
- 
-        <div class="card"><div class="card-head"><div class="card-title"><i class="fas fa-list"></i> Banners activos</div><button class="btn btn-ghost btn-sm" onclick="loadBanners()"><i class="fas fa-sync-alt"></i></button></div><div class="tbl-wrap"><table class="tbl"><thead><tr><th>Imagen</th><th>Título</th><th>Página</th><th>Clics</th><th>Estado</th><th>Acciones</th></tr></thead><tbody id="banners-table"><tr><td colspan="6"><div class="empty"><i class="fas fa-image"></i><p>Sin banners activos</p></div></td></tr></tbody></table></div></div>
-   
-   
-      </div>
-
       <!-- NOTIFS -->
       <div id="sec-notifs" class="sec">
         <div class="page-hdr"><div class="page-title">Centro de Notificaciones</div><div class="page-sub">Historial de alertas y actividad del sistema en esta sesión</div></div>
@@ -1172,10 +1114,7 @@ import { loadSecureConfig, getApiKey } from "./js/config-loader.js";
 /* ══ CONFIGURACIÓN — reemplaza con tus valores reales ══ */
 const ADMIN_EMAIL  = "comprayasedeenmalabo@gmail.com";
 const ADMIN_UID    = CONFIG_ADMIN_UID || "zK56tNKi1mNqliuLSeQ8UeXZ2tO2";
-const EMAILJS_SVC  = "comprayasedeenmalabo@gmail.com";
-const EMAILJS_TPL  = "comprayasedeenmalabo@gmail.com";
-const EMAILJS_KEY  = "comprayasedeenmalabo@gmail.com";
-/* ════════════════════════════════════════════════════ */
+ /* ════════════════════════════════════════════════════ */
 
 let GEMINI_KEY = "";
 let GEMINI_URL = "";
@@ -1432,6 +1371,7 @@ const SEC_TITLES = {
   users:'Usuarios', badges:'Insignias Verificadas', premium:'Códigos Premium',
   analytics:'Analytics CY-tend', marketing:'Marketing CY-public',
   cart:'Carritos / Pagos', banners:'Banners CY-admin',
+  servicios:'Servicios & Gestiones',
   notifs:'Notificaciones', delete:'Eliminación Selectiva', backups:'Sistema'
 };
 window.showSec = function(name, btn) {
@@ -1442,15 +1382,43 @@ window.showSec = function(name, btn) {
   document.getElementById('topbar-title').textContent = SEC_TITLES[name] || name;
   document.getElementById('topbar-trail').textContent = name;
   const loaders = {
-    overview:  loadOverview,   products: loadProducts, users: loadUsers,
-    badges:    loadBadges,     premium:  loadPremiumCodes, analytics: loadAnalytics,
-    marketing: loadMarketing,  cart:     loadCart,     banners: loadBanners,
-    notifs:    loadNotifsPage, backups:  loadBackups,
+    overview: loadOverview, servicios: loadServicios, products: loadProducts, users: loadUsers,
+    badges:   loadBadges,   analytics: loadAnalytics, marketing: loadMarketing, cart: loadCart,
+    notifs:   loadNotifsPage, backups: loadBackups,
     'cy-core': () => { renderModules(); runTendencias(); }
+};
   };
   (loaders[name] || (() => {}))();
+ 
+window.quickDelete = async function(id, col, titulo) {
+  if (!confirm(`¿Eliminar "${titulo}" de "${col}"?`)) return;
+  try {
+    await deleteDoc(doc(db, col, id));
+    addDeleteLog(col, id, titulo);
+    showToast('success', `✅ "${titulo}" eliminado`);
+    document.getElementById('del-results').innerHTML = '';
+    document.getElementById('del-search').value = '';
+  } catch(e) { showToast('error', 'Error: ' + e.message); }
 };
 
+window.addDeleteLog = function(col, id, titulo) {
+  const el = document.getElementById('del-log');
+  if (!el) return;
+  const ts = new Date().toLocaleString('es-ES');
+  el.innerHTML += `<span style="color:var(--red)">✗</span> [${ts}] <strong>${col}</strong> · "${titulo}" · ID: ${id.slice(0,20)}…<br>`;
+  el.scrollTop = el.scrollHeight;
+};
+function setValue(id, val) {
+  const el = document.getElementById(id);
+  if (el) el.value = val;
+}
+window.syncAll = async function() {
+  const icon = document.getElementById('sync-icon');
+  if (icon) icon.style.animation = 'spinning .7s linear infinite';
+  await Promise.all([loadOverview(), loadBanners(), loadServicios()]);
+  if (icon) icon.style.animation = '';
+  showToast('success', 'Sincronizado ✓');
+};
 /* ═══════════════════════════════════════════════════
    INIT
 ═══════════════════════════════════════════════════ */
@@ -1973,18 +1941,28 @@ window.aiGenerateEmail = async function() {
   showToast('success','Email generado con IA ✓');
 };
 
-window.sendAdminEmail = async function() {
-  const to=document.getElementById('email-to')?.value.trim()||ADMIN_EMAIL;
-  const subject=document.getElementById('email-subject')?.value.trim();
-  const body=document.getElementById('email-body')?.value.trim();
-  if(!subject||!body){showToast('warn','Completa asunto y cuerpo del email');return;}
-  const btn=document.querySelector('#email-modal-bg .btn-cyan');
-  if(btn){btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Enviando…';}
-  const r=await sendEmail(to,subject,body);
-  if(btn){btn.disabled=false;btn.innerHTML='<i class="fas fa-paper-plane"></i> Enviar Email';}
-  if(r.ok){showToast('success',`Email enviado a ${to} (${r.via}) ✓`);closeEmailModal();addNotif('cyan','fa-envelope',`Email enviado: ${subject}`,`Para: ${to} · ${r.via}`);}
-  else showToast('error','No se pudo enviar el email: '+r.error);
-};
+/* ═══════════════════════════════════════════════════
+   EMAIL — Firebase Trigger Email Extension
+   Colección: "mail" (requerida por la extensión)
+═══════════════════════════════════════════════════ */
+async function sendEmail(to, subject, body) {
+  try {
+    await addDoc(collection(db, 'mail'), {
+      to,
+      message: {
+        subject,
+        text: body,
+        html: body.replace(/\n/g, '<br>')
+      },
+      createdAt: serverTimestamp()
+    });
+    sysLog(`✓ Email encolado → ${to} · "${subject}"`);
+    return { ok: true, via: 'Firebase Trigger Email' };
+  } catch (e) {
+    sysLog('⚠ Email error: ' + e.message);
+    return { ok: false, error: e.message };
+  }
+}
 
 window.emailAdminReport = async function() {
   const sys=`Eres CY Assistant. Genera un reporte ejecutivo diario en texto plano para el administrador de Compra Ya. Incluye: estado general, métricas clave y recomendaciones. Fecha: ${new Date().toLocaleDateString('es-ES')}.`;
@@ -2181,7 +2159,7 @@ window.saveBannerNew = async function() {
   const btnAccion   = accionSel?.value === '__custom__'
     ? (customInput?.value.trim() || "switchTab('explore')")
     : (accionSel?.value || "switchTab('explore')");
-window.loadBanners = banners
+ 
   if (!titulo) { showToast('warn', 'El título es obligatorio'); return; }
 
   // Subir imagen si hay archivo seleccionado
@@ -2233,19 +2211,10 @@ window.loadBanners = banners
     showToast('error', 'Error al guardar: ' + e.message);
   }
 };
-
-// ── Cerrar modal ──
-window.closeBannerModal = function() {
+ window.closeBannerModal = function() {
   const modal = document.getElementById('banner-modal-bg');
   modal.style.opacity = '0';
   setTimeout(() => { modal.style.pointerEvents = 'none'; }, 300);
-  _editingBannerId = null;
-  _bannerFile      = null;
-};
- 
-// ── Cerrar modal ──
-window.closeBannerModal = function() {
-  document.getElementById('banner-modal-bg').classList.remove('open');
   _editingBannerId = null;
   _bannerFile      = null;
 };
@@ -2337,6 +2306,278 @@ function getSafeParam(name) {
     .trim()
     .substring(0, 200);             // limitar longitud
 }
+window.handleBannerFile = function(input) {
+  const file = input.files[0];
+  if (!file) return;
+  if (file.size > 5 * 1024 * 1024) { showToast('warn', 'Imagen demasiado grande · máx 5MB'); return; }
+  _bannerFile = file;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const prev = document.getElementById('banner-img-preview');
+    const urlInput = document.getElementById('banner-img-url');
+    if (prev) { prev.src = e.target.result; prev.style.display = 'block'; }
+    if (urlInput) urlInput.value = '(imagen seleccionada)';
+    updateBannerLivePreview();
+  };
+  reader.readAsDataURL(file);
+};window.selectGradient = function(el) {
+  document.querySelectorAll('.grad-swatch').forEach(s => s.classList.remove('sel'));
+  el.classList.add('sel');
+  _selectedGradient = el.dataset.g;
+  updateBannerLivePreview();
+};window.loadBanners = async function() {
+  const tbody = document.getElementById('banners-table');
+  const list  = document.getElementById('banners-list');
+  if (tbody) tbody.innerHTML = '<tr><td colspan="6"><div class="loading-state"><div class="spin"></div></div></td></tr>';
+
+  try {
+    const snap = await getDocs(query(collection(db, 'banners'), orderBy('orden', 'asc')));
+    const banners = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+
+    // Tabla resumen
+    if (tbody) {
+      tbody.innerHTML = banners.length ? banners.map(b => `
+        <tr>
+          <td>${b.imagen ? `<img src="${b.imagen}" style="width:52px;height:32px;object-fit:cover;border-radius:6px;border:1px solid var(--border)">` : '<span style="color:var(--muted);font-size:.70rem">Sin img</span>'}</td>
+          <td style="font-weight:600;font-size:.82rem">${b.titulo || '—'}</td>
+          <td><span class="badge verified">${b.pagina || 'comprador'}</span></td>
+          <td style="font-family:var(--mono);color:var(--cyan)">${b.clics || 0}</td>
+          <td><span class="badge ${b.activo !== false ? 'active' : 'banned'}">${b.activo !== false ? 'Activo' : 'Oculto'}</span></td>
+          <td style="display:flex;gap:6px">
+            <button class="btn btn-ghost btn-xs" onclick="openBannerModal(${JSON.stringify({...b}).replace(/"/g,'&quot;')})"><i class="fas fa-edit"></i></button>
+            <button class="btn btn-red btn-xs" onclick="deleteBanner('${b.id}','${(b.titulo||'').replace(/'/g,'')}')"><i class="fas fa-trash"></i></button>
+            <button class="btn btn-ghost btn-xs" onclick="toggleBannerActive('${b.id}',${b.activo !== false})" title="${b.activo !== false ? 'Ocultar' : 'Activar'}">
+              <i class="fas fa-${b.activo !== false ? 'eye-slash' : 'eye'}"></i>
+            </button>
+          </td>
+        </tr>`).join('') :
+        '<tr><td colspan="6"><div class="empty"><i class="fas fa-image"></i><p>Sin banners todavía</p></div></td></tr>';
+    }
+
+    // Cards visuales en sec-banners
+    if (list) {
+      list.innerHTML = banners.length ? `
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px">
+          ${banners.map(b => `
+            <div style="border-radius:14px;overflow:hidden;position:relative;height:130px;
+              background:${b.bgGradient||'linear-gradient(135deg,#0D1117,#0a2744)'};
+              border:1px solid var(--border);cursor:pointer" onclick="openBannerModal(${JSON.stringify({...b}).replace(/"/g,'&quot;')})">
+              ${b.imagen ? `<img src="${b.imagen}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.5">` : ''}
+              <div style="position:absolute;inset:0;padding:12px;display:flex;flex-direction:column;justify-content:flex-end">
+                <span style="font-size:.58rem;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:1px">${b.tag||''}</span>
+                <span style="font-size:.82rem;font-weight:700;color:#fff">${b.titulo||'—'}</span>
+                <div style="display:flex;gap:6px;margin-top:5px;align-items:center">
+                  <span class="badge ${b.activo!==false?'active':'banned'}" style="font-size:.55rem">${b.activo!==false?'Activo':'Oculto'}</span>
+                  <span class="badge verified" style="font-size:.55rem">${b.pagina||'comprador'}</span>
+                </div>
+              </div>
+            </div>`).join('')}
+        </div>` : '<div class="empty"><i class="fas fa-image"></i><p>Sin banners — crea el primero</p></div>';
+    }
+
+    const nb = document.getElementById('nb-banners');
+    if (nb) { nb.textContent = banners.length; nb.style.display = banners.length ? 'inline-flex' : 'none'; }
+  } catch(e) {
+    sysLog('⚠ loadBanners: ' + e.message);
+  }
+};
+
+window.deleteBanner = async function(id, titulo) {
+  if (!confirm(`¿Eliminar banner "${titulo}"?`)) return;
+  try {
+    await deleteDoc(doc(db, 'banners', id));
+    showToast('success', 'Banner eliminado');
+    loadBanners();
+  } catch(e) { showToast('error', 'Error: ' + e.message); }
+};
+
+window.toggleBannerActive = async function(id, currentActive) {
+  try {
+    await updateDoc(doc(db, 'banners', id), { activo: !currentActive });
+    showToast('info', !currentActive ? 'Banner activado' : 'Banner ocultado');
+    loadBanners();
+  } catch(e) { showToast('error', 'Error: ' + e.message); }
+};
+/* ═══════════════════════════════════════════════════
+   SERVICIOS & GESTIONES
+═══════════════════════════════════════════════════ */
+let _servicios = [];
+let _editingSrvId = null;
+
+window.loadServicios = async function() {
+  const tbody = document.getElementById('servicios-table');
+  if (tbody) tbody.innerHTML = '<tr><td colspan="7"><div class="loading-state"><div class="spin"></div></div></td></tr>';
+  try {
+    const snap = await getDocs(query(collection(db, 'servicios'), orderBy('orden', 'asc')));
+    _servicios = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    renderServiciosTable(_servicios);
+    const activos = _servicios.filter(s => s.activo !== false).length;
+    const setEl = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+    setEl('srv-total', _servicios.length);
+    setEl('srv-activos', activos);
+    setEl('srv-inactivos', _servicios.length - activos);
+    const nb = document.getElementById('nb-servicios');
+    if (nb) nb.textContent = _servicios.length;
+  } catch(e) { sysLog('⚠ loadServicios: ' + e.message); }
+};
+
+function renderServiciosTable(list) {
+  const tbody = document.getElementById('servicios-table');
+  if (!tbody) return;
+  if (!list.length) {
+    tbody.innerHTML = '<tr><td colspan="7"><div class="empty"><i class="fas fa-concierge-bell"></i><p>Sin servicios registrados</p></div></td></tr>';
+    return;
+  }
+  tbody.innerHTML = list.map(s => `
+    <tr>
+      <td><div style="width:36px;height:36px;border-radius:9px;background:rgba(0,220,255,.08);
+        border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--cyan)">
+        <i class="fas ${s.icono || 'fa-concierge-bell'}"></i></div></td>
+      <td>
+        <div style="font-weight:600;font-size:.82rem">${s.nombre || '—'}</div>
+        <div style="font-size:.68rem;color:var(--muted);font-family:var(--mono)">${(s.descripcion || '').slice(0, 50)}${s.descripcion?.length > 50 ? '…' : ''}</div>
+      </td>
+      <td><span class="badge verified">${s.categoria || '—'}</span></td>
+      <td>
+        ${s.operadorUID ? `
+          <div style="font-size:.76rem;font-weight:500">${s.operadorEmail || s.operadorUID.slice(0,12)+'…'}</div>
+          <div style="font-size:.64rem;font-family:var(--mono);color:var(--muted)">${s.operadorUID.slice(0,16)}…</div>
+        ` : '<span style="color:var(--muted);font-size:.72rem">Sin asignar</span>'}
+      </td>
+      <td><span class="badge ${s.activo !== false ? 'active' : 'banned'}">${s.activo !== false ? 'Activo' : 'Inactivo'}</span></td>
+      <td>
+        <button class="btn btn-ghost btn-xs" onclick="toggleServicio('${s.id}',${s.activo !== false})">
+          <i class="fas fa-${s.activo !== false ? 'eye-slash' : 'eye'}"></i>
+          ${s.activo !== false ? 'Desactivar' : 'Activar'}
+        </button>
+      </td>
+      <td style="display:flex;gap:5px;flex-wrap:wrap">
+        <button class="btn btn-ghost btn-xs" onclick='openServicioModal(${JSON.stringify(s).replace(/'/g,"&#39;")})'>
+          <i class="fas fa-edit"></i>
+        </button>
+        <button class="btn btn-cyan btn-xs" onclick="notificarOperador('${s.id}')" title="Notificar operador">
+          <i class="fas fa-envelope"></i>
+        </button>
+        <button class="btn btn-red btn-xs" onclick="deleteServicio('${s.id}','${(s.nombre||'').replace(/'/g,'')}')">
+          <i class="fas fa-trash"></i>
+        </button>
+      </td>
+    </tr>`).join('');
+}
+
+window.filterServicios = function() {
+  const q   = document.getElementById('srv-search')?.value.toLowerCase() || '';
+  const cat = document.getElementById('srv-filter-cat')?.value || '';
+  const est = document.getElementById('srv-filter-estado')?.value || '';
+  const filtered = _servicios.filter(s => {
+    const matchQ   = !q   || (s.nombre||'').toLowerCase().includes(q);
+    const matchCat = !cat || s.categoria === cat;
+    const matchEst = !est || (est === 'activo' ? s.activo !== false : s.activo === false);
+    return matchQ && matchCat && matchEst;
+  });
+  renderServiciosTable(filtered);
+};
+await updateDoc(doc(db, 'servicios', servicioId), {
+  adminUIDs: arrayUnion(uidDelNuevoAdmin)
+});
+await updateDoc(doc(db, 'servicios', servicioId), {
+  adminUIDs: arrayRemove(uidAEliminar)
+});
+window.openServicioModal = function(prefill = null) {
+  _editingSrvId = prefill?.id || null;
+  ['srv-nombre','srv-desc','srv-uid','srv-email','srv-url','srv-icono'].forEach(id => {
+    const el = document.getElementById(id); if (el) el.value = '';
+  });
+  document.getElementById('srv-orden').value = '0';
+  document.getElementById('srv-activo').checked = true;
+  if (prefill) {
+    const set = (id, v) => { const el = document.getElementById(id); if (el) el.value = v || ''; };
+    set('srv-nombre', prefill.nombre);
+    set('srv-desc', prefill.descripcion);
+    set('srv-uid', prefill.operadorUID);
+    set('srv-email', prefill.operadorEmail);
+    set('srv-url', prefill.url);
+    set('srv-icono', prefill.icono);
+    set('srv-orden', prefill.orden ?? 0);
+    set('srv-categoria', prefill.categoria);
+    const actEl = document.getElementById('srv-activo');
+    if (actEl) actEl.checked = prefill.activo !== false;
+    document.getElementById('srv-modal-title').textContent = 'Editar servicio';
+  } else {
+    document.getElementById('srv-modal-title').textContent = 'Nuevo servicio';
+  }
+  const modal = document.getElementById('srv-modal-bg');
+  modal.style.opacity = '0'; modal.style.pointerEvents = 'all';
+  requestAnimationFrame(() => { modal.style.opacity = '1'; });
+};
+
+window.closeSrvModal = function() {
+  const modal = document.getElementById('srv-modal-bg');
+  modal.style.opacity = '0';
+  setTimeout(() => { modal.style.pointerEvents = 'none'; }, 300);
+  _editingSrvId = null;
+};
+
+window.saveServicio = async function() {
+  const nombre = document.getElementById('srv-nombre')?.value.trim();
+  if (!nombre) { showToast('warn', 'El nombre es obligatorio'); return; }
+  const payload = {
+    nombre,
+    descripcion:   document.getElementById('srv-desc')?.value.trim() || '',
+    categoria:     document.getElementById('srv-categoria')?.value || 'cy',
+    icono:         document.getElementById('srv-icono')?.value.trim() || 'fa-concierge-bell',
+    operadorUID:   document.getElementById('srv-uid')?.value.trim() || '',
+    operadorEmail: document.getElementById('srv-email')?.value.trim() || '',
+    url:           document.getElementById('srv-url')?.value.trim() || '',
+    orden:         parseInt(document.getElementById('srv-orden')?.value) || 0,
+    activo:        document.getElementById('srv-activo')?.checked !== false,
+    updatedAt:     serverTimestamp()
+  };
+  try {
+    const btn = document.getElementById('btn-save-srv');
+    if (btn) btn.disabled = true;
+    if (_editingSrvId) {
+      await updateDoc(doc(db, 'servicios', _editingSrvId), payload);
+      showToast('success', 'Servicio actualizado ✓');
+      sysLog(`SERVICIO EDIT: "${nombre}" · ID ${_editingSrvId}`);
+    } else {
+      payload.creadoEn = serverTimestamp();
+      const ref = await addDoc(collection(db, 'servicios'), payload);
+      showToast('success', 'Servicio creado ✓');
+      sysLog(`SERVICIO NEW: "${nombre}" · ID ${ref.id}`);
+      addNotif('cyan', 'fa-concierge-bell', `Servicio creado: ${nombre}`, `Cat: ${payload.categoria}`);
+    }
+    closeSrvModal();
+    loadServicios();
+    if (btn) btn.disabled = false;
+  } catch(e) { showToast('error', 'Error: ' + e.message); }
+};
+
+window.toggleServicio = async function(id, currentActive) {
+  try {
+    await updateDoc(doc(db, 'servicios', id), { activo: !currentActive });
+    showToast('info', !currentActive ? '✅ Servicio activado' : '🔒 Servicio desactivado');
+    loadServicios();
+  } catch(e) { showToast('error', 'Error: ' + e.message); }
+};
+
+window.deleteServicio = async function(id, nombre) {
+  if (!confirm(`¿Eliminar el servicio "${nombre}"? Esta acción es irreversible.`)) return;
+  try {
+    await deleteDoc(doc(db, 'servicios', id));
+    showToast('success', 'Servicio eliminado');
+    loadServicios();
+  } catch(e) { showToast('error', 'Error: ' + e.message); }
+};
+
+window.notificarOperador = async function(id) {
+  const srv = _servicios.find(s => s.id === id);
+  if (!srv?.operadorEmail) { showToast('warn', 'Este servicio no tiene operador asignado'); return; }
+  const subject = `Panel de operador asignado · ${srv.nombre} · Compra Ya`;
+  const body = `Hola,\n\nSe te ha asignado como operador del servicio "${srv.nombre}" en la plataforma Compra Ya (Guinea Ecuatorial).\n\nAccede a tu panel desde:\n${srv.url || 'https://comprayage.com'}\n\nTu UID de acceso: ${srv.operadorUID}\n\n— CY Admin v${CY_VERSION}`;
+  const r = await sendEmail(srv.operadorEmail, subject, body);
+  showToast(r.ok ? 'success' : 'warn', r.ok ? `Notificación enviada a ${srv.operadorEmail}` : 'Error al enviar');
+};
 
 // Uso seguro
 const communityId = getSafeParam('id');  // en lugar de URLSearchParams directo

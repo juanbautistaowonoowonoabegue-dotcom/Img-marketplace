@@ -1791,65 +1791,72 @@ select option { background: white; }
 
 <div id="toast"></div>
 
+ 
 <!-- ════════════════════════════════════════
      FIREBASE + LOGIC
 ════════════════════════════════════════ -->
 <script type="module">
 import { app } from './js/config.js';
-import { getFirestore, collection, addDoc, serverTimestamp, doc, getDoc, updateDoc }
-  from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
-import { getAuth, onAuthStateChanged }
-  from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
-import { getStorage, ref as sRef, uploadBytes, getDownloadURL }
-  from "https://www.gstatic.com/firebasejs/10.14.1/firebase-storage.js";
+import {
+  getFirestore, collection, addDoc, serverTimestamp,
+  doc, getDoc, updateDoc
+} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+import {
+  getAuth, onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+import {
+  getStorage, ref as sRef, uploadBytes, getDownloadURL
+} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-storage.js";
 
+/* ─── FIREBASE SERVICES ─── */
 const db      = getFirestore(app);
 const auth    = getAuth(app);
 const storage = getStorage(app);
 
 /* ─── CONSTANTS ─── */
-const GEMINI_MODEL = 'gemini-2.5-flash';
+const GEMINI_MODEL = 'gemini-2.0-flash';
 const MAX_FREE_PUB = 20;
 const MAX_PHOTOS   = 5;
 const TOTAL_STEPS  = 4;
 
 /* ─── STATE ─── */
-let currentUser   = null;
-let userData      = {};
-let isPremium     = false;
-let pubsThisMonth = 0;
-let currentStep   = 1;
-let selectedFiles = [];
-let compressedBlobs = [];
-let publishedId   = null;
-let selectedDialCode = '+240';
-let toastTimer    = null;
-let selectedQTags = [];
-let precioNumerico = 0;
-let aiCallCount    = 0; // Tracks AI calls this session
+let currentUser          = null;
+let userData             = {};
+let isPremium            = false;
+let pubsThisMonth        = 0;
+let currentStep          = 1;
+let selectedFiles        = [];
+let compressedBlobs      = [];
+let publishedId          = null;
+let selectedDialCode     = '+240';
+let toastTimer           = null;
+let selectedQTags        = [];
+let precioNumerico       = 0;
+let aiCallCount          = 0;
 let selectedPriceOptionIdx = -1;
 let selectedDescOptionIdx  = -1;
-let priceOptions  = [];
-let descOptions   = [];
+let priceOptions         = [];
+let descOptions          = [];
 
 /* ─── QUALITY TAGS ─── */
 const QTAGS = [
-  {id:'calidad',  label:'Producto de calidad', cls:'qt-green',  icon:'star'},
-  {id:'verificado',label:'Producto verificado', cls:'qt-blue',  icon:'check'},
-  {id:'doc',      label:'Con documentación',   cls:'qt-amber',  icon:'file'},
-  {id:'garantia', label:'Con garantía',        cls:'qt-green',  icon:'shield'},
-  {id:'importado',label:'Importado',           cls:'qt-teal',   icon:'plane'},
-  {id:'nacional', label:'Fabricación nacional', cls:'qt-blue',  icon:'flag'},
-  {id:'urgente',  label:'Venta urgente',       cls:'qt-red',    icon:'zap'},
-  {id:'negociable',label:'Precio negociable',  cls:'qt-purple', icon:'handshake'},
+  { id: 'calidad',    label: 'Producto de calidad',   cls: 'qt-green',  icon: 'star'      },
+  { id: 'verificado', label: 'Producto verificado',   cls: 'qt-blue',   icon: 'check'     },
+  { id: 'doc',        label: 'Con documentación',     cls: 'qt-amber',  icon: 'file'      },
+  { id: 'garantia',   label: 'Con garantía',          cls: 'qt-green',  icon: 'shield'    },
+  { id: 'importado',  label: 'Importado',             cls: 'qt-teal',   icon: 'plane'     },
+  { id: 'nacional',   label: 'Fabricación nacional',  cls: 'qt-blue',   icon: 'flag'      },
+  { id: 'urgente',    label: 'Venta urgente',         cls: 'qt-red',    icon: 'zap'       },
+  { id: 'negociable', label: 'Precio negociable',     cls: 'qt-purple', icon: 'handshake' },
 ];
 
 /* ─── TOAST ─── */
-window.showToast = (msg, type='info', dur=3800) => {
+window.showToast = (msg, type = 'info', dur = 3800) => {
   const el = document.getElementById('toast');
-  el.innerHTML = msg; el.className = `show ${type}`;
+  el.innerHTML = msg;
+  el.className = `show ${type}`;
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => el.className = '', dur);
+  toastTimer = setTimeout(() => (el.className = ''), dur);
 };
 
 /* ─── AUTH ─── */
@@ -1870,19 +1877,22 @@ onAuthStateChanged(auth, async user => {
 
 async function loadUserData(uid) {
   try {
-    const snap = await getDoc(doc(db,'usuarios',uid));
-    userData = snap.exists() ? snap.data() : {};
+    const snap = await getDoc(doc(db, 'usuarios', uid));
+    userData  = snap.exists() ? snap.data() : {};
     const role = userData.role || 'normal';
-    isPremium = userData.isPremium === true || role === 'premium' || role === 'verificado';
+    isPremium  = userData.isPremium === true || role === 'premium' || role === 'verificado';
     const ahora = new Date();
-    const mes = `${ahora.getFullYear()}-${String(ahora.getMonth()+1).padStart(2,'0')}`;
-    pubsThisMonth = userData.ultimoResetMes === mes ? (userData.publicacionesEsteMes||0) : 0;
-  } catch(e) { console.error('loadUserData:', e); }
+    const mes   = `${ahora.getFullYear()}-${String(ahora.getMonth() + 1).padStart(2, '0')}`;
+    pubsThisMonth = userData.ultimoResetMes === mes
+      ? (userData.publicacionesEsteMes || 0)
+      : 0;
+  } catch (e) {
+    console.error('loadUserData:', e);
+  }
 }
 
 /* ─── UI SETUP ─── */
 function applyUI() {
-  // Premium pill
   const pill = document.getElementById('premPill');
   if (isPremium) {
     pill.classList.add('active');
@@ -1890,15 +1900,16 @@ function applyUI() {
   } else {
     document.getElementById('premPillText').textContent = `${pubsThisMonth}/${MAX_FREE_PUB}`;
   }
-  // Premium section
+
   const restantes = Math.max(0, MAX_FREE_PUB - pubsThisMonth);
   document.getElementById('pubsRestantes').textContent = restantes;
+
   if (isPremium) {
     document.getElementById('premNotActive').style.display = 'none';
-    document.getElementById('premActive').style.display = 'block';
+    document.getElementById('premActive').style.display    = 'block';
     const exp = userData.premiumExpiry
       ? new Date(userData.premiumExpiry.toMillis?.() || userData.premiumExpiry)
-          .toLocaleDateString('es-ES',{day:'numeric',month:'long',year:'numeric'})
+          .toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' })
       : 'tiempo indefinido';
     document.getElementById('premExpiry').textContent = exp;
   }
@@ -1916,14 +1927,14 @@ function buildQTags() {
 
 function getTagSVG(icon) {
   const icons = {
-    star:   `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`,
-    check:  `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>`,
-    file:   `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>`,
-    shield: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>`,
-    plane:  `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>`,
-    flag:   `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>`,
-    zap:    `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>`,
-    handshake:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.414z"/></svg>`,
+    star:      `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`,
+    check:     `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>`,
+    file:      `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>`,
+    shield:    `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>`,
+    plane:     `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>`,
+    flag:      `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>`,
+    zap:       `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>`,
+    handshake: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.414z"/></svg>`,
   };
   return icons[icon] || '';
 }
@@ -1936,28 +1947,23 @@ window.toggleQTag = el => {
     : selectedQTags.filter(x => x !== id);
 };
 
-/* ─── PRICE INPUT (flexible: 1.250,50 / 1250 / 1,250.50) ─── */
-window.onPriceInput = function(el) {
+/* ─── PRICE INPUT ─── */
+window.onPriceInput = function (el) {
   clearFieldErr('precio');
-  const raw = el.value;
-  precioNumerico = parseFlexiblePrice(raw);
+  precioNumerico = parseFlexiblePrice(el.value);
 };
 
 function parseFlexiblePrice(raw) {
   if (!raw) return 0;
   let s = raw.trim();
-  // Detect decimal separator: if last separator is ',' and has 1-2 digits after → decimal comma
   const lastComma = s.lastIndexOf(',');
   const lastDot   = s.lastIndexOf('.');
   if (lastComma > lastDot && s.length - lastComma <= 3) {
-    // European format: 1.250,50
-    s = s.replace(/\./g,'').replace(',','.');
+    s = s.replace(/\./g, '').replace(',', '.');
   } else if (lastDot > lastComma && s.length - lastDot <= 3) {
-    // US format: 1,250.50
-    s = s.replace(/,/g,'');
+    s = s.replace(/,/g, '');
   } else {
-    // No decimal — strip all separators
-    s = s.replace(/[.,]/g,'');
+    s = s.replace(/[.,]/g, '');
   }
   const n = parseFloat(s);
   return isNaN(n) ? 0 : n;
@@ -1965,129 +1971,131 @@ function parseFlexiblePrice(raw) {
 
 function formatPriceDisplay(num) {
   if (!num) return '0 FCFA';
-  return num.toLocaleString('es-GQ', {minimumFractionDigits:0, maximumFractionDigits:2}) + ' FCFA';
+  return num.toLocaleString('es-GQ', { minimumFractionDigits: 0, maximumFractionDigits: 2 }) + ' FCFA';
 }
 
 /* ─── PREMIUM CODE ─── */
 window.activarCodigo = async () => {
-  const raw = (document.getElementById('premCodeInput').value||'').trim().toUpperCase();
+  const raw = (document.getElementById('premCodeInput').value || '').trim().toUpperCase();
   if (!raw) { showToast('Introduce un código Premium', 'warn'); return; }
   showToast('Verificando código…', 'info');
   try {
-    const codeRef  = doc(db,'codigosPremium',raw);
+    const codeRef  = doc(db, 'codigosPremium', raw);
     const codeSnap = await getDoc(codeRef);
     if (!codeSnap.exists()) { showToast('Código no válido', 'error'); return; }
     const cd = codeSnap.data();
     if (cd.usado) { showToast('Este código ya fue utilizado', 'error'); return; }
-    const dias = cd.duracionDias || 30;
-    const expiry = new Date(); expiry.setDate(expiry.getDate() + dias);
+    const dias   = cd.duracionDias || 30;
+    const expiry = new Date();
+    expiry.setDate(expiry.getDate() + dias);
     await Promise.all([
-      updateDoc(codeRef, {usado:true,usadoPor:currentUser.uid,usadoEn:serverTimestamp()}),
-      updateDoc(doc(db,'usuarios',currentUser.uid), {isPremium:true,premiumExpiry:expiry,role:'premium'})
+      updateDoc(codeRef, { usado: true, usadoPor: currentUser.uid, usadoEn: serverTimestamp() }),
+      updateDoc(doc(db, 'usuarios', currentUser.uid), { isPremium: true, premiumExpiry: expiry, role: 'premium' }),
     ]);
-    isPremium = true; userData.isPremium = true; userData.premiumExpiry = expiry;
+    isPremium = true;
+    userData.isPremium    = true;
+    userData.premiumExpiry = expiry;
     applyUI();
     showToast(`Premium activado hasta ${expiry.toLocaleDateString('es-ES')}`, 'success', 5000);
-  } catch(e) { showToast('Error al verificar el código', 'error'); }
+  } catch (e) {
+    showToast('Error al verificar el código', 'error');
+  }
 };
 
 window.scrollToPremium = () => {
-  document.getElementById('premiumSection')?.scrollIntoView({behavior:'smooth', block:'center'});
+  document.getElementById('premiumSection')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
 };
 
 /* ─── AI GATE LOGIC ─── */
 function checkAIGate(gateId) {
-  // 1st call always free; 2nd+ require premium
-  if (aiCallCount === 0) return true; // free
-  if (isPremium) return true;
-  // Show gate message
-  document.getElementById(gateId).classList.add('show');
+  if (aiCallCount === 0 || isPremium) return true;
+  document.getElementById(gateId)?.classList.add('show');
   return false;
 }
 
-/* ─── GEMINI API ─── */
-async function callGemini(prompt, imgBase64=null, mimeType=null) {
-  // Try to get key from config
-  let key = '';
-  try { key = window.__GEMINI_KEY__ || ''; } catch{}
-  const url = `https://generativelanguage.googleapis.com/v1/models/${GEMINI_MODEL}:generateContent?key=${key}`;
-  const parts = [];
-  if (imgBase64 && mimeType) {
-    parts.push({inline_data:{mime_type:mimeType, data:imgBase64.replace(/^data:[^,]+,/,'')}});
-  }
-  parts.push({text:prompt});
-  const res = await fetch(url, {
-    method:'POST', headers:{'Content-Type':'application/json'},
+/* ─── GEMINI API — llama a Cloud Function, nunca expone la clave ─── */
+async function callGemini(prompt, imgBase64 = null, mimeType = null) {
+  const response = await fetch('/gemini/geminiGenerate', {
+    method:  'POST',
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      contents:[{parts}],
-      generationConfig:{temperature:0.75, maxOutputTokens:1400},
+      prompt,
+      imageBase64: imgBase64,
+      mimeType,
+      model: GEMINI_MODEL
     })
   });
-  if (!res.ok) { const e = await res.json().catch(()=>{}); throw new Error(`Gemini ${res.status}: ${e?.error?.message||'Error'}`); }
-  const data = await res.json();
-  const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
-  if (!text) throw new Error('Respuesta vacía');
-  return text;
+
+  const data = await response.json().catch(() => ({}));
+
+  if (!response.ok) {
+    throw new Error(data.error || `Error ${response.status} al contactar la IA`);
+  }
+
+  if (!data.text) throw new Error('Respuesta vacía de Gemini');
+  return data.text;
 }
 
 function safeParseJSON(text) {
   try {
-    const clean = text.replace(/```json|```/g,'').trim();
-    const m = clean.match(/[\[{][\s\S]*[\]}]/);
+    const clean = text.replace(/```json|```/g, '').trim();
+    const m     = clean.match(/[\[{][\s\S]*[\]}]/);
     return m ? JSON.parse(m[0]) : null;
-  } catch { return null; }
+  } catch {
+    return null;
+  }
 }
 
 async function fileToB64(file) {
-  return new Promise((res,rej) => {
+  return new Promise((res, rej) => {
     const r = new FileReader();
     r.onload  = e => res(e.target.result);
-    r.onerror = () => rej(new Error('Error leyendo'));
+    r.onerror = () => rej(new Error('Error leyendo archivo'));
     r.readAsDataURL(file);
   });
 }
 
-/* ─── AI: PRECIO (3 opciones) ─── */
+/* ─── AI: PRECIO ─── */
 window.runPrecioIA = async () => {
   const gate = document.getElementById('gatePrice');
   gate.classList.remove('show');
   if (!checkAIGate('gatePrice')) return;
   aiCallCount++;
 
-  const btn = document.getElementById('btnPrecioIA');
+  const btn  = document.getElementById('btnPrecioIA');
   const orig = btn.innerHTML;
   btn.disabled = true;
   btn.innerHTML = `<svg class="ai-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 11-6.219-8.56"/></svg> Analizando mercado…`;
 
   try {
-    const titulo = document.getElementById('titulo').value||'';
-    const cat    = document.getElementById('categoria').value||'';
-    const estado = document.getElementById('estado').value||'nuevo';
-    let b64=null, mime=null;
+    const titulo = document.getElementById('titulo').value || '';
+    const cat    = document.getElementById('categoria').value || '';
+    const estado = document.getElementById('estado').value || 'nuevo';
+    let b64 = null, mime = null;
     if (selectedFiles.length) { b64 = await fileToB64(selectedFiles[0]); mime = selectedFiles[0].type; }
 
     const prompt = `Eres experto en precios del mercado de Guinea Ecuatorial (Malabo).
-Analiza el producto${b64?' de la imagen':`: "${titulo}"`} (categoría: ${cat}, estado: ${estado}).
+Analiza el producto${b64 ? ' de la imagen' : `: "${titulo}"`} (categoría: ${cat}, estado: ${estado}).
 Devuelve SOLO JSON válido (sin markdown), array de 3 objetos:
 [
   {"precio": 50000, "etiqueta": "Conservador", "razon": "Por debajo del mercado, venta rápida garantizada"},
-  {"precio": 75000, "etiqueta": "Óptimo", "razon": "Precio justo para el estado y la demanda actual"},
-  {"precio": 95000, "etiqueta": "Premium", "razon": "Si el producto está en excelente estado y tienes tiempo"}
+  {"precio": 75000, "etiqueta": "Óptimo",      "razon": "Precio justo para el estado y la demanda actual"},
+  {"precio": 95000, "etiqueta": "Premium",     "razon": "Si el producto está en excelente estado y tienes tiempo"}
 ]
 Usa precios realistas en FCFA. Solo el JSON.`;
 
     const raw = await callGemini(prompt, b64, mime);
     priceOptions = safeParseJSON(raw);
-
-    if (!Array.isArray(priceOptions) || !priceOptions.length) throw new Error('Sin datos');
+    if (!Array.isArray(priceOptions) || !priceOptions.length) throw new Error('Sin datos de precios');
 
     renderPriceOptions(priceOptions);
     document.getElementById('aiPriceOptions').classList.add('show');
     showToast('3 opciones de precio generadas', 'success');
-  } catch(e) {
-    showToast('Error IA: ' + e.message.slice(0,55), 'error');
+  } catch (e) {
+    showToast('Error IA: ' + e.message.slice(0, 55), 'error');
   } finally {
-    btn.disabled = false; btn.innerHTML = orig;
+    btn.disabled = false;
+    btn.innerHTML = orig;
   }
 };
 
@@ -2095,18 +2103,17 @@ function renderPriceOptions(opts) {
   selectedPriceOptionIdx = -1;
   document.getElementById('usePriceBtn').classList.remove('show');
   const list = document.getElementById('priceOptionsList');
-  list.innerHTML = opts.map((o,i) => `
+  list.innerHTML = opts.map((o, i) => `
     <div class="option-bubble" data-idx="${i}" onclick="selectPriceOption(${i})">
-      <div class="option-num">${o.etiqueta||`Opción ${i+1}`}</div>
+      <div class="option-num">${o.etiqueta || `Opción ${i + 1}`}</div>
       <div class="option-price-val">${formatPriceDisplay(o.precio)}</div>
-      <div class="option-price-reason">${o.razon||''}</div>
+      <div class="option-price-reason">${o.razon || ''}</div>
     </div>`).join('');
 }
 
 window.selectPriceOption = idx => {
-  document.querySelectorAll('#priceOptionsList .option-bubble').forEach((el,i) => {
-    el.classList.toggle('selected', i===idx);
-  });
+  document.querySelectorAll('#priceOptionsList .option-bubble')
+    .forEach((el, i) => el.classList.toggle('selected', i === idx));
   selectedPriceOptionIdx = idx;
   document.getElementById('usePriceBtn').classList.add('show');
 };
@@ -2120,48 +2127,49 @@ window.usarPrecioSeleccionado = () => {
   showToast('Precio aplicado al anuncio', 'success');
 };
 
-/* ─── AI: DESCRIPCIÓN (3 opciones) ─── */
+/* ─── AI: DESCRIPCIÓN ─── */
 window.runGenerarDesc = async () => {
   const gate = document.getElementById('gateDesc');
   gate.classList.remove('show');
   if (!checkAIGate('gateDesc')) return;
   aiCallCount++;
 
-  const btn = document.getElementById('btnGenDesc');
+  const btn  = document.getElementById('btnGenDesc');
   const orig = btn.innerHTML;
   btn.disabled = true;
   btn.innerHTML = `<svg class="ai-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 11-6.219-8.56"/></svg> Generando…`;
 
   try {
-    const titulo = document.getElementById('titulo').value||'';
-    const cat    = document.getElementById('categoria').value||'';
-    const estado = document.getElementById('estado').value||'nuevo';
+    const titulo = document.getElementById('titulo').value || '';
+    const cat    = document.getElementById('categoria').value || '';
+    const estado = document.getElementById('estado').value || 'nuevo';
     const precio = precioNumerico;
-    let b64=null, mime=null;
+    let b64 = null, mime = null;
     if (selectedFiles.length) { b64 = await fileToB64(selectedFiles[0]); mime = selectedFiles[0].type; }
 
     const prompt = `Eres experto en ventas en Guinea Ecuatorial.
-Producto${b64?' (ver imagen)':`: "${titulo}"`} — categoría: ${cat} — estado: ${estado}${precio?` — precio: ${precio} FCFA`:''}.
+Producto${b64 ? ' (ver imagen)' : `: "${titulo}"`} — categoría: ${cat} — estado: ${estado}${precio ? ` — precio: ${precio} FCFA` : ''}.
 Genera 3 descripciones distintas para vender este producto en Compra Ya (marketplace de Guinea Ecuatorial).
 Devuelve SOLO JSON válido, sin markdown:
 [
-  {"tono": "Conciso y directo", "texto": "descripción corta ~200 chars"},
-  {"tono": "Detallado y técnico", "texto": "descripción larga ~400 chars con especificaciones"},
-  {"tono": "Emocional y persuasivo", "texto": "descripción media ~300 chars con llamada a la acción"}
+  {"tono": "Conciso y directo",       "texto": "descripción corta ~200 chars"},
+  {"tono": "Detallado y técnico",     "texto": "descripción larga ~400 chars con especificaciones"},
+  {"tono": "Emocional y persuasivo",  "texto": "descripción media ~300 chars con llamada a la acción"}
 ]
 Solo el JSON, sin texto adicional.`;
 
     const raw = await callGemini(prompt, b64, mime);
     descOptions = safeParseJSON(raw);
-    if (!Array.isArray(descOptions) || !descOptions.length) throw new Error('Sin datos');
+    if (!Array.isArray(descOptions) || !descOptions.length) throw new Error('Sin datos de descripción');
 
     renderDescOptions(descOptions);
     document.getElementById('aiDescOptions').classList.add('show');
     showToast('3 opciones de descripción listas', 'success');
-  } catch(e) {
-    showToast('Error IA: ' + e.message.slice(0,55), 'error');
+  } catch (e) {
+    showToast('Error IA: ' + e.message.slice(0, 55), 'error');
   } finally {
-    btn.disabled = false; btn.innerHTML = orig;
+    btn.disabled = false;
+    btn.innerHTML = orig;
   }
 };
 
@@ -2169,17 +2177,16 @@ function renderDescOptions(opts) {
   selectedDescOptionIdx = -1;
   document.getElementById('useDescBtn').classList.remove('show');
   const list = document.getElementById('descOptionsList');
-  list.innerHTML = opts.map((o,i) => `
+  list.innerHTML = opts.map((o, i) => `
     <div class="option-bubble" data-idx="${i}" onclick="selectDescOption(${i})">
-      <div class="option-num">${o.tono||`Opción ${i+1}`}</div>
-      <div class="option-text">${o.texto||''}</div>
+      <div class="option-num">${o.tono || `Opción ${i + 1}`}</div>
+      <div class="option-text">${o.texto || ''}</div>
     </div>`).join('');
 }
 
 window.selectDescOption = idx => {
-  document.querySelectorAll('#descOptionsList .option-bubble').forEach((el,i) => {
-    el.classList.toggle('selected', i===idx);
-  });
+  document.querySelectorAll('#descOptionsList .option-bubble')
+    .forEach((el, i) => el.classList.toggle('selected', i === idx));
   selectedDescOptionIdx = idx;
   document.getElementById('useDescBtn').classList.add('show');
 };
@@ -2187,21 +2194,21 @@ window.selectDescOption = idx => {
 window.usarDescSeleccionada = () => {
   if (selectedDescOptionIdx < 0 || !descOptions[selectedDescOptionIdx]) return;
   const o = descOptions[selectedDescOptionIdx];
-  document.getElementById('descripcion').value = o.texto||'';
+  document.getElementById('descripcion').value = o.texto || '';
   updateCounter(document.getElementById('descripcion'), 'descCount', 1800);
   document.getElementById('aiDescOptions').classList.remove('show');
   showToast('Descripción aplicada al anuncio', 'success');
 };
 
 window.runMejorarDesc = async () => {
-  const desc = (document.getElementById('descripcion').value||'').trim();
+  const desc = (document.getElementById('descripcion').value || '').trim();
   if (desc.length < 10) { showToast('Escribe algo primero para mejorar', 'warn'); return; }
   const gate = document.getElementById('gateDesc');
   gate.classList.remove('show');
   if (!checkAIGate('gateDesc')) return;
   aiCallCount++;
 
-  const btn = document.getElementById('btnMejorarDesc');
+  const btn  = document.getElementById('btnMejorarDesc');
   const orig = btn.innerHTML;
   btn.disabled = true;
   btn.innerHTML = `<svg class="ai-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 11-6.219-8.56"/></svg> Mejorando…`;
@@ -2217,30 +2224,33 @@ Descripción original: ${desc}`;
     renderDescOptions(descOptions);
     document.getElementById('aiDescOptions').classList.add('show');
     showToast('3 versiones mejoradas listas', 'success');
-  } catch(e) {
-    showToast('Error IA: ' + e.message.slice(0,55), 'error');
+  } catch (e) {
+    showToast('Error IA: ' + e.message.slice(0, 55), 'error');
   } finally {
-    btn.disabled = false; btn.innerHTML = orig;
+    btn.disabled = false;
+    btn.innerHTML = orig;
   }
 };
 
 /* ─── IMAGE HANDLING ─── */
-async function compressToWebP(file, maxW=1200, quality=0.82) {
-  return new Promise((resolve,reject) => {
+async function compressToWebP(file, maxW = 1200, quality = 0.82) {
+  return new Promise((resolve, reject) => {
     const img = new Image();
     const url = URL.createObjectURL(file);
     img.onload = () => {
       URL.revokeObjectURL(url);
-      let {width,height} = img;
-      if (width > maxW) { height = Math.round(height*maxW/width); width = maxW; }
+      let { width, height } = img;
+      if (width > maxW) { height = Math.round(height * maxW / width); width = maxW; }
       const canvas = document.createElement('canvas');
-      canvas.width=width; canvas.height=height;
+      canvas.width  = width;
+      canvas.height = height;
       const ctx = canvas.getContext('2d');
-      ctx.fillStyle='#fff'; ctx.fillRect(0,0,width,height);
-      ctx.drawImage(img,0,0,width,height);
+      ctx.fillStyle = '#fff';
+      ctx.fillRect(0, 0, width, height);
+      ctx.drawImage(img, 0, 0, width, height);
       canvas.toBlob(b => b ? resolve(b) : reject(new Error('toBlob failed')), 'image/webp', quality);
     };
-    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('Load error')); };
+    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('Error cargando imagen')); };
     img.src = url;
   });
 }
@@ -2249,16 +2259,17 @@ async function compressAll() {
   const cw = document.getElementById('compressWrap');
   const cf = document.getElementById('compressFill');
   const cl = document.getElementById('compressLbl');
-  cw.classList.add('show'); compressedBlobs = [];
-  for (let i=0; i<selectedFiles.length; i++) {
-    const pct = Math.round(i/selectedFiles.length*100);
-    cf.style.width = pct+'%';
-    cl.textContent = `Comprimiendo ${i+1} de ${selectedFiles.length} a WebP…`;
-    try { compressedBlobs.push(await compressToWebP(selectedFiles[i])); }
+  cw.classList.add('show');
+  compressedBlobs = [];
+  for (let i = 0; i < selectedFiles.length; i++) {
+    const pct = Math.round(i / selectedFiles.length * 100);
+    cf.style.width  = pct + '%';
+    cl.textContent  = `Comprimiendo ${i + 1} de ${selectedFiles.length} a WebP…`;
+    try   { compressedBlobs.push(await compressToWebP(selectedFiles[i])); }
     catch { compressedBlobs.push(selectedFiles[i]); }
   }
-  cf.style.width='100%';
-  cl.textContent = `${selectedFiles.length} imagen${selectedFiles.length>1?'es':''} lista${selectedFiles.length>1?'s':''}`;
+  cf.style.width = '100%';
+  cl.textContent = `${selectedFiles.length} imagen${selectedFiles.length > 1 ? 'es' : ''} lista${selectedFiles.length > 1 ? 's' : ''}`;
   setTimeout(() => {
     cw.classList.remove('show');
     document.getElementById('webpBadge').classList.add('show');
@@ -2271,9 +2282,10 @@ window.triggerFileInput = () => {
 };
 window.handleFileSelect = e => addFiles(Array.from(e.target.files));
 window.handleDragOver   = e => { e.preventDefault(); document.getElementById('uploadZone').classList.add('drag-over'); };
-window.handleDragLeave  = () => document.getElementById('uploadZone').classList.remove('drag-over');
-window.handleDrop       = e => {
-  e.preventDefault(); document.getElementById('uploadZone').classList.remove('drag-over');
+window.handleDragLeave  = ()  => document.getElementById('uploadZone').classList.remove('drag-over');
+window.handleDrop       = e  => {
+  e.preventDefault();
+  document.getElementById('uploadZone').classList.remove('drag-over');
   addFiles(Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/')));
 };
 
@@ -2283,23 +2295,23 @@ async function addFiles(files) {
   const added = files.slice(0, space);
   selectedFiles = [...selectedFiles, ...added];
   renderImages();
-  if (added.length) showToast(`${added.length} foto${added.length>1?'s':''} añadida${added.length>1?'s':''}`, 'success');
+  if (added.length) showToast(`${added.length} foto${added.length > 1 ? 's' : ''} añadida${added.length > 1 ? 's' : ''}`, 'success');
   await compressAll();
 }
 
 function renderImages() {
   const grid = document.getElementById('imgsGrid');
-  const zone = document.getElementById('uploadZone');
   const pill = document.getElementById('photoPill');
   const n    = selectedFiles.length;
   pill.textContent = `${n} / ${MAX_PHOTOS} fotos`;
-  pill.className   = `photo-pill${n>=MAX_PHOTOS?' full':''}`;
-  if (!n) { grid.style.display='none'; return; }
-  grid.style.display='flex';
+  pill.className   = `photo-pill${n >= MAX_PHOTOS ? ' full' : ''}`;
+  if (!n) { grid.style.display = 'none'; return; }
+  grid.style.display = 'flex';
   document.getElementById('mainImg').src = URL.createObjectURL(selectedFiles[0]);
+
   const row = document.getElementById('thumbRow');
   row.innerHTML = '';
-  for (let i=1; i<n; i++) {
+  for (let i = 1; i < n; i++) {
     const s = document.createElement('div');
     s.className = 'thumb-slot';
     s.innerHTML = `<img src="${URL.createObjectURL(selectedFiles[i])}" alt="">
@@ -2312,29 +2324,30 @@ function renderImages() {
     const add = document.createElement('div');
     add.className = 'add-thumb';
     add.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span>Añadir</span>`;
-    add.onclick = () => document.getElementById('fileInput').click();
+    add.onclick   = () => document.getElementById('fileInput').click();
     row.appendChild(add);
   }
-  // Main remove btn
-  let mr = document.getElementById('mainPreview').querySelector('.thumb-rm');
+
+  const mainPreview = document.getElementById('mainPreview');
+  let mr = mainPreview.querySelector('.thumb-rm');
   if (!mr) {
     mr = document.createElement('button');
-    mr.className = 'thumb-rm';
+    mr.className  = 'thumb-rm';
     mr.style.cssText = 'position:absolute;top:-6px;right:-6px;z-index:5';
-    mr.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`;
-    mr.onclick = () => removeImg(0);
-    document.getElementById('mainPreview').appendChild(mr);
+    mr.innerHTML  = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`;
+    mainPreview.appendChild(mr);
   }
+  mr.onclick = () => removeImg(0);
 }
 
 window.removeImg = i => {
   URL.revokeObjectURL(selectedFiles[i]);
-  selectedFiles.splice(i,1);
-  compressedBlobs.splice(i,1);
+  selectedFiles.splice(i, 1);
+  compressedBlobs.splice(i, 1);
   renderImages();
   if (!selectedFiles.length) {
     document.getElementById('webpBadge').classList.remove('show');
-    document.getElementById('imgsGrid').style.display='none';
+    document.getElementById('imgsGrid').style.display = 'none';
   }
   showToast('Foto eliminada');
 };
@@ -2351,8 +2364,13 @@ window.selectPrecioMode = el => {
   el.classList.add('sel');
   document.getElementById('precioMode').value = el.dataset.val;
   const inp = document.getElementById('precio');
-  if (el.dataset.val==='gratuito'||el.dataset.val==='consultar') { inp.value='0'; inp.disabled=true; precioNumerico=0; }
-  else { inp.disabled=false; }
+  if (el.dataset.val === 'gratuito' || el.dataset.val === 'consultar') {
+    inp.value    = '0';
+    inp.disabled = true;
+    precioNumerico = 0;
+  } else {
+    inp.disabled = false;
+  }
 };
 
 window.updateSubcats = () => {
@@ -2360,35 +2378,38 @@ window.updateSubcats = () => {
   const grp = document.getElementById('subcatGroup');
   const sel = document.getElementById('subcategoria');
   const subs = {
-    tecnologia:['Teléfonos','Ordenadores','Tablets','Gaming','Wearables','Cámaras','Periféricos'],
-    electrodomesticos:['Neveras','Televisores','Lavadoras','Cocinas','Climatización','Aspiradoras'],
-    moda:['Hombre','Mujer','Calzado','Bolsos y accesorios','Joyería','Gorras y sombreros'],
-    vehiculos:['Coches','Motos','Autobuses y furgones','Recambios y accesorios'],
-    alimentacion:['Carne y pescado','Frutas y verduras','Productos de despensa','Bebidas','Productos locales'],
-    belleza:['Maquillaje','Cuidado de piel','Cuidado capilar','Perfumes y colonias'],
-    deportes:['Fútbol','Fitness y gimnasio','Ciclismo','Artes marciales','Natación'],
-    hogar:['Muebles','Dormitorio','Decoración','Bricolaje y jardín'],
-    servicios_tecnicos:['Reparación móviles','Informática','Electricidad','Fontanería','Climatización'],
-    servicios_salud:['Consultas médicas','Farmacia','Odontología','Optometría','Psicología'],
-    servicios_educacion:['Clases particulares','Preparación exámenes','Informática','Idiomas','Música'],
-    servicios_transporte:['Mudanzas','Mensajería','Taxi y traslados','Transporte aéreo'],
-    servicios_construccion:['Obra nueva','Reformas','Carpintería','Ventanas y puertas'],
-    servicios_legales:['Abogados','Notaría','Asesoría fiscal','Derecho mercantil'],
-    servicios_financieros:['Préstamos','Seguros','Inversión','Cambio de divisas'],
-    servicios_eventos:['Bodas','Fiestas y cumpleaños','Fotografía y video','DJ y animación'],
-    servicios_marketing:['Redes sociales','Diseño gráfico','Páginas web','Publicidad digital'],
+    tecnologia:              ['Teléfonos','Ordenadores','Tablets','Gaming','Wearables','Cámaras','Periféricos'],
+    electrodomesticos:       ['Neveras','Televisores','Lavadoras','Cocinas','Climatización','Aspiradoras'],
+    moda:                    ['Hombre','Mujer','Calzado','Bolsos y accesorios','Joyería','Gorras y sombreros'],
+    vehiculos:               ['Coches','Motos','Autobuses y furgones','Recambios y accesorios'],
+    alimentacion:            ['Carne y pescado','Frutas y verduras','Productos de despensa','Bebidas','Productos locales'],
+    belleza:                 ['Maquillaje','Cuidado de piel','Cuidado capilar','Perfumes y colonias'],
+    deportes:                ['Fútbol','Fitness y gimnasio','Ciclismo','Artes marciales','Natación'],
+    hogar:                   ['Muebles','Dormitorio','Decoración','Bricolaje y jardín'],
+    servicios_tecnicos:      ['Reparación móviles','Informática','Electricidad','Fontanería','Climatización'],
+    servicios_salud:         ['Consultas médicas','Farmacia','Odontología','Optometría','Psicología'],
+    servicios_educacion:     ['Clases particulares','Preparación exámenes','Informática','Idiomas','Música'],
+    servicios_transporte:    ['Mudanzas','Mensajería','Taxi y traslados','Transporte aéreo'],
+    servicios_construccion:  ['Obra nueva','Reformas','Carpintería','Ventanas y puertas'],
+    servicios_legales:       ['Abogados','Notaría','Asesoría fiscal','Derecho mercantil'],
+    servicios_financieros:   ['Préstamos','Seguros','Inversión','Cambio de divisas'],
+    servicios_eventos:       ['Bodas','Fiestas y cumpleaños','Fotografía y video','DJ y animación'],
+    servicios_marketing:     ['Redes sociales','Diseño gráfico','Páginas web','Publicidad digital'],
   };
   if (cat && subs[cat]) {
-    sel.innerHTML = subs[cat].map(s=>`<option>${s}</option>`).join('');
-    grp.style.display='block';
-  } else grp.style.display='none';
+    sel.innerHTML = subs[cat].map(s => `<option>${s}</option>`).join('');
+    grp.style.display = 'block';
+  } else {
+    grp.style.display = 'none';
+  }
 };
 
 window.updateCounter = (el, id, max) => {
-  const c = document.getElementById(id); if (!c) return;
+  const c = document.getElementById(id);
+  if (!c) return;
   const n = el.value.length;
   c.textContent = `${n} / ${max}`;
-  c.className = 'char-count' + (n>=max?' over': n>max*.85?' warn':'');
+  c.className   = 'char-count' + (n >= max ? ' over' : n > max * 0.85 ? ' warn' : '');
 };
 
 window.clearFieldErr = id => {
@@ -2413,18 +2434,20 @@ function initPage() {
 }
 
 function buildProgress() {
-  const row = document.getElementById('stepsRow');
+  const row    = document.getElementById('stepsRow');
   row.innerHTML = '';
-  const labels = ['Fotos','Precio','Detalles','Publicar'];
-  for (let i=1; i<=TOTAL_STEPS; i++) {
-    if (i>1) {
+  const labels = ['Fotos', 'Precio', 'Detalles', 'Publicar'];
+  for (let i = 1; i <= TOTAL_STEPS; i++) {
+    if (i > 1) {
       const l = document.createElement('div');
-      l.className='step-line'; l.id=`sl-${i-1}`;
+      l.className = 'step-line';
+      l.id        = `sl-${i - 1}`;
       row.appendChild(l);
     }
     const d = document.createElement('div');
-    d.className=`step-dot${i===1?' active':''}`; d.id=`sd-${i}`;
-    d.title = labels[i-1];
+    d.className = `step-dot${i === 1 ? ' active' : ''}`;
+    d.id        = `sd-${i}`;
+    d.title     = labels[i - 1];
     d.innerHTML = `<span class="dot-num">${i}</span>
       <svg class="dot-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>`;
     row.appendChild(d);
@@ -2432,16 +2455,16 @@ function buildProgress() {
 }
 
 function updateProgress(step) {
-  for (let i=1; i<=TOTAL_STEPS; i++) {
+  for (let i = 1; i <= TOTAL_STEPS; i++) {
     const el = document.getElementById(`sd-${i}`);
     if (!el) continue;
-    el.classList.remove('active','done');
-    if (i<step)  el.classList.add('done');
-    if (i===step) el.classList.add('active');
-    const sl = document.getElementById(`sl-${i-1}`);
-    if (sl) sl.classList.toggle('done', i-1<step);
+    el.classList.remove('active', 'done');
+    if (i < step)  el.classList.add('done');
+    if (i === step) el.classList.add('active');
+    const sl = document.getElementById(`sl-${i - 1}`);
+    if (sl) sl.classList.toggle('done', i - 1 < step);
   }
-  document.getElementById('progFill').style.width = ((step-1)/(TOTAL_STEPS-1)*100)+'%';
+  document.getElementById('progFill').style.width = ((step - 1) / (TOTAL_STEPS - 1) * 100) + '%';
 }
 
 function showStep(step) {
@@ -2451,28 +2474,28 @@ function showStep(step) {
   sc.classList.add('active');
   currentStep = step;
   updateProgress(step);
-  document.getElementById('btnPrev').style.display = step===1 ? 'none' : 'flex';
-  document.getElementById('btnNext').style.display = step===TOTAL_STEPS ? 'none' : 'flex';
+  document.getElementById('btnPrev').style.display = step === 1 ? 'none' : 'flex';
+  document.getElementById('btnNext').style.display = step === TOTAL_STEPS ? 'none' : 'flex';
   const pub = document.getElementById('btnPublishFloat');
-  pub.className = step===TOTAL_STEPS ? 'btn-publish-float show' : 'btn-publish-float';
-  if (step===TOTAL_STEPS) buildFinalPreview();
-  window.scrollTo({top:0,behavior:'smooth'});
+  pub.className = step === TOTAL_STEPS ? 'btn-publish-float show' : 'btn-publish-float';
+  if (step === TOTAL_STEPS) buildFinalPreview();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 window.showStep = showStep;
-window.nextStep = () => { if (validateStep(currentStep) && currentStep<TOTAL_STEPS) showStep(currentStep+1); };
-window.prevStep = () => { if (currentStep>1) showStep(currentStep-1); };
+window.nextStep = () => { if (validateStep(currentStep) && currentStep < TOTAL_STEPS) showStep(currentStep + 1); };
+window.prevStep = () => { if (currentStep > 1) showStep(currentStep - 1); };
 
 /* ─── VALIDATION ─── */
 function validateStep(step) {
-  if (step===1) {
+  if (step === 1) {
     if (!selectedFiles.length) { showToast('Sube al menos una foto', 'error'); return false; }
   }
-  if (step===2) {
+  if (step === 2) {
     const mode = document.getElementById('precioMode').value;
-    if (mode!=='gratuito' && mode!=='consultar') {
-      if (!precioNumerico || precioNumerico<=0) {
-        showFieldErr('precio','Introduce un precio válido mayor que 0');
+    if (mode !== 'gratuito' && mode !== 'consultar') {
+      if (!precioNumerico || precioNumerico <= 0) {
+        showFieldErr('precio', 'Introduce un precio válido mayor que 0');
         return false;
       }
     }
@@ -2481,50 +2504,54 @@ function validateStep(step) {
       return false;
     }
   }
-  if (step===3) {
-    if (!document.getElementById('categoria').value) { showFieldErr('categoria','Selecciona una categoría'); return false; }
-    if (!document.getElementById('titulo').value.trim()) { showFieldErr('titulo','El título es obligatorio'); return false; }
-    if (!document.getElementById('descripcion').value.trim()) { showFieldErr('descripcion','La descripción es obligatoria'); return false; }
-    if (document.getElementById('descripcion').value.trim().length < 15) { showFieldErr('descripcion','Mínimo 15 caracteres'); return false; }
+  if (step === 3) {
+    if (!document.getElementById('categoria').value) { showFieldErr('categoria', 'Selecciona una categoría'); return false; }
+    if (!document.getElementById('titulo').value.trim()) { showFieldErr('titulo', 'El título es obligatorio'); return false; }
+    const descVal = document.getElementById('descripcion').value.trim();
+    if (!descVal)            { showFieldErr('descripcion', 'La descripción es obligatoria'); return false; }
+    if (descVal.length < 15) { showFieldErr('descripcion', 'Mínimo 15 caracteres'); return false; }
     const tel = document.getElementById('telefono').value.trim();
-    if (!tel) { showFieldErr('telefono','El teléfono es obligatorio'); return false; }
-    if (!/^[\d\s\-\(\)]{6,}$/.test(tel)) { showFieldErr('telefono','Introduce un número válido'); return false; }
+    if (!tel) { showFieldErr('telefono', 'El teléfono es obligatorio'); return false; }
+    if (!/^[\d\s\-\(\)]{6,}$/.test(tel)) { showFieldErr('telefono', 'Introduce un número válido'); return false; }
   }
   return true;
 }
 
 /* ─── FINAL PREVIEW ─── */
 function buildFinalPreview() {
-  const titulo = document.getElementById('titulo').value||'Sin título';
-  const mode   = document.getElementById('precioMode').value;
-  const desc   = document.getElementById('descripcion').value||'';
-  const cat    = document.getElementById('categoria').value||'Sin categoría';
-  const estado = document.getElementById('estado').value||'—';
-  const tel    = document.getElementById('telefono').value||'—';
-  const ubic   = document.getElementById('ubicacion').value||'—';
-  const imgs   = selectedFiles.map(f => URL.createObjectURL(f));
-  const mainSrc= imgs[0]||`https://placehold.co/400x300/EEF4FF/007AFF?text=Sin+imagen`;
+  const titulo  = document.getElementById('titulo').value || 'Sin título';
+  const mode    = document.getElementById('precioMode').value;
+  const desc    = document.getElementById('descripcion').value || '';
+  const cat     = document.getElementById('categoria').value || 'Sin categoría';
+  const estado  = document.getElementById('estado').value || '—';
+  const tel     = document.getElementById('telefono').value || '—';
+  const ubic    = document.getElementById('ubicacion').value || '—';
+  const imgs    = selectedFiles.map(f => URL.createObjectURL(f));
+  const mainSrc = imgs[0] || 'https://placehold.co/400x300/EEF4FF/007AFF?text=Sin+imagen';
 
-  const precioDisp = mode==='gratuito' ? 'Gratuito' :
-                     mode==='consultar' ? 'Consultar precio' :
-                     mode==='negociable' ? `${formatPriceDisplay(precioNumerico)} (negociable)` :
-                     formatPriceDisplay(precioNumerico);
+  const precioDisp =
+    mode === 'gratuito'   ? 'Gratuito' :
+    mode === 'consultar'  ? 'Consultar precio' :
+    mode === 'negociable' ? `${formatPriceDisplay(precioNumerico)} (negociable)` :
+    formatPriceDisplay(precioNumerico);
 
   const tagsHtml = selectedQTags.map(id => {
-    const t = QTAGS.find(q=>q.id===id); if (!t) return '';
-    const cls = t.cls.replace('qt-','ftag-');
+    const t = QTAGS.find(q => q.id === id);
+    if (!t) return '';
+    const cls = t.cls.replace('qt-', 'ftag-');
     return `<span class="ftag ${cls}">${t.label}</span>`;
   }).join('');
 
-  const thumbs = imgs.length>1
-    ? `<div class="final-thumbs-strip">${imgs.map((s,i)=>`
-      <div class="fthumb${i===0?' active':''}" onclick="switchFinalImg(${i})"><img src="${s}"></div>`
-    ).join('')}</div>` : '';
+  const thumbs = imgs.length > 1
+    ? `<div class="final-thumbs-strip">${imgs.map((s, i) => `
+        <div class="fthumb${i === 0 ? ' active' : ''}" onclick="switchFinalImg(${i})"><img src="${s}"></div>`
+      ).join('')}</div>`
+    : '';
 
   document.getElementById('finalCard').innerHTML = `
     <div class="final-img-wrap">
       <img id="finalMainImg" src="${mainSrc}" alt="principal">
-      <span class="final-img-count">${imgs.length} foto${imgs.length!==1?'s':''}</span>
+      <span class="final-img-count">${imgs.length} foto${imgs.length !== 1 ? 's' : ''}</span>
     </div>
     ${thumbs}
     <div class="final-body">
@@ -2534,8 +2561,8 @@ function buildFinalPreview() {
       </div>
       <div class="final-title">${titulo}</div>
       <div class="final-price">${precioDisp}</div>
-      ${tagsHtml?`<div class="final-tags">${tagsHtml}</div>`:''}
-      <div class="final-desc">${desc.slice(0,320)}${desc.length>320?'…':''}</div>
+      ${tagsHtml ? `<div class="final-tags">${tagsHtml}</div>` : ''}
+      <div class="final-desc">${desc.slice(0, 320)}${desc.length > 320 ? '…' : ''}</div>
       <div class="final-meta">
         <span class="fmeta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>${estado}</span>
         <span class="fmeta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07"/></svg>${selectedDialCode} ${tel}</span>
@@ -2545,24 +2572,23 @@ function buildFinalPreview() {
 }
 
 window.switchFinalImg = idx => {
-  const imgs = selectedFiles.map(f=>URL.createObjectURL(f));
+  const imgs = selectedFiles.map(f => URL.createObjectURL(f));
   document.getElementById('finalMainImg').src = imgs[idx];
-  document.querySelectorAll('.fthumb').forEach((t,i) => t.classList.toggle('active',i===idx));
+  document.querySelectorAll('.fthumb').forEach((t, i) => t.classList.toggle('active', i === idx));
 };
 
 /* ─── FIREBASE STORAGE UPLOAD ─── */
 async function uploadToFirebaseStorage(blob, idx) {
-  const path = `productos/${currentUser.uid}/${Date.now()}_${idx}.webp`;
+  const path       = `productos/${currentUser.uid}/${Date.now()}_${idx}.webp`;
   const storageRef = sRef(storage, path);
-  await uploadBytes(storageRef, blob, {contentType:'image/webp'});
+  await uploadBytes(storageRef, blob, { contentType: 'image/webp' });
   return await getDownloadURL(storageRef);
 }
 
 async function uploadToGitHub(blob, idx) {
-  // Fallback: GitHub raw upload
-  const base64 = await new Promise((res,rej) => {
+  const base64 = await new Promise((res, rej) => {
     const r = new FileReader();
-    r.onload = e => res(e.target.result.split(',')[1]);
+    r.onload  = e => res(e.target.result.split(',')[1]);
     r.onerror = rej;
     r.readAsDataURL(blob);
   });
@@ -2572,32 +2598,35 @@ async function uploadToGitHub(blob, idx) {
   const GITHUB_BRANCH = window.__GITHUB_BRANCH__ || 'main';
   if (!GITHUB_USER || !GITHUB_REPO || !GITHUB_TOKEN) throw new Error('GitHub no configurado');
   const path = `uploads/${currentUser.uid}_${Date.now()}_${idx}.webp`;
-  const res  = await fetch(`https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${path}`, {
-    method:'PUT',
-    headers:{Authorization:`Bearer ${GITHUB_TOKEN}`,'Content-Type':'application/json',Accept:'application/vnd.github.v3+json'},
-    body: JSON.stringify({message:`Upload ${idx}`,content:base64,branch:GITHUB_BRANCH})
-  });
+  const res  = await fetch(
+    `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${path}`, {
+      method:  'PUT',
+      headers: {
+        Authorization: `Bearer ${GITHUB_TOKEN}`,
+        'Content-Type': 'application/json',
+        Accept: 'application/vnd.github.v3+json',
+      },
+      body: JSON.stringify({ message: `Upload ${idx}`, content: base64, branch: GITHUB_BRANCH }),
+    }
+  );
   if (!res.ok) throw new Error(`GitHub ${res.status}`);
   return `https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/${GITHUB_BRANCH}/${path}`;
 }
 
 async function uploadAllImages() {
-  const urls = [];
+  const urls  = [];
   const total = compressedBlobs.length;
-  for (let i=0; i<total; i++) {
+  for (let i = 0; i < total; i++) {
     setUploadProg(i, total);
     try {
-      // PRIMARY: Firebase Storage
-      const url = await uploadToFirebaseStorage(compressedBlobs[i], i);
-      urls.push(url);
-    } catch(e1) {
+      urls.push(await uploadToFirebaseStorage(compressedBlobs[i], i));
+    } catch (e1) {
       console.warn('Firebase Storage falló, usando GitHub fallback:', e1.message);
       try {
-        const url = await uploadToGitHub(compressedBlobs[i], i);
-        urls.push(url);
-      } catch(e2) {
-        console.error(`Imagen ${i+1} falló en ambos storages:`, e2.message);
-        showToast(`Imagen ${i+1} no pudo subirse`, 'warn');
+        urls.push(await uploadToGitHub(compressedBlobs[i], i));
+      } catch (e2) {
+        console.error(`Imagen ${i + 1} falló en ambos storages:`, e2.message);
+        showToast(`Imagen ${i + 1} no pudo subirse`, 'warn');
       }
     }
   }
@@ -2606,123 +2635,131 @@ async function uploadAllImages() {
 }
 
 function setUploadProg(done, total) {
-  const pct = total>0 ? Math.round(done/total*100) : 0;
-  document.getElementById('uploadProgWrap').style.display='block';
-  document.getElementById('uploadProgFill').style.width=pct+'%';
-  document.getElementById('uploadProgLbl').textContent = done>=total
-    ? `${total} imagen${total>1?'es':''} subida${total>1?'s':''}`
-    : `Subiendo ${done+1} de ${total}…`;
+  const pct = total > 0 ? Math.round(done / total * 100) : 0;
+  document.getElementById('uploadProgWrap').style.display = 'block';
+  document.getElementById('uploadProgFill').style.width   = pct + '%';
+  document.getElementById('uploadProgLbl').textContent    = done >= total
+    ? `${total} imagen${total > 1 ? 'es' : ''} subida${total > 1 ? 's' : ''}`
+    : `Subiendo ${done + 1} de ${total}…`;
 }
 
-function setLoading(show, title='', sub='', showProg=false) {
+function setLoading(show, title = '', sub = '', showProg = false) {
   const ov = document.getElementById('loadingOverlay');
   ov.classList.toggle('hidden', !show);
-  if (title) document.getElementById('loadingTitle').textContent=title;
-  if (sub)   document.getElementById('loadingSub').textContent=sub;
+  if (title) document.getElementById('loadingTitle').textContent = title;
+  if (sub)   document.getElementById('loadingSub').textContent   = sub;
   const pw = document.getElementById('uploadProgWrap');
   pw.style.display = (show && showProg) ? 'block' : 'none';
-  if (!show) { document.getElementById('uploadProgFill').style.width='0%'; }
+  if (!show) document.getElementById('uploadProgFill').style.width = '0%';
 }
 
 /* ─── PUBLISH ─── */
 window.publicarProducto = async () => {
   if (!currentUser) { showToast('Inicia sesión para publicar', 'error'); return; }
-  if (!isPremium && pubsThisMonth>=MAX_FREE_PUB) {
+  if (!isPremium && pubsThisMonth >= MAX_FREE_PUB) {
     showToast(`Límite de ${MAX_FREE_PUB} publicaciones. Activa Premium.`, 'error', 6000);
     showStep(2); return;
   }
 
-  const titulo     = document.getElementById('titulo').value.trim();
-  const mode       = document.getElementById('precioMode').value;
-  const desc       = document.getElementById('descripcion').value.trim();
-  const cat        = document.getElementById('categoria').value;
-  const subcat     = document.getElementById('subcategoria')?.value||'';
-  const estado     = document.getElementById('estado').value;
-  const tel        = document.getElementById('telefono').value.trim();
-  const telefono   = `${selectedDialCode} ${tel}`;
-  const ubicacion  = document.getElementById('ubicacion').value.trim()||'Malabo, Guinea Ecuatorial';
-  const precio     = precioNumerico;
-  const precioStr  = mode==='gratuito'?'Gratuito': mode==='consultar'?'Consultar': formatPriceDisplay(precio);
+  const titulo    = document.getElementById('titulo').value.trim();
+  const mode      = document.getElementById('precioMode').value;
+  const desc      = document.getElementById('descripcion').value.trim();
+  const cat       = document.getElementById('categoria').value;
+  const subcat    = document.getElementById('subcategoria')?.value || '';
+  const estado    = document.getElementById('estado').value;
+  const tel       = document.getElementById('telefono').value.trim();
+  const telefono  = `${selectedDialCode} ${tel}`;
+  const ubicacion = document.getElementById('ubicacion').value.trim() || 'Malabo, Guinea Ecuatorial';
+  const precio    = precioNumerico;
+  const precioStr = mode === 'gratuito'   ? 'Gratuito'
+                  : mode === 'consultar'  ? 'Consultar'
+                  : formatPriceDisplay(precio);
 
-  if (!selectedFiles.length||!titulo||!cat||!desc||!tel) {
+  if (!selectedFiles.length || !titulo || !cat || !desc || !tel) {
     showToast('Completa todos los campos obligatorios', 'error'); return;
   }
 
   if (compressedBlobs.length !== selectedFiles.length) {
-    setLoading(true,'Comprimiendo imágenes…');
+    setLoading(true, 'Comprimiendo imágenes…');
     await compressAll();
   }
 
-  setLoading(true,'Subiendo imágenes…','Firebase Storage (plan Blaze)',true);
+  setLoading(true, 'Subiendo imágenes…', 'Firebase Storage (plan Blaze)', true);
   const imageUrls = await uploadAllImages();
   if (!imageUrls.length) { setLoading(false); showToast('No se pudo subir ninguna imagen', 'error'); return; }
 
-  setLoading(true,'Publicando anuncio…','Guardando en Compra Ya');
+  setLoading(true, 'Publicando anuncio…', 'Guardando en Compra Ya');
   try {
     const ahora = new Date();
-    const mes = `${ahora.getFullYear()}-${String(ahora.getMonth()+1).padStart(2,'0')}`;
+    const mes   = `${ahora.getFullYear()}-${String(ahora.getMonth() + 1).padStart(2, '0')}`;
 
     const producto = {
-      titulo, precio, precioMode:mode, precioFormateado:precioStr,
-      descripcion:desc, categoria:cat, subcategoria:subcat, estado,
-      telefono, ubicacion, imagen:imageUrls[0], imagenes:imageUrls,
-      qualityTags:selectedQTags,
-      status:'activo', vendido:false,
-      createdAt:serverTimestamp(), creadoEn:serverTimestamp(),
-      vistas:0, likes:0, likesBy:[],
-      vendedorId:currentUser.uid, vendedorEmail:currentUser.email||'',
-      vendedorNombre:currentUser.displayName||'',
-      vendedorFoto:currentUser.photoURL||'',
-      role:'normal', verificado:isPremium, destacado:isPremium,
-      boostScore:isPremium?10:0,
-      plataforma:'compraya-web', version:'3.0',
+      titulo, precio, precioMode: mode, precioFormateado: precioStr,
+      descripcion: desc, categoria: cat, subcategoria: subcat, estado,
+      telefono, ubicacion,
+      imagen: imageUrls[0], imagenes: imageUrls,
+      qualityTags: selectedQTags,
+      status: 'activo', vendido: false,
+      createdAt: serverTimestamp(), creadoEn: serverTimestamp(),
+      vistas: 0, likes: 0, likesBy: [],
+      vendedorId: currentUser.uid,
+      vendedorEmail: currentUser.email || '',
+      vendedorNombre: currentUser.displayName || '',
+      vendedorFoto: currentUser.photoURL || '',
+      role: 'normal',
+      verificado: isPremium, destacado: isPremium,
+      boostScore: isPremium ? 10 : 0,
+      plataforma: 'compraya-web', version: '3.0',
     };
 
-    const docRef = await addDoc(collection(db,'productos'), producto);
-    publishedId = docRef.id;
+    const docRef  = await addDoc(collection(db, 'productos'), producto);
+    publishedId   = docRef.id;
+    const newPubs = (userData.ultimoResetMes === mes ? pubsThisMonth : 0) + 1;
 
-    const newPubs = (userData.ultimoResetMes===mes ? pubsThisMonth : 0) + 1;
-    await updateDoc(doc(db,'usuarios',currentUser.uid), {
-      publicacionesEsteMes:newPubs, ultimoResetMes:mes,
-      totalPublicaciones:(userData.totalPublicaciones||0)+1,
-      ultimaPublicacion:serverTimestamp()
-    }).catch(()=>{});
+    await updateDoc(doc(db, 'usuarios', currentUser.uid), {
+      publicacionesEsteMes: newPubs,
+      ultimoResetMes: mes,
+      totalPublicaciones: (userData.totalPublicaciones || 0) + 1,
+      ultimaPublicacion: serverTimestamp(),
+    }).catch(() => {});
+
     pubsThisMonth = newPubs;
-
     setLoading(false);
     document.getElementById('successScreen').classList.remove('hidden');
     document.getElementById('btnVerAnuncio').onclick = () =>
       window.location.href = `index-comprador.html?nuevo=1&id=${publishedId}`;
-
-  } catch(e) {
+  } catch (e) {
     console.error('publicarProducto:', e);
     setLoading(false);
-    showToast(`Error al publicar: ${e.message.slice(0,70)}`, 'error');
+    showToast(`Error al publicar: ${e.message.slice(0, 70)}`, 'error');
   }
 };
 
 /* ─── COUNTRIES ─── */
 const COUNTRIES = [
-  {flag:'GQ',name:'Guinea Ecuatorial',dial:'+240'},
-  {flag:'ES',name:'España',dial:'+34'},
-  {flag:'CM',name:'Camerún',dial:'+237'},
-  {flag:'GA',name:'Gabón',dial:'+241'},
-  {flag:'CG',name:'Congo',dial:'+242'},
-  {flag:'NG',name:'Nigeria',dial:'+234'},
-  {flag:'SN',name:'Senegal',dial:'+221'},
-  {flag:'CI',name:'Costa de Marfil',dial:'+225'},
-  {flag:'GH',name:'Ghana',dial:'+233'},
-  {flag:'FR',name:'Francia',dial:'+33'},
-  {flag:'PT',name:'Portugal',dial:'+351'},
-  {flag:'US',name:'EE.UU.',dial:'+1'},
-  {flag:'GB',name:'Reino Unido',dial:'+44'},
+  { flag: 'GQ', name: 'Guinea Ecuatorial', dial: '+240' },
+  { flag: 'ES', name: 'España',            dial: '+34'  },
+  { flag: 'CM', name: 'Camerún',           dial: '+237' },
+  { flag: 'GA', name: 'Gabón',             dial: '+241' },
+  { flag: 'CG', name: 'Congo',             dial: '+242' },
+  { flag: 'NG', name: 'Nigeria',           dial: '+234' },
+  { flag: 'SN', name: 'Senegal',           dial: '+221' },
+  { flag: 'CI', name: 'Costa de Marfil',   dial: '+225' },
+  { flag: 'GH', name: 'Ghana',             dial: '+233' },
+  { flag: 'FR', name: 'Francia',           dial: '+33'  },
+  { flag: 'PT', name: 'Portugal',          dial: '+351' },
+  { flag: 'US', name: 'EE.UU.',            dial: '+1'   },
+  { flag: 'GB', name: 'Reino Unido',       dial: '+44'  },
 ];
 
-function renderCountries(f='') {
-  const list = document.getElementById('countryList');
-  const filtered = COUNTRIES.filter(c => c.name.toLowerCase().includes(f.toLowerCase())||c.dial.includes(f));
+function renderCountries(f = '') {
+  const list     = document.getElementById('countryList');
+  const filtered = COUNTRIES.filter(c =>
+    c.name.toLowerCase().includes(f.toLowerCase()) || c.dial.includes(f)
+  );
   list.innerHTML = filtered.map(c => `
-    <div class="country-item${c.dial===selectedDialCode?' sel':''}" onclick="selectCountry('${c.flag}','${c.dial}')">
+    <div class="country-item${c.dial === selectedDialCode ? ' sel' : ''}"
+         onclick="selectCountry('${c.flag}','${c.dial}')">
       <span>${c.flag}</span>
       <span>${c.name}</span>
       <span class="c-code">${c.dial}</span>
@@ -2730,21 +2767,28 @@ function renderCountries(f='') {
 }
 
 window.filterCountries = v => renderCountries(v);
+
 window.toggleCountryDD = () => {
   const dd = document.getElementById('countryDD');
   dd.classList.toggle('open');
-  if (dd.classList.contains('open')) { renderCountries(); document.getElementById('countrySearch').focus(); }
+  if (dd.classList.contains('open')) {
+    renderCountries();
+    document.getElementById('countrySearch').focus();
+  }
 };
+
 window.selectCountry = (flag, dial) => {
   selectedDialCode = dial;
   document.getElementById('selFlag').textContent = flag;
   document.getElementById('selCode').textContent = dial;
   document.getElementById('countryDD').classList.remove('open');
 };
+
 document.addEventListener('click', e => {
-  if (!document.getElementById('countryDD')?.contains(e.target) &&
-      !document.getElementById('countryBtn')?.contains(e.target)) {
-    document.getElementById('countryDD')?.classList.remove('open');
+  const dd  = document.getElementById('countryDD');
+  const btn = document.getElementById('countryBtn');
+  if (dd && btn && !dd.contains(e.target) && !btn.contains(e.target)) {
+    dd.classList.remove('open');
   }
 });
 </script>

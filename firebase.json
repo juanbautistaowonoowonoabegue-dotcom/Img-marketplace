@@ -14,6 +14,16 @@
       "**/.*",
       "**/node_modules/**"
     ],
+ "rewrites": [
+  {
+    "source": "/gemini/**",
+    "function": "geminiGenerate"
+  },
+  {
+    "source": "/1234.html",
+    "function": "adminAccess"
+  }
+],
     "headers": [
       {
         "source": "**",

@@ -1,24 +1,46 @@
 {
-  "name": "CompraYa",
+  "name": "COMPRA YA!!",
   "short_name": "CompraYa",
-  "description": "Marketplace para comprar y vender productos.",
-  "id": "/",
-  "start_url": "/",
-  "scope": "/",
+  "description": "Marketplace de Guinea Ecuatorial para comprar, vender y acceder a servicios desde Malabo y Bata.",
+  "start_url": "/index.html",
   "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#00f1b3",
   "orientation": "portrait",
-  "background_color": "#ffffff",
-  "theme_color": "#0f172a",
-  "lang": "es",
-  "dir": "ltr",
-  "categories": ["shopping", "business"],
-  "prefer_related_applications": false,
   "icons": [
-  {
-    " href  ": "  ,('https://raw.githubusercontent.com/juanbautistaowonoowonoabegue-dotcom/Img-marketplace/refs/heads/main/fav.webp')",
-    "sizes": "192x192",
-    "type": "image/webp"
-  }
-]
- 
+    {
+      "src": "https://raw.githubusercontent.com/juanbautistaowonoowonoabegue-dotcom/Img-marketplace/refs/heads/main/icono-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "https://raw.githubusercontent.com/juanbautistaowonoowonoabegue-dotcom/Img-marketplace/refs/heads/main/icono-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "https://raw.githubusercontent.com/juanbautistaowonoowonoabegue-dotcom/Img-marketplace/refs/heads/main/icono-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "https://raw.githubusercontent.com/juanbautistaowonoowonoabegue-dotcom/Img-marketplace/refs/heads/main/IMG_4021.jpeg",
+      "sizes": "1280x720",
+      "type": "image/jpeg",
+      "form_factor": "wide",
+      "label": "Vista de escritorio de Compra Ya"
+    },
+    {
+      "src": "https://raw.githubusercontent.com/juanbautistaowonoowonoabegue-dotcom/Img-marketplace/refs/heads/main/IMG_4021.jpeg",
+      "sizes": "720x1280",
+      "type": "image/jpeg",
+      "form_factor": "narrow",
+      "label": "Vista móvil de Compra Ya"
+    }
+  ]
 }

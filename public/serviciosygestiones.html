@@ -1174,7 +1174,7 @@ main { padding-top: var(--hdr-h); position: relative; z-index: 1; }
     <!-- Satguru Travel -->
     <div class="svc-item" onclick="openModal('satguru')">
       <div class="logo-wrap">
-        <img class="logo-img" src="https://satgurutravel.com/wp-content/uploads/2019/09/satguru-logo.png"
+        <img class="logo-img" src="https://raw.githubusercontent.com/juanbautistaowonoowonoabegue-dotcom/COMPRA_YA/refs/heads/main/saturu%20.PNG"
           alt="Satguru" onerror="logoError(this)">
         <div class="logo-fallback" style="background:#006400;color:#fff;font-size:.75rem">SAT<br>GURU</div>
       </div>
@@ -1896,31 +1896,39 @@ main { padding-top: var(--hdr-h); position: relative; z-index: 1; }
 
 <div id="toast"></div>
  
+ <!--
+  ================================================================
+  SCRIPT COMPLETO — serviciosygestiones.html
+  Pega todo este bloque justo antes del </body> de tu página,
+  REEMPLAZANDO el <script type="module"> que ya tienes al final.
+  ================================================================
+-->
 <script type="module">
-import { initializeApp }          from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
-import { getFirestore, collection, query, where,
-         getDocs, getDoc, doc, orderBy, limit }
-                                   from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+import { initializeApp }    from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+import {
+  getFirestore, collection, query, where,
+  getDocs, getDoc, doc, orderBy, limit
+} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 import { getAuth, onAuthStateChanged }
-                                   from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
-import { firebaseConfig }          from './js/config.js';
+  from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+import { firebaseConfig } from './js/config.js';
 
 const app  = initializeApp(firebaseConfig);
 const db   = getFirestore(app);
 const auth = getAuth(app);
 
-/* ═══════════════════════════════════════
-   BANNERS DINÁMICOS
-═══════════════════════════════════════ */
+/* ════════════════════════════════════════════════════════════
+   1 · BANNERS DINÁMICOS
+════════════════════════════════════════════════════════════ */
 async function loadBanners() {
   const loading = document.getElementById('bannerLoading');
   const track   = document.getElementById('bannerTrack');
   const dots    = document.getElementById('bannerDots');
   try {
-    const q    = query(
+    const q = query(
       collection(db, 'banners'),
-      where('pagina',  '==', 'servicios'),
-      where('activo',  '==', true),
+      where('pagina', '==', 'servicios'),
+      where('activo', '==', true),
       orderBy('orden', 'asc'),
       limit(6)
     );
@@ -1940,9 +1948,27 @@ async function loadBanners() {
 function addDefaultBanners(track, dots) {
   track.style.display = 'flex';
   const defaults = [
-    { tag:'Formación Internacional', titulo:'Becas 2025 disponibles. ¿Estás listo para aplicar?',   btnTexto:'Ver becas',       btnAccion:"setFilter('becas',document.querySelector('.fchip'))",       bgGradient:'linear-gradient(135deg,#1A73E8,#0D47A1)' },
-    { tag:'Trámites Oficiales',       titulo:'Gestiona tu pasaporte y certificados sin colas',       btnTexto:'Ver ministerios', btnAccion:"setFilter('ministerios',document.querySelector('.fchip'))", bgGradient:'linear-gradient(135deg,#F59E0B,#D97706)' },
-    { tag:'Vuelos desde Malabo',      titulo:'Compara aerolíneas y encuentra tu ruta ideal',         btnTexto:'Ver vuelos',      btnAccion:"setFilter('vuelos',document.querySelector('.fchip'))",      bgGradient:'linear-gradient(135deg,#0EA5E9,#0369A1)' },
+    {
+      tag:'Formación Internacional',
+      titulo:'Becas 2025 disponibles. ¿Estás listo para aplicar?',
+      btnTexto:'Ver becas',
+      btnAccion:"setFilter('becas',document.querySelector('.fchip'))",
+      bgGradient:'linear-gradient(135deg,#1A73E8,#0D47A1)'
+    },
+    {
+      tag:'Trámites Oficiales',
+      titulo:'Gestiona tu pasaporte y certificados sin colas',
+      btnTexto:'Ver ministerios',
+      btnAccion:"setFilter('ministerios',document.querySelector('.fchip'))",
+      bgGradient:'linear-gradient(135deg,#F59E0B,#D97706)'
+    },
+    {
+      tag:'Vuelos desde Malabo',
+      titulo:'Compara aerolíneas y encuentra tu ruta ideal',
+      btnTexto:'Ver vuelos',
+      btnAccion:"setFilter('vuelos',document.querySelector('.fchip'))",
+      bgGradient:'linear-gradient(135deg,#0EA5E9,#0369A1)'
+    },
   ];
   defaults.forEach((d, i) => addBannerSlide(track, dots, d, i));
   startBannerAuto(track, defaults.length, dots);
@@ -1955,8 +1981,7 @@ function addBannerSlide(track, dots, d, i) {
 
   if (d.imagen) {
     const img = document.createElement('img');
-    img.src = d.imagen;
-    img.className = 'banner-slide-img';
+    img.src = d.imagen; img.className = 'banner-slide-img';
     img.onerror = () => img.remove();
     slide.appendChild(img);
   }
@@ -1964,7 +1989,7 @@ function addBannerSlide(track, dots, d, i) {
   const inner = document.createElement('div');
   inner.className = 'banner-slide-inner';
   inner.innerHTML = `
-    ${d.tag       ? `<div class="banner-label">${d.tag}</div>` : ''}
+    ${d.tag      ? `<div class="banner-label">${d.tag}</div>` : ''}
     <div class="banner-title">${d.titulo || 'Compra Ya GE'}</div>
     ${d.subtitulo ? `<div style="font-size:.72rem;color:rgba(255,255,255,.8);margin-bottom:6px;position:relative;z-index:1">${d.subtitulo}</div>` : ''}
     ${d.btnTexto  ? `<button class="banner-cta" onclick="${d.btnAccion || ''}">${d.btnTexto}
@@ -1993,21 +2018,21 @@ window.scrollToBanner = function(idx, track, dots) {
   const t = track || document.getElementById('bannerTrack');
   const d = dots  || document.getElementById('bannerDots');
   const slides = t.querySelectorAll('.banner-slide');
-  if (slides[idx]) {
-    t.scrollTo({ left: slides[idx].offsetLeft, behavior: 'smooth' });
-  }
-  d.querySelectorAll('.banner-dot').forEach((dot, j) => dot.classList.toggle('active', j === idx));
+  if (slides[idx]) t.scrollTo({ left: slides[idx].offsetLeft, behavior:'smooth' });
+  d.querySelectorAll('.banner-dot').forEach((dot, j) =>
+    dot.classList.toggle('active', j === idx));
 };
 
-/* ═══════════════════════════════════════
-   PREMIUM CHECK
-═══════════════════════════════════════ */
+/* ════════════════════════════════════════════════════════════
+   2 · PREMIUM CHECK
+════════════════════════════════════════════════════════════ */
 onAuthStateChanged(auth, async user => {
   if (!user) return;
   try {
     const snap = await getDoc(doc(db, 'usuarios', user.uid));
     const data = snap.data() || {};
-    const isPremium = data.isPremium || ['premium','store','entity','ministry'].includes(data.role);
+    const isPremium = data.isPremium ||
+      ['premium','store','entity','ministry'].includes(data.role);
     if (isPremium) {
       const gate = document.getElementById('premiumGate');
       if (gate) gate.style.display = 'none';
@@ -2015,223 +2040,96 @@ onAuthStateChanged(auth, async user => {
   } catch(e) {}
 });
 
-/* ═══════════════════════════════════════
-   MODAL DATA
-═══════════════════════════════════════ */
+/* ════════════════════════════════════════════════════════════
+   3 · MODAL DATA ESTÁTICA (fallback cuando no hay doc en Firestore)
+════════════════════════════════════════════════════════════ */
 const MODALS = {
-  publicidad: {
-    eyebrow:'Compra Ya GE', eyeColor:'#1A73E8',
-    title:'Publicidad & Anuncios',
-    tagline:'Publica tu negocio en el marketplace más grande de Guinea Ecuatorial.',
-    info:[
-      {label:'Formatos disponibles', val:'Banners en portada · Posts patrocinados · Cards destacadas'},
-      {label:'Ventajas',             val:'Visibilidad máxima · Estadísticas en tiempo real · Segmentación por ciudad'},
-      {label:'Contacto ventas',      val:'Escríbenos por WhatsApp para cotización y publicación inmediata'},
-    ],
-    btnExt:null, btnWa:{text:'Solicitar publicidad', msg:'Hola, quiero publicitar mi negocio en Compra Ya GE'}, svgKey:'ads'
-  },
-  atencion: {
-    eyebrow:'Soporte 24/7', eyeColor:'#10B981',
-    title:'Atención al Cliente',
-    tagline:'Nuestro equipo está disponible para resolver cualquier duda, incidencia o reclamación.',
-    info:[
-      {label:'Canales de soporte',   val:'WhatsApp · Chat en app · Email'},
-      {label:'Tiempo de respuesta',  val:'Menos de 2 horas en horario laboral'},
-      {label:'Idiomas',              val:'Español · Francés · Fang'},
-    ],
-    btnExt:null, btnWa:{text:'Contactar soporte', msg:'Hola, necesito ayuda con Compra Ya GE'}, svgKey:'support'
-  },
-  asistente: {
-    eyebrow:'IA Generativa', eyeColor:'#8B5CF6',
-    title:'CY Asistente IA',
-    tagline:'Tu asistente inteligente integrado. Haz preguntas, busca productos y recibe recomendaciones.',
-    info:[
-      {label:'Capacidades',    val:'Búsqueda de productos · Comparación de precios · Respuestas en tiempo real'},
-      {label:'Idiomas',        val:'Español · Inglés · Francés · Fang'},
-      {label:'Disponibilidad', val:'24 horas · 7 días a la semana · Sin esperas'},
-    ],
-    btnExt:null, btnWa:{text:'Probar asistente', msg:'Hola, quiero probar el CY Asistente'}, svgKey:'ai'
-  },
-  premium: {
-    eyebrow:'Plan Premium', eyeColor:'#F59E0B',
-    title:'Compra Ya Premium',
-    tagline:'Accede a funciones exclusivas y mejora tu experiencia de compra en Guinea Ecuatorial.',
-    info:[
-      {label:'Beneficios incluidos', val:'Sin anuncios · Soporte prioritario · Descuentos especiales · Acceso anticipado'},
-      {label:'Para negocios',        val:'Panel de estadísticas · Productos ilimitados · Badge verificado'},
-      {label:'Precio',               val:'Consultar planes disponibles por WhatsApp'},
-    ],
-    btnExt:null, btnWa:{text:'Ver planes Premium', msg:'Hola, me interesa suscribirme a Compra Ya Premium'}, svgKey:'premium'
-  },
+  publicidad:  { eyebrow:'Compra Ya GE',  eyeColor:'#1A73E8', title:'Publicidad & Anuncios',      tagline:'Publica tu negocio en el marketplace más grande de Guinea Ecuatorial.',   info:[{label:'Formatos',val:'Banners en portada · Posts patrocinados · Cards destacadas'},{label:'Ventajas',val:'Visibilidad máxima · Estadísticas en tiempo real · Segmentación por ciudad'},{label:'Contacto',val:'Escríbenos por WhatsApp para cotización y publicación inmediata'}], btnExt:null, btnWa:{text:'Solicitar publicidad',msg:'Hola, quiero publicitar mi negocio en Compra Ya GE'}, svgKey:'ads' },
+  atencion:    { eyebrow:'Soporte 24/7',   eyeColor:'#10B981', title:'Atención al Cliente',        tagline:'Nuestro equipo está disponible para resolver cualquier duda o incidencia.', info:[{label:'Canales',val:'WhatsApp · Chat en app · Email'},{label:'Respuesta',val:'Menos de 2 horas en horario laboral'},{label:'Idiomas',val:'Español · Francés · Fang'}], btnExt:null, btnWa:{text:'Contactar soporte',msg:'Hola, necesito ayuda con Compra Ya GE'}, svgKey:'support' },
+  asistente:   { eyebrow:'IA Generativa',  eyeColor:'#8B5CF6', title:'CY Asistente IA',            tagline:'Tu asistente inteligente integrado. Haz preguntas y recibe recomendaciones.',info:[{label:'Capacidades',val:'Búsqueda · Comparación de precios · Respuestas en tiempo real'},{label:'Idiomas',val:'Español · Inglés · Francés · Fang'},{label:'Disponibilidad',val:'24h · 7 días a la semana'}], btnExt:null, btnWa:{text:'Probar asistente',msg:'Hola, quiero probar el CY Asistente'}, svgKey:'ai' },
+  premium:     { eyebrow:'Plan Premium',   eyeColor:'#F59E0B', title:'Compra Ya Premium',          tagline:'Accede a funciones exclusivas y mejora tu experiencia en Guinea Ecuatorial.',info:[{label:'Beneficios',val:'Sin anuncios · Soporte prioritario · Descuentos especiales'},{label:'Negocios',val:'Panel de estadísticas · Productos ilimitados · Badge verificado'},{label:'Precio',val:'Consultar planes disponibles por WhatsApp'}], btnExt:null, btnWa:{text:'Ver planes Premium',msg:'Hola, me interesa suscribirme a Compra Ya Premium'}, svgKey:'premium' },
   // BECAS
-  stipendium: {
-    eyebrow:'Beca Internacional', eyeColor:'#0EA5E9', title:'Stipendium Hungaricum',
-    tagline:'Programa de becas del Gobierno húngaro para estudiantes de Guinea Ecuatorial.',
-    info:[
-      {label:'Qué ofrece',     val:'Matrícula completa · Alojamiento · Seguro médico · Estipendio mensual'},
-      {label:'Requisitos',     val:'Ciudadano de GE · Buen expediente · Inglés o húngaro · Menores de 35'},
-      {label:'Convocatoria',   val:'Noviembre–enero. Portal: DreamApply'},
-    ],
-    btnExt:{text:'Ver convocatoria oficial', url:'https://stipendiumhungaricum.hu'}, btnWa:null, svgKey:'scholarship'
-  },
-  csc: {
-    eyebrow:'Beca China', eyeColor:'#F43F5E', title:'Beca Gobierno Chino (CSC)',
-    tagline:'El Chinese Scholarship Council ofrece plazas para Grado, Máster y Doctorado en China.',
-    info:[
-      {label:'Qué ofrece', val:'Matrícula · Alojamiento · Seguro médico · ~2.500 CNY/mes'},
-      {label:'Idioma',     val:'Mandarín (año preparatorio gratuito) o inglés'},
-      {label:'Plazo',      val:'Enero–abril. Embajada de China en Malabo'},
-    ],
-    btnExt:{text:'Campus China Portal', url:'https://www.campuschina.org'}, btnWa:null, svgKey:'scholarship'
-  },
-  gks: {
-    eyebrow:'Beca Corea', eyeColor:'#8B5CF6', title:'Global Korea Scholarship',
-    tagline:'El Gobierno coreano ofrece becas completas para estudiar en Corea del Sur.',
-    info:[
-      {label:'Qué ofrece',     val:'Matrícula + 1 año de coreano · Alojamiento · Vuelo · Seguro · Mensualidad'},
-      {label:'Perfil buscado', val:'Media académica superior a 80% · Salud apta'},
-      {label:'Convocatoria',   val:'Septiembre–diciembre del año anterior'},
-    ],
-    btnExt:{text:'NIIED — Web oficial', url:'https://www.niied.go.kr'}, btnWa:null, svgKey:'scholarship'
-  },
-  aecid: {
-    eyebrow:'Cooperación Española', eyeColor:'#F59E0B', title:'Becas AECID',
-    tagline:'La Agencia Española de Cooperación ofrece becas de posgrado y doctorado para GE.',
-    info:[
-      {label:'Tipos',        val:'Másters y especializaciones · Doctorados · Formación técnica en España'},
-      {label:'Requisito',    val:'Título universitario en GE · Solicitud online · Carta de motivación'},
-      {label:'Convocatoria', val:'Enero–marzo. Resultados en julio'},
-    ],
-    btnExt:{text:'Web AECID', url:'https://www.aecid.es/becas'}, btnWa:null, svgKey:'scholarship'
-  },
-  carolina: {
-    eyebrow:'Fundación', eyeColor:'#F4A100', title:'Fundación Carolina',
-    tagline:'Posgrados y doctorados en universidades españolas para ciudadanos africanos.',
-    info:[
-      {label:'Qué ofrece', val:'Másters · Doctorados · Estancias cortas de investigación'},
-      {label:'Perfil',     val:'Profesionales y académicos con título universitario y experiencia'},
-      {label:'Plazo',      val:'Noviembre–enero. Ver convocatorias por programa'},
-    ],
-    btnExt:{text:'Fundación Carolina', url:'https://www.fundacioncarolina.es'}, btnWa:null, svgKey:'scholarship'
-  },
-  bls: {
-    eyebrow:'Centro de Visados', eyeColor:'#0EA5E9', title:'BLS International',
-    tagline:'Centro de visados certificado para múltiples embajadas. Gestión completa y segura.',
-    info:[
-      {label:'Destinos', val:'España · Portugal · Italia · Canadá · India · y más'},
-      {label:'Qué hacen', val:'Recepción de documentos · Cita consular · Seguimiento · Devolución del pasaporte'},
-      {label:'Dónde',    val:'Centro en Malabo. Consultar horarios en su web'},
-    ],
-    btnExt:{text:'BLS International', url:'https://www.blsinternational.com'}, btnWa:null, svgKey:'visa'
-  },
+  stipendium:  { eyebrow:'Beca Internacional',    eyeColor:'#0EA5E9', title:'Stipendium Hungaricum',    tagline:'Programa de becas del Gobierno húngaro para estudiantes de Guinea Ecuatorial.',   info:[{label:'Qué ofrece',val:'Matrícula completa · Alojamiento · Seguro médico · Estipendio mensual'},{label:'Requisitos',val:'Ciudadano de GE · Buen expediente · Inglés o húngaro · Menores de 35'},{label:'Convocatoria',val:'Noviembre–enero. Portal: DreamApply'}], btnExt:{text:'Ver convocatoria oficial',url:'https://stipendiumhungaricum.hu'}, btnWa:null, svgKey:'scholarship' },
+  csc:         { eyebrow:'Beca China',            eyeColor:'#F43F5E', title:'Beca Gobierno Chino (CSC)', tagline:'El Chinese Scholarship Council ofrece plazas para Grado, Máster y Doctorado.',    info:[{label:'Qué ofrece',val:'Matrícula · Alojamiento · Seguro médico · ~2.500 CNY/mes'},{label:'Idioma',val:'Mandarín (año preparatorio gratuito) o inglés'},{label:'Plazo',val:'Enero–abril. Embajada de China en Malabo'}], btnExt:{text:'Campus China Portal',url:'https://www.campuschina.org'}, btnWa:null, svgKey:'scholarship' },
+  gks:         { eyebrow:'Beca Corea',            eyeColor:'#8B5CF6', title:'Global Korea Scholarship',  tagline:'El Gobierno coreano ofrece becas completas para estudiar en Corea del Sur.',      info:[{label:'Qué ofrece',val:'Matrícula + 1 año coreano · Alojamiento · Vuelo · Seguro · Mensualidad'},{label:'Perfil',val:'Media académica superior a 80%'},{label:'Convocatoria',val:'Septiembre–diciembre del año anterior'}], btnExt:{text:'NIIED — Web oficial',url:'https://www.niied.go.kr'}, btnWa:null, svgKey:'scholarship' },
+  aecid:       { eyebrow:'Cooperación Española',  eyeColor:'#F59E0B', title:'Becas AECID',               tagline:'La Agencia Española de Cooperación ofrece becas de posgrado y doctorado.',        info:[{label:'Tipos',val:'Másters · Doctorados · Formación técnica en España'},{label:'Requisito',val:'Título universitario en GE · Solicitud online'},{label:'Convocatoria',val:'Enero–marzo. Resultados en julio'}], btnExt:{text:'Web AECID',url:'https://www.aecid.es/becas'}, btnWa:null, svgKey:'scholarship' },
+  carolina:    { eyebrow:'Fundación',             eyeColor:'#F4A100', title:'Fundación Carolina',         tagline:'Posgrados y doctorados en universidades españolas para ciudadanos africanos.',    info:[{label:'Qué ofrece',val:'Másters · Doctorados · Estancias de investigación'},{label:'Perfil',val:'Profesionales y académicos con título y experiencia'},{label:'Plazo',val:'Noviembre–enero'}], btnExt:{text:'Fundación Carolina',url:'https://www.fundacioncarolina.es'}, btnWa:null, svgKey:'scholarship' },
+  bls:         { eyebrow:'Centro de Visados',     eyeColor:'#0EA5E9', title:'BLS International',          tagline:'Centro de visados certificado para múltiples embajadas.',                          info:[{label:'Destinos',val:'España · Portugal · Italia · Canadá · India · y más'},{label:'Qué hacen',val:'Recepción de docs · Cita consular · Seguimiento · Devolución pasaporte'},{label:'Dónde',val:'Centro en Malabo. Consultar horarios en su web'}], btnExt:{text:'BLS International',url:'https://www.blsinternational.com'}, btnWa:null, svgKey:'visa' },
   // MINISTERIOS
-  'min-educacion': {
-    eyebrow:'Ministerio', eyeColor:'#1A73E8', title:'Ministerio de Educación',
-    tagline:'Trámites educativos, homologaciones y becas nacionales. Malabo, Av. de la Independencia.',
-    info:[
-      {label:'Trámites disponibles', val:'① Homologación de títulos extranjeros\n② Certificados escolares y académicos\n③ Solicitud de becas nacionales\n④ Matrícula en centros públicos'},
-      {label:'Horario',   val:'Lunes a Viernes · 8:00 – 14:00h'},
-      {label:'Kit básico', val:'DIP original · Fotos carnet · Títulos a homologar · Solicitud'},
-    ],
-    btnExt:{text:'Web del Ministerio', url:'#'}, btnWa:{text:'Consultar por WhatsApp', msg:'Hola Ministerio de Educación, tengo una consulta sobre un trámite'}, svgKey:'ministry'
-  },
-  'min-hacienda': {
-    eyebrow:'Ministerio', eyeColor:'#F4A100', title:'Ministerio de Hacienda',
-    tagline:'Ventanilla Única (VUEGE), NIF y pagos de impuestos.',
-    info:[
-      {label:'Trámites disponibles', val:'① NIF — Número de Identificación Fiscal\n② VUEGE — Registro de empresas\n③ Pago de tasas e impuestos\n④ Certificados de estar al corriente'},
-      {label:'Horario', val:'Lunes a Viernes · 8:00 – 14:30h'},
-      {label:'Consejo',  val:'Lleva siempre 5 fotocopias del DIP. No hay fotocopiadora en el edificio'},
-    ],
-    btnExt:{text:'Portal VUEGE', url:'https://vuege.org'}, btnWa:{text:'Consultar por WhatsApp', msg:'Hola Ministerio de Hacienda, necesito info sobre un trámite'}, svgKey:'ministry'
-  },
-  'min-salud': {
-    eyebrow:'Ministerio', eyeColor:'#F43F5E', title:'Ministerio de Salud',
-    tagline:'Carnés sanitarios, certificados médicos y campañas de vacunación.',
-    info:[
-      {label:'Trámites', val:'① Carné de manipulador de alimentos\n② Certificado médico oficial\n③ Vacunación infantil y adultos\n④ Registro sanitario de productos'},
-      {label:'Horario',  val:'Lunes a Viernes · 7:30 – 14:00h'},
-    ],
-    btnExt:null, btnWa:{text:'Consultar por WhatsApp', msg:'Hola Ministerio de Salud, tengo una consulta'}, svgKey:'ministry'
-  },
-  'min-asuntos': {
-    eyebrow:'Ministerio', eyeColor:'#8B5CF6', title:'Min. de Asuntos Exteriores',
-    tagline:'Pasaportes, visados de entrada y legalizaciones. Malabo.',
-    info:[
-      {label:'Trámites', val:'① Pasaporte ordinario y urgente\n② Visado de entrada a GE\n③ Legalización y apostilla\n④ Renovación DIP'},
-      {label:'Tasas',    val:'Pasaporte ordinario: 30.000 FCFA · Urgente 48h: 60.000 FCFA'},
-      {label:'Horario',  val:'Lunes a Viernes · 8:00 – 14:00h · Martes menos cola'},
-    ],
-    btnExt:null, btnWa:{text:'Consultar por WhatsApp', msg:'Hola, necesito información sobre pasaportes en GE'}, svgKey:'ministry'
-  },
-  ambassade: {
-    eyebrow:'Consulados', eyeColor:'#0EA5E9', title:'Consulados y Embajadas',
-    tagline:'Visados Schengen, apostilla de documentos y certificados para el exterior.',
-    info:[
-      {label:'Visado Schengen', val:'Citas a través de VFS Global y BLS International. Requieren reserva previa'},
-      {label:'Apostilla',       val:'Legalización de documentos para uso en el extranjero. Tramitar en Min. de Justicia'},
-    ],
-    btnExt:{text:'VFS Global', url:'https://www.vfsglobal.com'}, btnWa:null, svgKey:'embassy'
-  },
-  // HOTELES & RESTAURANTES
-  andachina:          { eyebrow:'Restaurante',  eyeColor:'#F43F5E', title:'Anda China',               tagline:'Restaurante de cocina china y asiática en Malabo.',           info:[{label:'Especialidad', val:'Cocina china · Wok · Mariscos · Arroces especiales'},{label:'Ubicación', val:'Malabo, Guinea Ecuatorial'}], btnExt:null, btnWa:{text:'Reservar mesa',       msg:'Hola Anda China, quisiera hacer una reserva'},      svgKey:'restaurant' },
-  cafemalabo:         { eyebrow:'Cafetería',    eyeColor:'#F59E0B', title:'Cafe Malabo',               tagline:'Cafetería y restaurante en el corazón de Malabo.',            info:[{label:'Carta',       val:'Café · Zumos · Bocadillos · Platos del día'},{label:'Horario', val:'7:00 – 22:00h · Todos los días'}],                    btnExt:null, btnWa:{text:'Contactar',           msg:'Hola Cafe Malabo, quiero información'},             svgKey:'restaurant' },
-  ibisbata:           { eyebrow:'Hotel',        eyeColor:'#F43F5E', title:'IBIS Bata',                 tagline:'Hotel de la cadena IBIS en Bata, Guinea Ecuatorial.',         info:[{label:'Servicios',  val:'Habitaciones · Restaurante · WiFi · Recepción 24h'},{label:'Ubicación', val:'Bata, Región Continental, Guinea Ecuatorial'}], btnExt:{text:'Reservar en IBIS', url:'https://www.accorhotels.com'}, btnWa:null, svgKey:'hotel' },
-  restaurantqg:       { eyebrow:'Restaurante',  eyeColor:'#F4A100', title:'Restaurant QG',             tagline:'Restaurante de referencia en Malabo con cocina internacional.', info:[{label:'Cocina',     val:'Mediterránea · Internacional · Mariscos · Carnes'},{label:'Horario', val:'12:00 – 23:00h · Cerrado lunes'}],                  btnExt:null, btnWa:{text:'Reservar mesa',       msg:'Hola Restaurant QG, quiero una reserva'},          svgKey:'restaurant' },
-  bidjibinia:         { eyebrow:'Restaurante',  eyeColor:'#F97316', title:'Rest. Bidji Binia',         tagline:'Auténtica cocina ecuatoguineana.',                             info:[{label:'Especialidad', val:'Cocina tradicional de GE · Pescado fresco · Ndolé'}],                                                                     btnExt:null, btnWa:{text:'Contactar',           msg:'Hola Restaurante Bidji Binia, quiero información'}, svgKey:'restaurant' },
-  leatelier:          { eyebrow:'Restaurante',  eyeColor:'#8B5CF6', title:'Le Atelier',                tagline:'Cocina francesa e internacional con ambiente refinado.',        info:[{label:'Cocina',     val:'Francesa · Mediterránea · Fusion'},{label:'Horario', val:'12:00 – 23:30h'}],                                                 btnExt:null, btnWa:{text:'Reservar mesa',       msg:'Hola Le Atelier, quisiera hacer una reserva'},     svgKey:'restaurant' },
-  complejolaluna:     { eyebrow:'Complejo',     eyeColor:'#0EA5E9', title:'Complejo La Luna',          tagline:'Complejo de ocio con restaurante, piscina y entretenimiento.', info:[{label:'Servicios',  val:'Restaurante · Piscina · Bar · Zonas de descanso'}],                                                                          btnExt:null, btnWa:{text:'Contactar',           msg:'Hola Complejo La Luna, quiero información'},       svgKey:'hotel'      },
-  loriental:          { eyebrow:'Restaurante',  eyeColor:'#F59E0B', title:"L'Oriental",               tagline:'Cocina oriental en Malabo. Ambientación auténtica.',           info:[{label:'Cocina',     val:'China · Japonesa · Tailandesa'},{label:'Horario', val:'12:00 – 22:30h'}],                                                   btnExt:null, btnWa:{text:'Reservar mesa',       msg:"Hola L'Oriental, quiero una reserva"},             svgKey:'restaurant' },
-  magnosuites:        { eyebrow:'Hotel',        eyeColor:'#1A73E8', title:'Hotel MAGNO Suites',        tagline:'Hotel de referencia en Malabo con suites de lujo.',            info:[{label:'Servicios',  val:'Suites · Restaurante · Sala de conferencias · Piscina · Spa'},{label:'Ubicación', val:'Malabo, Guinea Ecuatorial'}],        btnExt:null, btnWa:{text:'Reservar habitación', msg:'Hola Hotel MAGNO Suites, quiero una reserva'},     svgKey:'hotel'      },
-  restauranteimagine: { eyebrow:'Restaurante',  eyeColor:'#F97316', title:'Restaurante Imagine',       tagline:'Cocina de autor con ingredientes locales e internacionales.',   info:[{label:'Cocina',     val:'Fusion · Internacional · Cocina de autor'},{label:'Horario', val:'13:00 – 23:00h · Martes a domingo'}],                   btnExt:null, btnWa:{text:'Reservar mesa',       msg:'Hola Restaurante Imagine, quiero una reserva'},    svgKey:'restaurant' },
-  panafrica:          { eyebrow:'Hotel',        eyeColor:'#10B981', title:'Hotel Panafrica',           tagline:'Hotel boutique & spa en Malabo.',                              info:[{label:'Servicios',  val:'Habitaciones premium · Spa · Restaurante · Jardines'},{label:'Ubicación', val:'Malabo, Guinea Ecuatorial'}],               btnExt:null, btnWa:{text:'Reservar habitación', msg:'Hola Hotel Panafrica, quiero hacer una reserva'},  svgKey:'hotel'      },
-  emmarose:           { eyebrow:'Restaurante',  eyeColor:'#F43F5E', title:'Restaurante Emma Rose',     tagline:'Restaurante íntimo con cocina mediterránea y africana.',        info:[{label:'Cocina',     val:'Mediterránea · Africana · Pescados y mariscos'},{label:'Horario', val:'12:00 – 22:00h · Lunes cerrado'}],                  btnExt:null, btnWa:{text:'Reservar mesa',       msg:'Hola Restaurante Emma Rose, quiero una reserva'},  svgKey:'restaurant' },
-  dulceencanto:       { eyebrow:'Heladería',    eyeColor:'#C2185B', title:'Dulce Encanto Heladería',   tagline:'Heladería y chucherías en Malabo. Helados artesanales.',         info:[{label:'Productos',  val:'Helados artesanales · Chucherías · Batidos · Postres'}],                                                                   btnExt:null, btnWa:{text:'Contactar',           msg:'Hola Dulce Encanto, quiero información'},          svgKey:'restaurant' },
+  'min-educacion': { eyebrow:'Ministerio', eyeColor:'#1A73E8', title:'Ministerio de Educación',      tagline:'Trámites educativos, homologaciones y becas nacionales.',                          info:[{label:'Trámites',val:'① Homologación de títulos\n② Certificados académicos\n③ Becas nacionales\n④ Matrícula en centros públicos'},{label:'Horario',val:'Lunes a Viernes · 8:00 – 14:00h'},{label:'Kit básico',val:'DIP · Fotos · Títulos · Solicitud'}], btnExt:null, btnWa:{text:'Consultar por WhatsApp',msg:'Hola Ministerio de Educación, tengo una consulta'}, svgKey:'ministry' },
+  'min-hacienda':  { eyebrow:'Ministerio', eyeColor:'#F4A100', title:'Ministerio de Hacienda',        tagline:'Ventanilla Única (VUEGE), NIF y pagos de impuestos.',                               info:[{label:'Trámites',val:'① NIF Fiscal\n② VUEGE — Registro de empresas\n③ Pago de tasas\n④ Certificados fiscal'},{label:'Horario',val:'Lunes a Viernes · 8:00 – 14:30h'},{label:'Consejo',val:'Lleva siempre 5 fotocopias del DIP'}], btnExt:{text:'Portal VUEGE',url:'https://vuege.org'}, btnWa:{text:'Consultar por WhatsApp',msg:'Hola Ministerio de Hacienda, necesito info'}, svgKey:'ministry' },
+  'min-salud':     { eyebrow:'Ministerio', eyeColor:'#F43F5E', title:'Ministerio de Salud',           tagline:'Carnés sanitarios, certificados médicos y vacunación.',                             info:[{label:'Trámites',val:'① Carné de manipulador\n② Certificado médico\n③ Vacunación\n④ Registro sanitario'},{label:'Horario',val:'Lunes a Viernes · 7:30 – 14:00h'}], btnExt:null, btnWa:{text:'Consultar por WhatsApp',msg:'Hola Ministerio de Salud, tengo una consulta'}, svgKey:'ministry' },
+  'min-asuntos':   { eyebrow:'Ministerio', eyeColor:'#8B5CF6', title:'Min. de Asuntos Exteriores',    tagline:'Pasaportes, visados de entrada y legalizaciones.',                                   info:[{label:'Trámites',val:'① Pasaporte ordinario/urgente\n② Visado de entrada\n③ Legalización y apostilla\n④ Renovación DIP'},{label:'Tasas',val:'Ordinario: 30.000 FCFA · Urgente 48h: 60.000 FCFA'},{label:'Horario',val:'Lunes a Viernes · 8:00 – 14:00h'}], btnExt:null, btnWa:{text:'Consultar por WhatsApp',msg:'Hola, necesito información sobre pasaportes en GE'}, svgKey:'ministry' },
+  ambassade:       { eyebrow:'Consulados', eyeColor:'#0EA5E9', title:'Consulados y Embajadas',        tagline:'Visados Schengen, apostilla y certificados para el exterior.',                      info:[{label:'Visado Schengen',val:'Citas a través de VFS Global y BLS International'},{label:'Apostilla',val:'Legalización de documentos. Tramitar en Min. de Justicia'}], btnExt:{text:'VFS Global',url:'https://www.vfsglobal.com'}, btnWa:null, svgKey:'embassy' },
   // SUPERMERCADOS
-  'martinez-muankaban': { eyebrow:'Supermercado', eyeColor:'#CC0000', title:'Martínez Muankaban',      tagline:'Supermercado Martínez Hermanos, sucursal Muankaban.',           info:[{label:'Productos',   val:'Alimentación · Hogar · Electrónica · Importación'}], btnExt:null, btnWa:{text:'Contactar', msg:'Hola Martínez Hnos, necesito información'}, svgKey:'market' },
-  'martinez-malabo':    { eyebrow:'Supermercado', eyeColor:'#CC0000', title:'Martínez Central Malabo', tagline:'Sede central de Martínez Hermanos en Malabo.',                  info:[{label:'Productos',   val:'Alimentación · Hogar · Electrónica · Importación'}], btnExt:null, btnWa:{text:'Contactar', msg:'Hola Martínez Hnos, necesito información'}, svgKey:'market' },
-  'martinez-bata':      { eyebrow:'Supermercado', eyeColor:'#CC0000', title:'Martínez Central Bata',   tagline:'Sede central de Martínez Hermanos en Bata.',                    info:[{label:'Productos',   val:'Alimentación · Hogar · Electrónica · Importación'}], btnExt:null, btnWa:{text:'Contactar', msg:'Hola Martínez Hnos, necesito información'}, svgKey:'market' },
-  'egtc-supermercado':  { eyebrow:'Supermercado', eyeColor:'#003087', title:'EGTC Supermercado',       tagline:'Supermercado EGTC en Malabo.',                                  info:[{label:'Productos',   val:'Alimentación · Bebidas · Electrónica · Hogar'}],      btnExt:null, btnWa:{text:'Contactar', msg:'Hola EGTC, necesito información'},          svgKey:'market' },
-  'egtc-bata':          { eyebrow:'Supermercado', eyeColor:'#003087', title:'EGTC Bata',               tagline:'Supermercado EGTC en Bata.',                                    info:[{label:'Productos',   val:'Alimentación · Bebidas · Electrónica · Hogar'}],      btnExt:null, btnWa:{text:'Contactar', msg:'Hola EGTC, necesito información'},          svgKey:'market' },
-  'guinaco-ciudad':     { eyebrow:'Supermercado', eyeColor:'#8B0000', title:'Guinaco Malabo Ciudad',   tagline:'Supermercado Guinaco, sucursal Malabo Ciudad.',                  info:[{label:'Especialidad', val:'Productos básicos · Bebidas · Conservas · Al por mayor'}], btnExt:null, btnWa:{text:'Contactar', msg:'Hola Guinaco, necesito información'}, svgKey:'market' },
-  'guinaco-ela':        { eyebrow:'Supermercado', eyeColor:'#8B0000', title:'Guinaco Ela Nguema',      tagline:'Supermercado Guinaco, sucursal Ela Nguema.',                     info:[{label:'Especialidad', val:'Productos básicos · Bebidas · Conservas · Al por mayor'}], btnExt:null, btnWa:{text:'Contactar', msg:'Hola Guinaco, necesito información'}, svgKey:'market' },
-  'ventage-k5':         { eyebrow:'Gourmet',      eyeColor:'#1A3A8F', title:'Ventage Sala K5',         tagline:'Tienda gourmet Ventage, sucursal Sala K5.',                      info:[{label:'Especialidad', val:'Quesos importados · Vinos · Conservas premium'}],          btnExt:{text:'ventagegroup.com', url:'https://ventagegroup.com/ventage/'}, btnWa:null, svgKey:'market' },
-  'ventage-mall':       { eyebrow:'Gourmet',      eyeColor:'#1A3A8F', title:'Ventage Mall',            tagline:'Tienda gourmet Ventage en el Mall.',                             info:[{label:'Especialidad', val:'Quesos importados · Vinos · Conservas premium'}],          btnExt:{text:'ventagegroup.com', url:'https://ventagegroup.com/ventage/'}, btnWa:null, svgKey:'market' },
-  'ventage-casa':       { eyebrow:'Gourmet',      eyeColor:'#1A3A8F', title:'Ventage Casa',            tagline:'Ventage especialistas en artículos para el hogar y gourmet.',    info:[{label:'Especialidad', val:'Artículos de hogar · Decoración · Gourmet'}],             btnExt:{text:'ventagegroup.com', url:'https://ventagegroup.com/ventage/'}, btnWa:null, svgKey:'market' },
-  'ventage-office':     { eyebrow:'Gourmet',      eyeColor:'#1A3A8F', title:'Ventage Office Store',    tagline:'Ventage especialistas en artículos de oficina e importación.',   info:[{label:'Especialidad', val:'Artículos de oficina · Tecnología · Importación'}],       btnExt:{text:'ventagegroup.com', url:'https://ventagegroup.com/ventage/'}, btnWa:null, svgKey:'market' },
-  'blackspoon-candy':   { eyebrow:'Mini Mercado', eyeColor:'#1a1a1a', title:'Mini Mercado Candy',      tagline:'Mini mercado Black Spoon, sucursal Candy.',                      info:[{label:'Productos',    val:'Alimentación · Bebidas · Artículos básicos'}],              btnExt:null, btnWa:{text:'Contactar', msg:'Hola Black Spoon, necesito información'}, svgKey:'market' },
-  'blackspoon-sipopo':  { eyebrow:'Mini Mercado', eyeColor:'#1a1a1a', title:'Black Spoon Sipopo',      tagline:'Mini mercado Black Spoon, sucursal Sipopo.',                     info:[{label:'Productos',    val:'Alimentación · Bebidas · Artículos básicos'}],              btnExt:null, btnWa:{text:'Contactar', msg:'Hola Black Spoon, necesito información'}, svgKey:'market' },
-  'kim-mall':           { eyebrow:'Centro Comercial', eyeColor:'#2c2c2c', title:'Kim Mall',            tagline:'Centro comercial Kim Mall en Malabo.',                           info:[{label:'Tiendas',      val:'Moda · Electrónica · Alimentación · Servicios'}],             btnExt:null, btnWa:{text:'Contactar', msg:'Hola Kim Mall, necesito información'},    svgKey:'market' },
+  'martinez-muankaban': { eyebrow:'Supermercado', eyeColor:'#CC0000', title:'Martínez Muankaban',      tagline:'Supermercado Martínez Hermanos, sucursal Muankaban.', info:[{label:'Productos',val:'Alimentación · Hogar · Electrónica · Importación'}], btnExt:null, btnWa:{text:'Contactar',msg:'Hola Martínez Hnos, necesito información'}, svgKey:'market' },
+  'martinez-malabo':    { eyebrow:'Supermercado', eyeColor:'#CC0000', title:'Martínez Central Malabo', tagline:'Sede central de Martínez Hermanos en Malabo.',        info:[{label:'Productos',val:'Alimentación · Hogar · Electrónica · Importación'}], btnExt:null, btnWa:{text:'Contactar',msg:'Hola Martínez Hnos, necesito información'}, svgKey:'market' },
+  'martinez-bata':      { eyebrow:'Supermercado', eyeColor:'#CC0000', title:'Martínez Central Bata',   tagline:'Sede central de Martínez Hermanos en Bata.',          info:[{label:'Productos',val:'Alimentación · Hogar · Electrónica · Importación'}], btnExt:null, btnWa:{text:'Contactar',msg:'Hola Martínez Hnos, necesito información'}, svgKey:'market' },
+  'egtc-supermercado':  { eyebrow:'Supermercado', eyeColor:'#003087', title:'EGTC Supermercado',       tagline:'Supermercado EGTC en Malabo.',                        info:[{label:'Productos',val:'Alimentación · Bebidas · Electrónica · Hogar'}],      btnExt:null, btnWa:{text:'Contactar',msg:'Hola EGTC, necesito información'}, svgKey:'market' },
+  'egtc-bata':          { eyebrow:'Supermercado', eyeColor:'#003087', title:'EGTC Bata',               tagline:'Supermercado EGTC en Bata.',                          info:[{label:'Productos',val:'Alimentación · Bebidas · Electrónica · Hogar'}],      btnExt:null, btnWa:{text:'Contactar',msg:'Hola EGTC, necesito información'}, svgKey:'market' },
+  'guinaco-ciudad':     { eyebrow:'Supermercado', eyeColor:'#8B0000', title:'Guinaco Malabo Ciudad',   tagline:'Supermercado Guinaco, sucursal Malabo Ciudad.',        info:[{label:'Especialidad',val:'Productos básicos · Bebidas · Al por mayor'}],     btnExt:null, btnWa:{text:'Contactar',msg:'Hola Guinaco, necesito información'}, svgKey:'market' },
+  'guinaco-ela':        { eyebrow:'Supermercado', eyeColor:'#8B0000', title:'Guinaco Ela Nguema',      tagline:'Supermercado Guinaco, sucursal Ela Nguema.',           info:[{label:'Especialidad',val:'Productos básicos · Bebidas · Al por mayor'}],     btnExt:null, btnWa:{text:'Contactar',msg:'Hola Guinaco, necesito información'}, svgKey:'market' },
+  'ventage-k5':         { eyebrow:'Gourmet',      eyeColor:'#1A3A8F', title:'Ventage Sala K5',         tagline:'Tienda gourmet Ventage, sucursal Sala K5.',            info:[{label:'Especialidad',val:'Quesos importados · Vinos · Conservas premium'}], btnExt:{text:'ventagegroup.com',url:'https://ventagegroup.com/ventage/'}, btnWa:null, svgKey:'market' },
+  'ventage-mall':       { eyebrow:'Gourmet',      eyeColor:'#1A3A8F', title:'Ventage Mall',            tagline:'Tienda gourmet Ventage en el Mall.',                  info:[{label:'Especialidad',val:'Quesos importados · Vinos · Conservas premium'}], btnExt:{text:'ventagegroup.com',url:'https://ventagegroup.com/ventage/'}, btnWa:null, svgKey:'market' },
+  'ventage-casa':       { eyebrow:'Gourmet',      eyeColor:'#1A3A8F', title:'Ventage Casa',            tagline:'Ventage artículos para el hogar y gourmet.',          info:[{label:'Especialidad',val:'Artículos de hogar · Decoración · Gourmet'}],     btnExt:{text:'ventagegroup.com',url:'https://ventagegroup.com/ventage/'}, btnWa:null, svgKey:'market' },
+  'ventage-office':     { eyebrow:'Gourmet',      eyeColor:'#1A3A8F', title:'Ventage Office Store',    tagline:'Ventage artículos de oficina e importación.',         info:[{label:'Especialidad',val:'Artículos de oficina · Tecnología · Importación'}],btnExt:{text:'ventagegroup.com',url:'https://ventagegroup.com/ventage/'}, btnWa:null, svgKey:'market' },
+  'blackspoon-candy':   { eyebrow:'Mini Mercado', eyeColor:'#1a1a1a', title:'Mini Mercado Candy',      tagline:'Mini mercado Black Spoon, sucursal Candy.',           info:[{label:'Productos',val:'Alimentación · Bebidas · Artículos básicos'}],       btnExt:null, btnWa:{text:'Contactar',msg:'Hola Black Spoon, necesito información'}, svgKey:'market' },
+  'blackspoon-sipopo':  { eyebrow:'Mini Mercado', eyeColor:'#1a1a1a', title:'Black Spoon Sipopo',      tagline:'Mini mercado Black Spoon, sucursal Sipopo.',          info:[{label:'Productos',val:'Alimentación · Bebidas · Artículos básicos'}],       btnExt:null, btnWa:{text:'Contactar',msg:'Hola Black Spoon, necesito información'}, svgKey:'market' },
+  'kim-mall':           { eyebrow:'Centro Comercial', eyeColor:'#2c2c2c', title:'Kim Mall',            tagline:'Centro comercial Kim Mall en Malabo.',               info:[{label:'Tiendas',val:'Moda · Electrónica · Alimentación · Servicios'}],       btnExt:null, btnWa:{text:'Contactar',msg:'Hola Kim Mall, necesito información'}, svgKey:'market' },
   // VUELOS & AGENCIAS
-  cronos:    { eyebrow:'Aerolínea GE',      eyeColor:'#1A73E8', title:'Cronos Airlines',          tagline:'Aerolínea de GE. Vuelos domésticos e insulares entre Malabo y Bata.', info:[{label:'Rutas', val:'Malabo ↔ Bata · Malabo ↔ Annobon · Vuelos chárter'}],            btnExt:{text:'Sitio Cronos',       url:'https://www.cronosairlines.com'},    btnWa:null, svgKey:'airline' },
-  satguru:   { eyebrow:'Agencia de Viajes', eyeColor:'#10B981', title:'Satguru Travel & Tours',   tagline:'Agencia internacional. Vuelos, hoteles y paquetes turísticos desde GE.',  info:[{label:'Servicios', val:'Vuelos internacionales · Hoteles · Paquetes · Visados'}],  btnExt:null, btnWa:{text:'Contactar Satguru',    msg:'Hola Satguru Travel, quiero cotizar un viaje'},    svgKey:'agency'  },
-  milestravel:{ eyebrow:'Agencia de Viajes',eyeColor:'#0EA5E9', title:'Miles Travel',             tagline:'Tu agencia de viajes de confianza en Guinea Ecuatorial.',                 info:[{label:'Servicios', val:'Vuelos · Hoteles · Transfers · Visados · Paquetes'}],       btnExt:null, btnWa:{text:'Contactar Miles',      msg:'Hola Miles Travel, quiero información sobre vuelos'}, svgKey:'agency'},
-  lufthansa: { eyebrow:'Aerolínea',         eyeColor:'#1A73E8', title:'Lufthansa',                tagline:'Principal aerolínea para volar de Malabo a Europa vía Frankfurt.',         info:[{label:'Rutas', val:'Malabo → Frankfurt → Europa / USA / Asia'},{label:'Check-in', val:'24h antes en la app de Lufthansa'}], btnExt:{text:'lufthansa.com', url:'https://www.lufthansa.com'}, btnWa:null, svgKey:'airline' },
-  ethiopian: { eyebrow:'Aerolínea',         eyeColor:'#10B981', title:'Ethiopian Airlines',       tagline:'Mayor aerolínea de África. Conexiones a más de 120 destinos mundiales.',   info:[{label:'Hub', val:'Addis Abeba, Etiopía'},{label:'Rutas', val:'África · Europa · Asia · América'}], btnExt:{text:'ethiopianairlines.com', url:'https://www.ethiopianairlines.com'}, btnWa:null, svgKey:'airline' },
-  turkish:   { eyebrow:'Aerolínea',         eyeColor:'#F43F5E', title:'Turkish Airlines',         tagline:'Vuela a más destinos que cualquier otra aerolínea del mundo.',              info:[{label:'Hub', val:'Aeropuerto de Estambul'},{label:'Conexiones', val:'300+ destinos en 122 países'}], btnExt:{text:'turkishairlines.com', url:'https://www.turkishairlines.com'}, btnWa:null, svgKey:'airline' },
-  airfrance: { eyebrow:'Aerolínea',         eyeColor:'#1A73E8', title:'Air France',               tagline:'Aerolínea francesa con vuelos directos a París.',                           info:[{label:'Hub', val:'París Charles de Gaulle'},{label:'Red', val:'Europa · África · América · Asia'}], btnExt:{text:'airfrance.com', url:'https://www.airfrance.com'}, btnWa:null, svgKey:'airline' },
-  emirates:  { eyebrow:'Aerolínea',         eyeColor:'#F43F5E', title:'Emirates',                 tagline:'Aerolínea de Dubái. Una de las más grandes del mundo.',                     info:[{label:'Hub', val:'Aeropuerto Internacional de Dubái'},{label:'Destinos', val:'150+ países'}], btnExt:{text:'emirates.com', url:'https://www.emirates.com'}, btnWa:null, svgKey:'airline' },
-  qatar:     { eyebrow:'Aerolínea',         eyeColor:'#8B5CF6', title:'Qatar Airways',            tagline:'Elegida repetidamente mejor aerolínea del mundo. Hub en Doha.',             info:[{label:'Hub', val:'Aeropuerto Internacional Hamad, Doha'}], btnExt:{text:'qatarairways.com', url:'https://www.qatarairways.com'}, btnWa:null, svgKey:'airline' },
-  etihad:    { eyebrow:'Aerolínea',         eyeColor:'#F59E0B', title:'Etihad Airways',           tagline:'Aerolínea nacional de Abu Dabi. Vuelos internacionales de alta calidad.',   info:[{label:'Hub', val:'Aeropuerto Internacional de Abu Dabi'},{label:'Destinos', val:'100+ destinos en 6 continentes'}], btnExt:{text:'etihad.com', url:'https://www.etihad.com'}, btnWa:null, svgKey:'airline' },
-  asky:      { eyebrow:'Aerolínea',         eyeColor:'#F97316', title:'ASKY Airlines',            tagline:'The Pan African Airline. Conexiones en toda África Occidental y Central.',  info:[{label:'Hub', val:'Aeropuerto de Lomé, Togo'}], btnExt:{text:'flyasky.com', url:'https://www.flyasky.com'}, btnWa:null, svgKey:'airline' },
-  saa:       { eyebrow:'Aerolínea',         eyeColor:'#0EA5E9', title:'South African Airways',    tagline:'Aerolínea nacional de Sudáfrica. Conexiones en toda África.',               info:[{label:'Hub', val:'Johannesburgo OR Tambo'}], btnExt:{text:'flysaa.com', url:'https://www.flysaa.com'}, btnWa:null, svgKey:'airline' },
-  ceiba:     { eyebrow:'Aerolínea GE',      eyeColor:'#10B981', title:'Ceiba Intercontinental',   tagline:'Aerolínea de Guinea Ecuatorial. Vuelos regionales e intercontinentales.',   info:[{label:'Base', val:'Malabo, Guinea Ecuatorial'}], btnExt:{text:'flyceiba.com', url:'https://www.flyceiba.com'}, btnWa:null, svgKey:'airline' },
+  cronos:      { eyebrow:'Aerolínea GE',       eyeColor:'#1A73E8', title:'Cronos Airlines',           tagline:'Aerolínea de GE. Vuelos domésticos entre Malabo y Bata.',                   info:[{label:'Rutas',val:'Malabo ↔ Bata · Malabo ↔ Annobon · Chárter'}], btnExt:{text:'Sitio Cronos',url:'https://www.cronosairlines.com'}, btnWa:null, svgKey:'airline' },
+  satguru:     { eyebrow:'Agencia de Viajes',  eyeColor:'#10B981', title:'Satguru Travel & Tours',    tagline:'Agencia internacional. Vuelos, hoteles y paquetes desde GE.',               info:[{label:'Servicios',val:'Vuelos internacionales · Hoteles · Paquetes · Visados'}], btnExt:null, btnWa:{text:'Contactar Satguru',msg:'Hola Satguru Travel, quiero cotizar un viaje'}, svgKey:'agency' },
+  milestravel: { eyebrow:'Agencia de Viajes',  eyeColor:'#0EA5E9', title:'Miles Travel',              tagline:'Tu agencia de viajes de confianza en Guinea Ecuatorial.',                   info:[{label:'Servicios',val:'Vuelos · Hoteles · Transfers · Visados · Paquetes'}], btnExt:null, btnWa:{text:'Contactar Miles',msg:'Hola Miles Travel, quiero información sobre vuelos'}, svgKey:'agency' },
+  lufthansa:   { eyebrow:'Aerolínea',          eyeColor:'#1A73E8', title:'Lufthansa',                 tagline:'Principal aerolínea para volar de Malabo a Europa vía Frankfurt.',           info:[{label:'Rutas',val:'Malabo → Frankfurt → Europa / USA / Asia'},{label:'Check-in',val:'24h antes en la app de Lufthansa'}], btnExt:{text:'lufthansa.com',url:'https://www.lufthansa.com'}, btnWa:null, svgKey:'airline' },
+  ethiopian:   { eyebrow:'Aerolínea',          eyeColor:'#10B981', title:'Ethiopian Airlines',        tagline:'Mayor aerolínea de África. Conexiones a más de 120 destinos.',              info:[{label:'Hub',val:'Addis Abeba, Etiopía'},{label:'Rutas',val:'África · Europa · Asia · América'}], btnExt:{text:'ethiopianairlines.com',url:'https://www.ethiopianairlines.com'}, btnWa:null, svgKey:'airline' },
+  turkish:     { eyebrow:'Aerolínea',          eyeColor:'#F43F5E', title:'Turkish Airlines',          tagline:'Vuela a más destinos que cualquier otra aerolínea del mundo.',              info:[{label:'Hub',val:'Aeropuerto de Estambul'},{label:'Conexiones',val:'300+ destinos en 122 países'}], btnExt:{text:'turkishairlines.com',url:'https://www.turkishairlines.com'}, btnWa:null, svgKey:'airline' },
+  airfrance:   { eyebrow:'Aerolínea',          eyeColor:'#1A73E8', title:'Air France',                tagline:'Aerolínea francesa con vuelos directos a París.',                           info:[{label:'Hub',val:'París Charles de Gaulle'},{label:'Red',val:'Europa · África · América · Asia'}], btnExt:{text:'airfrance.com',url:'https://www.airfrance.com'}, btnWa:null, svgKey:'airline' },
+  emirates:    { eyebrow:'Aerolínea',          eyeColor:'#F43F5E', title:'Emirates',                  tagline:'Aerolínea de Dubái. Una de las más grandes del mundo.',                     info:[{label:'Hub',val:'Aeropuerto Internacional de Dubái'},{label:'Destinos',val:'150+ países'}], btnExt:{text:'emirates.com',url:'https://www.emirates.com'}, btnWa:null, svgKey:'airline' },
+  qatar:       { eyebrow:'Aerolínea',          eyeColor:'#8B5CF6', title:'Qatar Airways',             tagline:'Elegida repetidamente mejor aerolínea del mundo. Hub en Doha.',             info:[{label:'Hub',val:'Aeropuerto Internacional Hamad, Doha'}], btnExt:{text:'qatarairways.com',url:'https://www.qatarairways.com'}, btnWa:null, svgKey:'airline' },
+  etihad:      { eyebrow:'Aerolínea',          eyeColor:'#F59E0B', title:'Etihad Airways',            tagline:'Aerolínea nacional de Abu Dabi.',                                           info:[{label:'Hub',val:'Aeropuerto Internacional de Abu Dabi'},{label:'Destinos',val:'100+ destinos en 6 continentes'}], btnExt:{text:'etihad.com',url:'https://www.etihad.com'}, btnWa:null, svgKey:'airline' },
+  asky:        { eyebrow:'Aerolínea',          eyeColor:'#F97316', title:'ASKY Airlines',             tagline:'The Pan African Airline. Conexiones en toda África Occidental y Central.',  info:[{label:'Hub',val:'Aeropuerto de Lomé, Togo'}], btnExt:{text:'flyasky.com',url:'https://www.flyasky.com'}, btnWa:null, svgKey:'airline' },
+  saa:         { eyebrow:'Aerolínea',          eyeColor:'#0EA5E9', title:'South African Airways',     tagline:'Aerolínea nacional de Sudáfrica. Conexiones en toda África.',              info:[{label:'Hub',val:'Johannesburgo OR Tambo'}], btnExt:{text:'flysaa.com',url:'https://www.flysaa.com'}, btnWa:null, svgKey:'airline' },
+  ceiba:       { eyebrow:'Aerolínea GE',       eyeColor:'#10B981', title:'Ceiba Intercontinental',    tagline:'Aerolínea de Guinea Ecuatorial. Vuelos regionales e intercontinentales.',   info:[{label:'Base',val:'Malabo, Guinea Ecuatorial'}], btnExt:{text:'flyceiba.com',url:'https://www.flyceiba.com'}, btnWa:null, svgKey:'airline' },
+  // HOTELES & RESTAURANTES
+  andachina:          { eyebrow:'Restaurante',  eyeColor:'#C8102E', title:'Anda China',               tagline:'Restaurante de cocina china y asiática en Malabo.', info:[{label:'Especialidad',val:'Cocina china · Wok · Mariscos · Arroces'},{label:'Ubicación',val:'Malabo, Guinea Ecuatorial'}], btnExt:null, btnWa:{text:'Reservar mesa',msg:'Hola Anda China, quisiera hacer una reserva'}, svgKey:'restaurant' },
+  cafemalabo:         { eyebrow:'Cafetería',    eyeColor:'#D4A054', title:'Cafe Malabo',               tagline:'Cafetería y restaurante en el corazón de Malabo.',   info:[{label:'Carta',val:'Café · Zumos · Bocadillos · Platos del día'},{label:'Horario',val:'7:00 – 22:00h · Todos los días'}], btnExt:null, btnWa:{text:'Contactar',msg:'Hola Cafe Malabo, quiero información'}, svgKey:'restaurant' },
+  ibisbata:           { eyebrow:'Hotel',        eyeColor:'#E2001A', title:'IBIS Bata',                 tagline:'Hotel de la cadena IBIS en Bata, Guinea Ecuatorial.',info:[{label:'Servicios',val:'Habitaciones · Restaurante · WiFi · Recepción 24h'},{label:'Ubicación',val:'Bata, Región Continental'}], btnExt:{text:'Reservar en IBIS',url:'https://www.accorhotels.com'}, btnWa:null, svgKey:'hotel' },
+  restaurantqg:       { eyebrow:'Restaurante',  eyeColor:'#C9A84C', title:'Restaurant QG',             tagline:'Restaurante de referencia en Malabo, cocina internacional.', info:[{label:'Cocina',val:'Mediterránea · Internacional · Mariscos · Carnes'},{label:'Horario',val:'12:00 – 23:00h · Cerrado lunes'}], btnExt:null, btnWa:{text:'Reservar mesa',msg:'Hola Restaurant QG, quiero una reserva'}, svgKey:'restaurant' },
+  bidjibinia:         { eyebrow:'Restaurante',  eyeColor:'#1B4332', title:'Rest. Bidji Binia',         tagline:'Auténtica cocina ecuatoguineana.',                    info:[{label:'Especialidad',val:'Cocina tradicional GE · Pescado fresco · Ndolé'}], btnExt:null, btnWa:{text:'Contactar',msg:'Hola Restaurante Bidji Binia, quiero información'}, svgKey:'restaurant' },
+  leatelier:          { eyebrow:'Restaurante',  eyeColor:'#8B5CF6', title:'Le Atelier',                tagline:'Cocina francesa e internacional con ambiente refinado.', info:[{label:'Cocina',val:'Francesa · Mediterránea · Fusion'},{label:'Horario',val:'12:00 – 23:30h'}], btnExt:null, btnWa:{text:'Reservar mesa',msg:'Hola Le Atelier, quisiera hacer una reserva'}, svgKey:'restaurant' },
+  complejolaluna:     { eyebrow:'Complejo',     eyeColor:'#0EA5E9', title:'Complejo La Luna',          tagline:'Complejo de ocio con restaurante, piscina y entretenimiento.', info:[{label:'Servicios',val:'Restaurante · Piscina · Bar · Zonas de descanso'}], btnExt:null, btnWa:{text:'Contactar',msg:'Hola Complejo La Luna, quiero información'}, svgKey:'hotel' },
+  loriental:          { eyebrow:'Restaurante',  eyeColor:'#F59E0B', title:"L'Oriental",               tagline:'Cocina oriental en Malabo. Ambientación auténtica.',   info:[{label:'Cocina',val:'China · Japonesa · Tailandesa'},{label:'Horario',val:'12:00 – 22:30h'}], btnExt:null, btnWa:{text:'Reservar mesa',msg:"Hola L'Oriental, quiero una reserva"}, svgKey:'restaurant' },
+  magnosuites:        { eyebrow:'Hotel',        eyeColor:'#C9A84C', title:'Hotel MAGNO Suites',        tagline:'Hotel de referencia en Malabo con suites de lujo.',   info:[{label:'Servicios',val:'Suites · Restaurante · Conferencias · Piscina · Spa'},{label:'Ubicación',val:'Malabo, Guinea Ecuatorial'}], btnExt:null, btnWa:{text:'Reservar habitación',msg:'Hola Hotel MAGNO Suites, quiero una reserva'}, svgKey:'hotel' },
+  restauranteimagine: { eyebrow:'Restaurante',  eyeColor:'#F97316', title:'Restaurante Imagine',       tagline:'Cocina de autor con ingredientes locales e internacionales.', info:[{label:'Cocina',val:'Fusion · Internacional · Cocina de autor'},{label:'Horario',val:'13:00 – 23:00h · Martes a domingo'}], btnExt:null, btnWa:{text:'Reservar mesa',msg:'Hola Restaurante Imagine, quiero una reserva'}, svgKey:'restaurant' },
+  panafrica:          { eyebrow:'Hotel',        eyeColor:'#1B3A2D', title:'Hotel Panafrica',           tagline:'Hotel boutique & spa en Malabo.',                     info:[{label:'Servicios',val:'Habitaciones premium · Spa · Restaurante · Jardines'},{label:'Ubicación',val:'Malabo, Guinea Ecuatorial'}], btnExt:null, btnWa:{text:'Reservar habitación',msg:'Hola Hotel Panafrica, quiero hacer una reserva'}, svgKey:'hotel' },
+  emmarose:           { eyebrow:'Restaurante',  eyeColor:'#C0394A', title:'Restaurante Emma Rose',     tagline:'Restaurante íntimo con cocina mediterránea y africana.', info:[{label:'Cocina',val:'Mediterránea · Africana · Pescados y mariscos'},{label:'Horario',val:'12:00 – 22:00h · Lunes cerrado'}], btnExt:null, btnWa:{text:'Reservar mesa',msg:'Hola Restaurante Emma Rose, quiero una reserva'}, svgKey:'restaurant' },
+  dulceencanto:       { eyebrow:'Heladería',    eyeColor:'#C2185B', title:'Dulce Encanto Heladería',   tagline:'Heladería y chucherías en Malabo. Helados artesanales.', info:[{label:'Productos',val:'Helados artesanales · Chucherías · Batidos · Postres'}], btnExt:null, btnWa:{text:'Contactar',msg:'Hola Dulce Encanto, quiero información'}, svgKey:'restaurant' },
+  // GASOLINERAS
+  'total-caracolas':    { eyebrow:'Gasolinera', eyeColor:'#ED1C24', title:'TotalEnergies Caracolas',    tagline:'Estación de servicio TotalEnergies, sucursal Caracolas.',    info:[{label:'Combustibles',val:'Gasolina · Gasoil · GLP'},{label:'Servicios',val:'Lavado · Tienda · Aire'}], btnExt:null, btnWa:{text:'Contactar',msg:'Hola TotalEnergies, necesito información'}, svgKey:'electric' },
+  'total-elanguema':    { eyebrow:'Gasolinera', eyeColor:'#ED1C24', title:'TotalEnergies Ela-Nguema',   tagline:'Estación de servicio TotalEnergies, sucursal Ela-Nguema.',   info:[{label:'Combustibles',val:'Gasolina · Gasoil · GLP'}], btnExt:null, btnWa:{text:'Contactar',msg:'Hola TotalEnergies, necesito información'}, svgKey:'electric' },
+  'total-mbogo':        { eyebrow:'Gasolinera', eyeColor:'#ED1C24', title:'TotalEnergies Mbogo Nsogo', tagline:'Estación de servicio TotalEnergies, sucursal Mbogo Nsogo.',  info:[{label:'Combustibles',val:'Gasolina · Gasoil'}], btnExt:null, btnWa:{text:'Contactar',msg:'Hola TotalEnergies, necesito información'}, svgKey:'electric' },
+  'total-ngolo':        { eyebrow:'Gasolinera', eyeColor:'#ED1C24', title:'TotalEnergies Ngolo',       tagline:'Estación de servicio TotalEnergies, sucursal Ngolo.',        info:[{label:'Combustibles',val:'Gasolina · Gasoil'}], btnExt:null, btnWa:{text:'Contactar',msg:'Hola TotalEnergies, necesito información'}, svgKey:'electric' },
+  'total-ntobo':        { eyebrow:'Gasolinera', eyeColor:'#ED1C24', title:'TotalEnergies Ntobo',       tagline:'Estación de servicio TotalEnergies, sucursal Ntobo.',        info:[{label:'Combustibles',val:'Gasolina · Gasoil'}], btnExt:null, btnWa:{text:'Contactar',msg:'Hola TotalEnergies, necesito información'}, svgKey:'electric' },
+  'tradex-sampaka':     { eyebrow:'Gasolinera', eyeColor:'#8B0000', title:'Tradex Sampaka',            tagline:'Estación de servicio Tradex, sucursal Sampaka.',             info:[{label:'Combustibles',val:'Gasolina · Gasoil · GLP'}], btnExt:null, btnWa:{text:'Contactar',msg:'Hola Tradex, necesito información'}, svgKey:'electric' },
+  'tradex-malabo2':     { eyebrow:'Gasolinera', eyeColor:'#8B0000', title:'Tradex Malabo 2',           tagline:'Estación de servicio Tradex, sucursal Malabo 2.',            info:[{label:'Combustibles',val:'Gasolina · Gasoil'}], btnExt:null, btnWa:{text:'Contactar',msg:'Hola Tradex, necesito información'}, svgKey:'electric' },
+  'tradex-nkoantoma1':  { eyebrow:'Gasolinera', eyeColor:'#8B0000', title:'Tradex Nkoantoma 1',       tagline:'Estación de servicio Tradex, sucursal Nkoantoma 1.',         info:[{label:'Combustibles',val:'Gasolina · Gasoil'}], btnExt:null, btnWa:{text:'Contactar',msg:'Hola Tradex, necesito información'}, svgKey:'electric' },
+  'tradex-nkoantoma2':  { eyebrow:'Gasolinera', eyeColor:'#8B0000', title:'Tradex Nkoantoma 2',       tagline:'Estación de servicio Tradex, sucursal Nkoantoma 2.',         info:[{label:'Combustibles',val:'Gasolina · Gasoil'}], btnExt:null, btnWa:{text:'Contactar',msg:'Hola Tradex, necesito información'}, svgKey:'electric' },
   // REMESAS
-  western:   { eyebrow:'Remesas', eyeColor:'#F59E0B', title:'Western Union',  tagline:'Envía y recibe dinero desde cualquier parte del mundo.', info:[{label:'Puntos de cobro en GE', val:'Ecobank · BGFI Bank · CCEI Bank · Agencias autorizadas'},{label:'Requisitos', val:'DIP o Pasaporte vigente · Número de referencia'},{label:'Consejo', val:'Consulta las tasas de cambio antes de enviar'}], btnExt:{text:'Consultar tasas', url:'https://www.westernunion.com'}, btnWa:null, svgKey:'remesa' },
-  moneygram: { eyebrow:'Remesas', eyeColor:'#10B981', title:'MoneyGram',       tagline:'Servicio global de transferencia de dinero. Cobro en puntos autorizados en GE.', info:[{label:'Puntos de cobro', val:'CCEI Bank · Agencias autorizadas en Malabo y Bata'},{label:'Requisitos', val:'Documento de identidad válido · Número de referencia de la remesa'}], btnExt:{text:'moneygram.com', url:'https://www.moneygram.com'}, btnWa:null, svgKey:'remesa' },
+  western:   { eyebrow:'Remesas', eyeColor:'#F59E0B', title:'Western Union',  tagline:'Envía y recibe dinero desde cualquier parte del mundo.', info:[{label:'Puntos de cobro en GE',val:'Ecobank · BGFI Bank · CCEI Bank · Agencias autorizadas'},{label:'Requisitos',val:'DIP o Pasaporte vigente · Número de referencia'},{label:'Consejo',val:'Consulta las tasas de cambio antes de enviar'}], btnExt:{text:'Consultar tasas',url:'https://www.westernunion.com'}, btnWa:null, svgKey:'remesa' },
+  moneygram: { eyebrow:'Remesas', eyeColor:'#E2001A', title:'MoneyGram',       tagline:'Servicio global de transferencia. Cobro en puntos autorizados en GE.',     info:[{label:'Puntos de cobro',val:'CCEI Bank · Agencias autorizadas en Malabo y Bata'},{label:'Requisitos',val:'Documento de identidad válido · Número de referencia'}], btnExt:{text:'moneygram.com',url:'https://www.moneygram.com'}, btnWa:null, svgKey:'remesa' },
   // BÁSICOS
-  segesa: { eyebrow:'Electricidad',     eyeColor:'#F97316', title:'SEGESA',       tagline:'Sociedad de Electricidad de Guinea Ecuatorial.',     info:[{label:'Servicios', val:'Nuevas conexiones · Pago de facturas · Incidencias'},{label:'Oficinas', val:'Malabo (sede central) · Bata · Delegaciones provinciales'}], btnExt:null, btnWa:{text:'Notificar avería', msg:'Hola SEGESA, tengo una avería eléctrica'}, svgKey:'electric'  },
-  getesa: { eyebrow:'Telecomunicaciones',eyeColor:'#0EA5E9', title:'Getesa',       tagline:'Operador de telecomunicaciones de Guinea Ecuatorial.', info:[{label:'Servicios', val:'Internet fijo · ADSL · Fibra · Telefonía fija'},{label:'Cobertura', val:'Malabo · Bata · Principales ciudades'}], btnExt:null, btnWa:{text:'Contactar Getesa', msg:'Hola Getesa, necesito información sobre sus servicios'}, svgKey:'telecom'   },
-  dhl:    { eyebrow:'Paquetería',        eyeColor:'#F59E0B', title:'DHL Express',  tagline:'Mensajería urgente internacional. Envía y recibe documentos y paquetes.', info:[{label:'Servicios', val:'Envíos urgentes · Importación exportación · Rastreo en tiempo real'},{label:'Para estudiantes', val:'Envío de títulos universitarios al exterior con rastreo garantizado'}], btnExt:{text:'Rastrear paquete', url:'https://www.dhl.com'}, btnWa:null, svgKey:'logistics' },
-  tvge:   { eyebrow:'Televisión',        eyeColor:'#8B5CF6', title:'TVGE',         tagline:'Televisión de Guinea Ecuatorial.',                    info:[{label:'Canales', val:'TVGE 1 · TVGE Internacional · Transmisión en directo'},{label:'Cobertura', val:'Nacional e internacional via satélite'}], btnExt:null, btnWa:null, svgKey:'tv' },
+  segesa:  { eyebrow:'Electricidad',      eyeColor:'#F97316', title:'SEGESA',        tagline:'Sociedad de Electricidad de Guinea Ecuatorial.',     info:[{label:'Servicios',val:'Nuevas conexiones · Pago de facturas · Incidencias'},{label:'Oficinas',val:'Malabo (sede) · Bata · Delegaciones provinciales'}], btnExt:null, btnWa:{text:'Notificar avería',msg:'Hola SEGESA, tengo una avería eléctrica'}, svgKey:'electric'  },
+  getesa:  { eyebrow:'Telecomunicaciones',eyeColor:'#0EA5E9', title:'Getesa',        tagline:'Operador de telecomunicaciones de Guinea Ecuatorial.',info:[{label:'Servicios',val:'Internet fijo · ADSL · Fibra · Telefonía fija'},{label:'Cobertura',val:'Malabo · Bata · Principales ciudades'}], btnExt:null, btnWa:{text:'Contactar Getesa',msg:'Hola Getesa, necesito información sobre sus servicios'}, svgKey:'telecom'   },
+  dhl:     { eyebrow:'Paquetería',        eyeColor:'#F59E0B', title:'DHL Express',   tagline:'Mensajería urgente internacional. Envía y recibe paquetes.',             info:[{label:'Servicios',val:'Envíos urgentes · Importación · Exportación · Rastreo en tiempo real'},{label:'Para estudiantes',val:'Envío de títulos al exterior con rastreo garantizado'}], btnExt:{text:'Rastrear paquete',url:'https://www.dhl.com'}, btnWa:null, svgKey:'logistics' },
+  tvge:    { eyebrow:'Televisión',        eyeColor:'#8B5CF6', title:'TVGE',          tagline:'Televisión de Guinea Ecuatorial.',                    info:[{label:'Canales',val:'TVGE 1 · TVGE Internacional · En directo'},{label:'Cobertura',val:'Nacional e internacional via satélite'}], btnExt:null, btnWa:null, svgKey:'tv' },
   // DELIVERY
-  situka:         { eyebrow:'Delivery', eyeColor:'#F43F5E', title:'SITUKA Delivery',        tagline:'Servicio de comida a domicilio en Malabo.',           info:[{label:'Qué ofrecen', val:'Comida africana · Pizza · Pollos · Comida rápida'},{label:'Pedidos', val:'Contactar por WhatsApp con tu pedido, dirección y nombre'}], btnExt:null, btnWa:{text:'Pedir ahora',    msg:'Hola SITUKA, quiero hacer un pedido a domicilio'}, svgKey:'delivery' },
-  'ena-delivery': { eyebrow:'Express',  eyeColor:'#10B981', title:'ENA Delivery Services',  tagline:'Entrega rápida en toda la ciudad.',                   info:[{label:'Servicios',   val:'Comida · Farmacia · Compras · Documentos · Mensajería local'},{label:'Horario', val:'8:00 – 22:00h todos los días'}], btnExt:null, btnWa:{text:'Hacer pedido', msg:'Hola ENA Delivery, necesito un pedido'}, svgKey:'delivery' },
+  situka:         { eyebrow:'Delivery', eyeColor:'#F43F5E', title:'SITUKA Delivery',       tagline:'Servicio de comida a domicilio en Malabo.',  info:[{label:'Qué ofrecen',val:'Comida africana · Pizza · Pollos · Comida rápida'},{label:'Pedidos',val:'Contactar por WhatsApp con tu pedido, dirección y nombre'}], btnExt:null, btnWa:{text:'Pedir ahora',msg:'Hola SITUKA, quiero hacer un pedido a domicilio'}, svgKey:'delivery' },
+  'ena-delivery': { eyebrow:'Express',  eyeColor:'#10B981', title:'ENA Delivery Services', tagline:'Entrega rápida en toda la ciudad.',           info:[{label:'Servicios',val:'Comida · Farmacia · Compras · Documentos · Mensajería local'},{label:'Horario',val:'8:00 – 22:00h todos los días'}], btnExt:null, btnWa:{text:'Hacer pedido',msg:'Hola ENA Delivery, necesito un pedido'}, svgKey:'delivery' },
 };
 
-/* ═══════════════════════════════════════
-   SVG HEROES
-═══════════════════════════════════════ */
+/* ════════════════════════════════════════════════════════════
+   4 · SVG HEROES
+════════════════════════════════════════════════════════════ */
 const HERO_SVG = {
   ads:        `<svg viewBox="0 0 200 120" fill="none" style="width:100%;height:100%"><rect x="20" y="20" width="160" height="80" rx="8" fill="#1A73E8" opacity=".08" stroke="#1A73E8" stroke-width="1.5"/><rect x="30" y="30" width="100" height="12" rx="6" fill="#1A73E8" opacity=".15"/><rect x="30" y="48" width="70" height="8" rx="4" fill="#1A73E8" opacity=".1"/><circle cx="156" cy="50" r="20" fill="#1A73E8" opacity=".12" stroke="#1A73E8" stroke-width="1.5"/><path d="M149 50l5 5 9-9" stroke="#1A73E8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
   support:    `<svg viewBox="0 0 200 120" fill="none" style="width:100%;height:100%"><circle cx="100" cy="55" r="40" fill="#10B981" opacity=".07" stroke="#10B981" stroke-width="1.5"/><path d="M68 55c0-17.67 14.33-32 32-32s32 14.33 32 32v14a10 10 0 01-10 10h-4" stroke="#10B981" stroke-width="2" stroke-linecap="round"/><circle cx="100" cy="79" r="8" fill="#10B981" opacity=".2" stroke="#10B981" stroke-width="2"/></svg>`,
@@ -2254,24 +2152,43 @@ const HERO_SVG = {
   delivery:   `<svg viewBox="0 0 200 120" fill="none" style="width:100%;height:100%"><circle cx="55" cy="92" r="14" fill="#F43F5E" opacity=".12" stroke="#F43F5E" stroke-width="1.5"/><circle cx="140" cy="92" r="14" fill="#F43F5E" opacity=".12" stroke="#F43F5E" stroke-width="1.5"/><path d="M20 78h110V88H20z" fill="#F43F5E" opacity=".07" stroke="#F43F5E" stroke-width="1.5"/><path d="M130 80V66h20l20 14v12h-40z" fill="#F43F5E" opacity=".07" stroke="#F43F5E" stroke-width="1.5" stroke-linejoin="round"/></svg>`,
 };
 
-/* ═══════════════════════════════════════
-   MODAL — openModal / closeModal
-═══════════════════════════════════════ */
-window.openModal = function(id) {
-  const d = MODALS[id];
-  if (!d) { 
-    window.showToast('Información próximamente'); 
-    return; 
+/* ════════════════════════════════════════════════════════════
+   5 · OPEN MODAL
+   Lógica:
+   1. Busca en Firestore colección 'servicios' por campo slug === id
+   2. Si existe → navega a detalle-servicio.html?id=<docId>
+   3. Si no existe → muestra modal estático como fallback
+════════════════════════════════════════════════════════════ */
+window.openModal = async function(id) {
+  // ── 1. Buscar en Firestore ──────────────────────────────
+  try {
+    const snap = await getDocs(
+      query(collection(db, 'servicios'), where('slug', '==', id), limit(1))
+    );
+    if (!snap.empty) {
+      const docId = snap.docs[0].id;
+      window.location.href = `detalle-servicio.html?id=${docId}`;
+      return;
+    }
+  } catch(e) {
+    // Si falla Firestore, caemos al modal estático
   }
 
-  // Guardamos el id actual para usarlo en closeModal
-  window.currentModalId = id;
+  // ── 2. Fallback: modal estático ─────────────────────────
+  const d = MODALS[id];
+  if (!d) {
+    window.showToast('Información próximamente');
+    return;
+  }
 
   document.getElementById('modalHeroBg').innerHTML      = HERO_SVG[d.svgKey] || HERO_SVG.ads;
   document.getElementById('modalHeroContent').innerHTML = '';
 
   document.getElementById('modalBody').innerHTML = `
-    <span class="modal-eyebrow" style="background:${d.eyeColor}18;border:1px solid ${d.eyeColor}30;color:${d.eyeColor}">${d.eyebrow}</span>
+    <span class="modal-eyebrow"
+      style="background:${d.eyeColor}18;border:1px solid ${d.eyeColor}30;color:${d.eyeColor}">
+      ${d.eyebrow}
+    </span>
     <div class="modal-title">${d.title}</div>
     <div class="modal-tagline">${d.tagline}</div>
     <div class="info-cards">
@@ -2283,134 +2200,126 @@ window.openModal = function(id) {
     </div>`;
 
   let acts = '';
-  if (d.btnExt) acts += `
-    <button class="mbn mbn-blue" onclick="window.openExt('${d.btnExt.url}')">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-      ${d.btnExt.text}
-    </button>`;
 
-  if (d.btnWa) acts += `
-    <button class="mbn mbn-wa" onclick="window.openWA('${d.btnWa.msg.replace(/'/g,"\\'")}')">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-      ${d.btnWa.text}
-    </button>`;
+  if (d.btnExt) {
+    acts += `
+      <button class="mbn mbn-blue" onclick="window.openExt('${d.btnExt.url}')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        ${d.btnExt.text}
+      </button>`;
+  }
 
-  // Botón "más detalles" → ahora pasa el id correcto
-  acts += `<button class="mbn mbn-sec" onclick="window.closeModal('${id}')">más detalles</button>`;
+  if (d.btnWa) {
+    acts += `
+      <button class="mbn mbn-wa" onclick="window.openWA('${d.btnWa.msg.replace(/'/g,"\\'")}')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        ${d.btnWa.text}
+      </button>`;
+  }
+
+  // Botón "ver página completa" — siempre presente
+  acts += `
+    <button class="mbn mbn-sec"
+      onclick="window.location.href='detalle-servicio.html?slug=${id}'">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+      Ver página completa
+    </button>`;
 
   document.getElementById('modalActions').innerHTML = acts;
   document.getElementById('modal').classList.add('open');
-  document.body.style.overflow = 'hidden';
-};
-window.closeModal = function(id) {
-    const modalId = id || window.currentModalId;
-
-    if (modalId) {
-        // Cerramos el modal antes de redirigir
-        const modalElement = document.getElementById('modal');
-        if (modalElement) modalElement.classList.remove('open');
-        document.body.style.overflow = '';
-
-        // Redirigimos usando la CLAVE del modal (publicidad, stipendium, min-educacion, etc.)
-        window.location.href = `servicio-detalle.html?id=${modalId}`;
-    } else {
-        console.warn('No se pudo obtener el ID del modal');
-        window.location.href = 'servicio-detalle.html';
-    }
 };
 
+/* ════════════════════════════════════════════════════════════
+   6 · UTILIDADES MODALES / BÚSQUEDA / FILTROS
+════════════════════════════════════════════════════════════ */
+window.closeModal = function() {
+  document.getElementById('modal').classList.remove('open');
+};
 window.closeModalBg = function(e) {
   if (e.target === document.getElementById('modal')) window.closeModal();
 };
-
 window.openExt = function(url) {
-  if (!url || url === '#') return;
   window.open(url, '_blank', 'noopener');
 };
-
 window.openWA = function(msg) {
-  window.open(`https://wa.me/?text=${encodeURIComponent(msg + '. ¿Me das más información?')}`, '_blank');
+  window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank', 'noopener');
 };
 
-/* ═══════════════════════════════════════
-   LOGO FALLBACK
-═══════════════════════════════════════ */
+window.toggleSearch = function() {
+  const w = document.getElementById('searchWrap');
+  w.style.display = w.style.display === 'none' ? 'flex' : 'flex';
+  document.getElementById('searchInput').focus();
+};
+
+window.clearSearch = function() {
+  document.getElementById('searchInput').value = '';
+  window.onSearch();
+};
+
+window.onSearch = function() {
+  const q = document.getElementById('searchInput').value.toLowerCase().trim();
+  document.querySelectorAll('[data-bloque]').forEach(bloque => {
+    let hasVisible = false;
+    bloque.querySelectorAll('.svc-item, .min-card, .remesa-card, .basico-card')
+      .forEach(item => {
+        const txt = item.innerText.toLowerCase();
+        const show = !q || txt.includes(q);
+        item.style.display = show ? '' : 'none';
+        if (show) hasVisible = true;
+      });
+    bloque.style.display = hasVisible || !q ? '' : 'none';
+  });
+};
+
+window.setFilter = function(cat, el) {
+  document.querySelectorAll('.fchip').forEach(c => c.classList.remove('active'));
+  if (el) el.classList.add('active');
+  document.querySelectorAll('[data-bloque]').forEach(bloque => {
+    const b = bloque.dataset.bloque;
+    bloque.style.display = (cat === 'todos' || b === cat) ? '' : 'none';
+  });
+};
+
+/* ════════════════════════════════════════════════════════════
+   7 · HELPER: fallback de logos
+════════════════════════════════════════════════════════════ */
 window.logoError = function(img) {
   img.style.display = 'none';
   const fb = img.nextElementSibling;
   if (fb) fb.style.display = 'flex';
 };
 
-/* ═══════════════════════════════════════
-   SEARCH & FILTER
-═══════════════════════════════════════ */
-let currentFilter = 'todos';
-
-window.setFilter = function(f, el) {
-  currentFilter = f;
-  document.querySelectorAll('.fchip').forEach(c => c.classList.remove('active'));
-  if (el) el.classList.add('active');
-  applyVisibility();
-};
-
-window.onSearch = function() {
-  const q = (document.getElementById('searchInput').value || '').toLowerCase().trim();
-  document.querySelectorAll('.svc-item, .min-card, .remesa-card, .basico-card').forEach(card => {
-    card.style.opacity = (!q || card.innerText.toLowerCase().includes(q)) ? '1' : '0.2';
+/* ════════════════════════════════════════════════════════════
+   8 · INTERSECTION OBSERVER (animaciones de entrada)
+════════════════════════════════════════════════════════════ */
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('vis');
+      io.unobserve(e.target);
+    }
   });
-};
+}, { threshold: 0.08 });
 
-window.clearSearch  = function() { document.getElementById('searchInput').value = ''; window.onSearch(); };
-window.toggleSearch = function() { document.getElementById('searchInput').focus(); };
+document.querySelectorAll('.anim, .min-card, .remesa-card, .basico-card')
+  .forEach(el => io.observe(el));
 
-function applyVisibility() {
-  document.querySelectorAll('[data-bloque]').forEach(el => {
-    el.style.display = (currentFilter === 'todos' || currentFilter === el.dataset.bloque) ? '' : 'none';
-  });
-  document.querySelectorAll('.sec-divider').forEach(d => {
-    d.style.opacity = currentFilter === 'todos' ? '1' : '0.2';
-  });
-}
-
-/* ═══════════════════════════════════════
-   TOAST
-═══════════════════════════════════════ */
-let _toastT;
-window.showToast = function(msg, type = 'info') {
+/* ════════════════════════════════════════════════════════════
+   9 · TOAST
+════════════════════════════════════════════════════════════ */
+let _tt;
+window.showToast = function(msg, type='info') {
   const t = document.getElementById('toast');
   t.textContent = msg;
   t.className   = 'show ' + type;
-  clearTimeout(_toastT);
-  _toastT = setTimeout(() => { t.className = ''; }, 3200);
+  clearTimeout(_tt);
+  _tt = setTimeout(() => { t.className = ''; }, 3200);
 };
 
-/* ═══════════════════════════════════════
-   ESC KEY & ANIMATE ON SCROLL
-═══════════════════════════════════════ */
-document.addEventListener('keydown', e => { if (e.key === 'Escape') window.closeModal(); });
-
-const obs = new IntersectionObserver(entries => {
-  entries.forEach(e => {
-    if (e.isIntersecting) {
-      e.target.querySelectorAll('.svc-item, .min-card, .remesa-card, .basico-card')
-               .forEach((c, i) => setTimeout(() => c.classList.add('vis'), i * 35));
-      e.target.querySelectorAll('.anim')
-               .forEach((c, i) => setTimeout(() => c.classList.add('vis'), i * 40));
-      obs.unobserve(e.target);
-    }
-  });
-}, { threshold: 0.04, rootMargin: '80px' });
-
-document.querySelectorAll('.icon-grid, .min-list, .remesas-grid, .basicos-list, .emergency-grid')
-        .forEach(g => obs.observe(g));
-
-/* ═══════════════════════════════════════
-   INIT
-═══════════════════════════════════════ */
+/* ════════════════════════════════════════════════════════════
+   10 · INIT
+════════════════════════════════════════════════════════════ */
 loadBanners();
-
-console.log('%c[Compra Ya Servicios] Loaded ✓', 'color:#1A73E8;font-weight:bold');
 </script>
-
 </body>
 </html>
