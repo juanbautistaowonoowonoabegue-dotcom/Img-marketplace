@@ -5,3 +5,30 @@ public/js/config.secrets.js
 **/config.secrets.js
 firebase-debug.log
 .firebase/
+
+# Credenciales — nunca versionar
+*service-account*.json
+*serviceAccount*.json
+*.pem
+*.p12
+*.keystore
+google-services.json
+GoogleService-Info.plist
+
+# Salidas de build
+*.apk
+*.aab
+*.apk.zip
+android/app/build/
+android/build/
+android/.gradle/
+.next/
+dist/
+build/
+
+# Configuración local de editores y herramientas
+.vscode/
+.cursor/
+.idea/
+.agents/
+skills-lock.json
