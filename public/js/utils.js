@@ -1,7 +1,7 @@
 // ⚠️ SECURE ZONE — No agregar console.log() con datos de config en producción
 (function (global) {
   const PLACEHOLDER_IMG =
-    "https://raw.githubusercontent.com/juanbautistaowonoowonoabegue-dotcom/Img-marketplace/refs/heads/main/favicon.PNG";
+    "/img/marca/favicon.png";
 
   function formatCurrency(amount, currency) {
     const value = Number(amount) || 0;

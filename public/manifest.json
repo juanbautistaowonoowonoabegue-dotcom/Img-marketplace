@@ -9,19 +9,19 @@
   "orientation": "portrait",
   "icons": [
     {
-      "src": "https://raw.githubusercontent.com/juanbautistaowonoowonoabegue-dotcom/Img-marketplace/refs/heads/main/icono-192.png",
+      "src": "/img/marca/icono-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "https://raw.githubusercontent.com/juanbautistaowonoowonoabegue-dotcom/Img-marketplace/refs/heads/main/icono-512.png",
+      "src": "/img/marca/icono-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "https://raw.githubusercontent.com/juanbautistaowonoowonoabegue-dotcom/Img-marketplace/refs/heads/main/icono-512.png",
+      "src": "/img/marca/icono-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
@@ -29,14 +29,14 @@
   ],
   "screenshots": [
     {
-      "src": "https://raw.githubusercontent.com/juanbautistaowonoowonoabegue-dotcom/Img-marketplace/refs/heads/main/IMG_4021.jpeg",
+      "src": "/img/banners/captura-aplicacion.jpeg",
       "sizes": "1280x720",
       "type": "image/jpeg",
       "form_factor": "wide",
       "label": "Vista de escritorio de Compra Ya"
     },
     {
-      "src": "https://raw.githubusercontent.com/juanbautistaowonoowonoabegue-dotcom/Img-marketplace/refs/heads/main/IMG_4021.jpeg",
+      "src": "/img/banners/captura-aplicacion.jpeg",
       "sizes": "720x1280",
       "type": "image/jpeg",
       "form_factor": "narrow",
