@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 
 import { useAnnounce } from "@/components/a11y/announcer";
 import { Button } from "@/components/ui/button";
@@ -14,9 +14,17 @@ import type { ProductoPublico } from "@/lib/productos/tipos";
  * durante la migración conviven rutas nuevas y páginas heredadas, y el carrito
  * tiene que ser el mismo. Cuando el carrito se migre, este acoplamiento se
  * sustituye por el estado compartido de la aplicación nueva.
+ *
+ * El carrito se lee con `useSyncExternalStore` y no con un efecto: es un
+ * almacén externo al árbol de React, y esta es la vía que resuelve la
+ * hidratación —el servidor no puede saber qué hay en el navegador— sin
+ * provocar renders en cascada.
  */
 
 const CLAVE_CARRITO = "cy_cart";
+
+/** Aviso de cambio dentro de la misma pestaña: `storage` solo llega a las demás. */
+const EVENTO_CARRITO = "compraya:carrito";
 
 interface ElementoCarrito {
   id: string;
@@ -42,18 +50,26 @@ function leerCarrito(): ElementoCarrito[] {
   }
 }
 
+function suscribir(alCambiar: () => void): () => void {
+  window.addEventListener("storage", alCambiar);
+  window.addEventListener(EVENTO_CARRITO, alCambiar);
+  return () => {
+    window.removeEventListener("storage", alCambiar);
+    window.removeEventListener(EVENTO_CARRITO, alCambiar);
+  };
+}
+
 export function BotonAnadirCarrito({ producto }: { producto: ProductoPublico }) {
   const anunciar = useAnnounce();
-  const [enCarrito, setEnCarrito] = useState(false);
-  // El carrito vive en el navegador: hasta que el componente se monta, el
-  // servidor no puede saber si el producto ya está dentro. Renderizar el
-  // estado neutro primero evita un desajuste de hidratación.
-  const [montado, setMontado] = useState(false);
 
-  useEffect(() => {
-    setMontado(true);
-    setEnCarrito(leerCarrito().some((elemento) => elemento.id === producto.id));
-  }, [producto.id]);
+  const enCarrito = useSyncExternalStore(
+    suscribir,
+    // Devuelve un booleano, no un objeto nuevo: un valor inestable aquí
+    // provocaría un bucle de renders.
+    () => leerCarrito().some((elemento) => elemento.id === producto.id),
+    // En el servidor y durante la hidratación no hay carrito que consultar.
+    () => false,
+  );
 
   if (producto.disponibilidad !== "disponible") {
     return (
@@ -70,7 +86,6 @@ export function BotonAnadirCarrito({ producto }: { producto: ProductoPublico }) 
 
     if (carrito.some((elemento) => elemento.id === producto.id)) {
       anunciar(`${producto.titulo} ya estaba en el carrito.`);
-      setEnCarrito(true);
       return;
     }
 
@@ -96,18 +111,21 @@ export function BotonAnadirCarrito({ producto }: { producto: ProductoPublico }) 
       return;
     }
 
-    setEnCarrito(true);
+    window.dispatchEvent(new Event(EVENTO_CARRITO));
     anunciar(`${producto.titulo} añadido al carrito. ${carrito.length} artículos en total.`);
   }
 
   return (
     <div className="flex flex-wrap items-center gap-3">
       <Button onClick={anadir} tamano="lg">
-        {montado && enCarrito ? "Añadir otra vez" : "Añadir al carrito"}
+        {enCarrito ? "Añadir otra vez" : "Añadir al carrito"}
       </Button>
 
-      {montado && enCarrito ? (
-        <a href="/caritodecompras.html" className="inline-flex items-center px-2 font-semibold text-brand-deep">
+      {enCarrito ? (
+        <a
+          href="/caritodecompras.html"
+          className="inline-flex items-center px-2 font-semibold text-brand-deep"
+        >
           Ver el carrito
         </a>
       ) : null}
