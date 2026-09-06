@@ -55,16 +55,23 @@ Ejecutado en local sobre un árbol limpio instalado con `npm ci`:
 | `npm run lint` | limpio |
 | `npm test` | 36 de 36 |
 | `npm run build` | correcto — `/producto/[id]` sale como ruta dinámica con render en servidor |
-| `npm run test:a11y` | **no ejecutado** — la descarga de navegadores de Playwright no llegó a completarse en esta máquina |
+| `npm run test:a11y` | 10 pasadas, 6 omitidas — ver abajo |
 
-La única puerta que falta es axe. Se ejecuta con:
+Detalle de la suite de accesibilidad, ejecutada en escritorio y en móvil (Pixel 7):
+
+- axe sin violaciones de nivel *serious* ni *critical* en `/`, con las etiquetas `wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa` y `wcag22aa`.
+- El enlace de salto es el primer elemento enfocable y lleva al contenido.
+- Una ruta, un `<h1>`, un `<main>`.
+- El anillo de foco es visible y mide al menos 2 px en los controles.
+- El formulario se opera con teclado, y al fallar la validación anuncia el error y devuelve el foco al primer campo afectado.
+
+**Las 6 omitidas son las de la ficha de producto, y siguen pendientes.** Necesitan el identificador de un producto real de la base de datos:
 
 ```bash
-npx playwright install --with-deps chromium
 PRODUCTO_DE_PRUEBA=<id-real> npm run test:a11y
 ```
 
-Sin `PRODUCTO_DE_PRUEBA` las comprobaciones de la ficha se omiten en lugar de fallar: un identificador inventado daría 404, y el 404 sí es accesible.
+Se omiten en lugar de fallar porque un identificador inventado daría 404, y el 404 sí es accesible: la prueba pasaría sin haber comprobado nada. Son las tres que verifican —en los dos tamaños— que el HTML del servidor ya trae el título y el JSON-LD, que la galería se opera con teclado y anuncia el cambio, y que añadir al carrito se anuncia.
 
 ### Correcciones que salieron de ejecutar la suite por primera vez
 
