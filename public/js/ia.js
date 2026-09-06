@@ -8,9 +8,17 @@ const auth = getAuth(app);
 export { db, auth, GEMINI_MODEL };
 
 async function gemini(prompt, imageBase64 = null, mimeType = null) {
+  // El endpoint exige sesion: sin token devuelve 401 y no consume cuota.
+  const usuario = auth.currentUser;
+  if (!usuario) throw new Error("Inicia sesion para usar las funciones de IA");
+  const token = await usuario.getIdToken();
+
   const response = await fetch(`${API_BASE}/gemini/generate`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`
+    },
     body: JSON.stringify({
       prompt,
       imageBase64,

@@ -1107,13 +1107,12 @@ import {
   deleteDoc, query, where, orderBy, limit, serverTimestamp, onSnapshot
 } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 import { getStorage } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-storage.js";
-import { PASS, ADMIN_UID as CONFIG_ADMIN_UID } from "./js/config.js";
+import { PASS } from "./js/config.js";
 import { getUserRole } from "./js/auth-guard.js";
 import { loadSecureConfig, getApiKey } from "./js/config-loader.js";
 
-/* ══ CONFIGURACIÓN — reemplaza con tus valores reales ══ */
+/* ══ CONFIGURACIÓN ══ */
 const ADMIN_EMAIL  = "comprayasedeenmalabo@gmail.com";
-const ADMIN_UID    = CONFIG_ADMIN_UID || "zK56tNKi1mNqliuLSeQ8UeXZ2tO2";
  /* ════════════════════════════════════════════════════ */
 
 let GEMINI_KEY = "";
@@ -1128,8 +1127,10 @@ getStorage(app);
 
 async function ensureSuperAdminAccess(user) {
   if (!user) return false;
+  // Unica fuente de verdad: el custom claim del token. El UID incrustado que
+  // habia aqui permitia saltarse la comprobacion de rol.
   const role = await getUserRole(user.uid);
-  if (role === "superadmin" || user.uid === ADMIN_UID) return true;
+  if (role === "superadmin") return true;
   showToast("error", "Acceso denegado: solo superadmin");
   await signOut(auth);
   return false;
@@ -1311,7 +1312,7 @@ async function sendEmail(to, subject, body) {
    AUTO-LOGIN + MANUAL LOGIN
 ═══════════════════════════════════════════════════ */
 onAuthStateChanged(auth, async (user) => {
-  if (user && user.uid === ADMIN_UID && !_ready) {
+  if (user && !_ready) {
     const ok = await ensureSuperAdminAccess(user);
     if (!ok) return;
     document.getElementById('login-auto').classList.add('show');

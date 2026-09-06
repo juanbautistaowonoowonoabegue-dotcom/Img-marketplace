@@ -1,19 +1,17 @@
 // Protección de rutas — Compra Ya
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
-import {
-  getFirestore,
-  doc,
-  getDoc
-} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 import { app } from "./config.js";
 
 const auth = getAuth(app);
-const db = getFirestore(app);
 
+// El rol autorizado vive en los custom claims del token, que solo la funcion
+// `setUserRole` puede escribir. El documento de Firestore ya no decide nada:
+// las reglas leen request.auth.token.role.
 export async function getUserRole(uid) {
-  const snap = await getDoc(doc(db, "users", uid));
-  if (!snap.exists()) return "buyer";
-  return snap.data().role || "buyer";
+  const user = auth.currentUser;
+  if (!user || (uid && user.uid !== uid)) return "buyer";
+  const { claims } = await user.getIdTokenResult();
+  return claims.role || "buyer";
 }
 
 export function requireAuth(options) {
