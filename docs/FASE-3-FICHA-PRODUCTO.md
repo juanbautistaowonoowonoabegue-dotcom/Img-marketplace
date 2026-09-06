@@ -47,22 +47,36 @@ Dos hallazgos que salieron al escribirla, y que son bugs reales del sistema actu
 
 ## Estado de verificación
 
-Ejecutado en local sobre este código:
+Ejecutado en local sobre un árbol limpio instalado con `npm ci`:
 
 | Comprobación | Resultado |
 |---|---|
 | `npm run typecheck` | limpio, modo estricto, todo el proyecto |
-| `npm test` | 36 de 36 |
 | `npm run lint` | limpio |
-| `npm run build` | **pendiente** — ver abajo |
-| `npm run test:a11y` | **no ejecutado** — requiere el build |
+| `npm test` | 36 de 36 |
+| `npm run build` | correcto — `/producto/[id]` sale como ruta dinámica con render en servidor |
+| `npm run test:a11y` | **no ejecutado** — la descarga de navegadores de Playwright no llegó a completarse en esta máquina |
 
-El build no ha llegado a completarse por una instalación de npm corrupta en esta máquina: varios paquetes quedaron a medio extraer —el binario de SWC pesaba 1,1 MB en vez de 106 MB, y a `react-stately` le faltan los `.mjs` con sus `.map` presentes—. Es un problema del entorno, no del código: el mismo árbol pasa tipos, linter y pruebas. Antes de dar la fase por cerrada hay que reinstalar en limpio y pasar `npm run build` y `npm run test:a11y`.
+La única puerta que falta es axe. Se ejecuta con:
 
-Dos correcciones que sí salieron de intentarlo, y que están aplicadas:
+```bash
+npx playwright install --with-deps chromium
+PRODUCTO_DE_PRUEBA=<id-real> npm run test:a11y
+```
+
+Sin `PRODUCTO_DE_PRUEBA` las comprobaciones de la ficha se omiten en lugar de fallar: un identificador inventado daría 404, y el 404 sí es accesible.
+
+### Correcciones que salieron de ejecutar la suite por primera vez
+
+Todas aplicadas. Van aquí porque son las que se encuentra cualquiera que arranque este proyecto:
 
 - Next 16 retiró la clave `eslint` de `NextConfig`; el linter va como paso propio.
-- `eslint-config-next` 16 exporta configuración plana nativa. El puente `FlatCompat` fallaba con un error de estructura circular, y al quitarlo hubo que tomar de `jsx-a11y` solo las reglas —Next ya registra el plugin— y limitar las reglas de `@typescript-eslint` a ficheros TypeScript, que es donde Next lo registra.
+- `eslint-config-next` 16 exporta configuración plana nativa. El puente `FlatCompat` fallaba con un error de estructura circular; al quitarlo hubo que tomar de `jsx-a11y` solo las reglas —Next ya registra el plugin— y limitar las de `@typescript-eslint` a ficheros TypeScript, que es donde Next lo registra.
+- `turbopack.root` fijado: el `package-lock.json` de la raíz, el de Capacitor, hacía que Next infiriera mal el workspace.
+- `next/image` acepta `raw.githubusercontent.com` bajo el usuario del repositorio: es donde están las fotos de los productos publicados antes de la migración. Sin esa entrada esos productos se verían sin imagen.
+- El linter del compilador de React rechazó el `useEffect` + `setState` con que se leía el carrito. Ahora se lee con `useSyncExternalStore`, que es la vía prevista para un almacén externo al árbol y resuelve además la hidratación sin bandera auxiliar.
+
+Nota sobre el entorno: la primera instalación dejó paquetes a medio extraer —el binario de SWC pesaba 1,1 MB en vez de 106 MB, y a `react-stately` le faltaban los `.mjs` con sus `.map` presentes—. Si el build falla con «module not found» en subrutas de un paquete, es eso: `rm -rf node_modules && npm ci`.
 
 ---
 
