@@ -124,14 +124,16 @@ Nota importante: las imágenes de la raíz **no son residuo**. Producción las e
 
 ## 4. Prioridad de ejecución
 
-| # | Acción | Prioridad |
-|---|---|---|
-| 1 | Revocar la cuenta de servicio y purgar el histórico | P0 — hoy |
-| 2 | Rotar la contraseña de MongoDB Atlas | P0 — hoy |
-| 3 | Reescribir `firestore.rules` sin comodín, cubriendo las 18 colecciones reales | P0 |
-| 4 | Mover `role` a *custom claims* de Auth | P0 |
-| 5 | Sacar `1234.html` de `public/` y protegerlo en servidor | P0 |
-| 6 | Autenticar y limitar `geminiGenerate` | P0 |
-| 7 | Límites de tipo y tamaño en `storage.rules` + CSP | P1 |
-| 8 | Restaurar el foco visible y etiquetar los formularios | P1 |
-| 9 | Migración incremental al stack de `docs/ARQUITECTURA.md` | P2 |
+| # | Acción | Prioridad | Estado |
+|---|---|---|---|
+| 1 | Revocar la cuenta de servicio y purgar el histórico | P0 — hoy | **Pendiente — requiere consola de Google Cloud** |
+| 2 | Rotar la contraseña de MongoDB Atlas | P0 — hoy | **Pendiente — requiere consola de Atlas** |
+| 3 | Reescribir `firestore.rules` sin comodín | P0 | Hecho — Fase 1 |
+| 4 | Mover `role` a *custom claims* de Auth | P0 | Hecho — Fase 1 |
+| 5 | Sacar `1234.html` de `public/` y protegerlo en servidor | P0 | Hecho — Fase 1 |
+| 6 | Autenticar y limitar `geminiGenerate` | P0 | Hecho — Fase 1 |
+| 7 | Límites de tipo y tamaño en `storage.rules` + CSP | P1 | Hecho — Fase 1 |
+| 8 | Restaurar el foco visible y etiquetar los formularios | P1 | Pendiente |
+| 9 | Migración incremental al stack de `docs/ARQUITECTURA.md` | P2 | Pendiente |
+
+Los puntos 1 y 2 no dependen del código y siguen abiertos: requieren acceso a las consolas de Google Cloud y de MongoDB Atlas. El detalle de lo aplicado y el orden de despliegue están en `docs/DESPLIEGUE-FASE-1.md`.

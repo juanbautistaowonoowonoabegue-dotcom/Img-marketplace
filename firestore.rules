@@ -228,8 +228,11 @@ service cloud.firestore {
     }
 
     // Los codigos se canjean leyendolos por su identificador y marcandolos usados.
+    // `get` con sesion, pero `list` solo administracion: de lo contrario
+    // cualquiera podria enumerar los codigos sin usar y canjearlos.
     match /codigosPremium/{codigoId} {
-      allow read: if isSignedIn();
+      allow get: if isSignedIn();
+      allow list: if isAdmin();
       allow update: if isAdmin()
                     || (isSignedIn() && changed().hasOnly(['usado', 'usadoPor', 'usadoEn']));
       allow create, delete: if isAdmin();
