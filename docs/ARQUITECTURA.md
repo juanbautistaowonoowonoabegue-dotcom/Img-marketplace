@@ -53,8 +53,10 @@ Retirar la clave de servicio, eliminar trazas de herramientas de IA, endurecer `
 **Fase 1 — Cerrar los P0 sobre el código actual**
 Reglas de Firestore reescritas sin comodín cubriendo las 18 colecciones reales, `role` en custom claims, `1234.html` fuera de `public/`, `geminiGenerate` autenticado y con cuota, CSP. Sin migrar nada todavía: el sitio actual queda defendible.
 
-**Fase 2 — Base del proyecto nuevo**
+**Fase 2 — Base del proyecto nuevo** · *aplicada, ver `apps/web/README.md`*
 Next.js + TypeScript + Tailwind + React Aria en `apps/web`, con el layout accesible, el sistema de diseño extraído del CSS actual (los tokens ya existen, hoy duplicados 33 veces) y la CI de calidad y accesibilidad en verde desde el primer commit.
+
+Dos desviaciones respecto a lo propuesto arriba, ambas por la misma razón —arrancar un proyecto nuevo en la versión anterior solo adelanta la deuda—: **Next 16** en lugar de 15, que es la estable actual. Y en sentido contrario, **TypeScript 5** en lugar de la 7 ya publicada, porque `typescript-eslint` y los tipos de Next aún se apoyan en la 5; es un cambio de una línea cuando el ecosistema llegue.
 
 **Fase 3 — Rutas por valor de negocio**
 En orden: ficha de producto y de servicio (SEO), listado y buscador, carrito y pago, perfiles, chat. Cada ruta migrada se activa con un rewrite en `firebase.json` y se retira su HTML antiguo en el mismo PR.

@@ -1,0 +1,91 @@
+/*
+ * Tokens de diseño — Compra Ya
+ *
+ * Extraídos del CSS que hoy está duplicado en las 33 páginas de `public/`.
+ * Esta es la única definición: cambiar el azul de marca vuelve a ser una edición,
+ * no treinta y tres.
+ *
+ * Los ratios anotados son contraste sobre blanco (#FFFFFF), calculados según
+ * WCAG 2.2. El umbral es 4.5:1 para texto normal y 3:1 para texto grande,
+ * bordes y elementos de interfaz.
+ */
+
+@theme {
+  /* ── Marca ──────────────────────────────────────────────────────────────
+   * --color-brand      4.88:1 — texto normal AA. Falla AAA (7:1).
+   * --color-brand-deep 6.66:1 — preferido para enlaces y texto sobre blanco.
+   */
+  --color-brand: #2563ff;
+  --color-brand-mid: #3b72ff;
+  --color-brand-deep: #1a4fd8;
+  --color-brand-tint: #eef3ff;
+
+  /* ── Estado ─────────────────────────────────────────────────────────────
+   * --color-success y --color-danger NO alcanzan 4.5:1 sobre blanco: se usan
+   * como relleno con texto blanco encima, o como borde. Para texto sobre
+   * fondo claro, usar las variantes -text.
+   */
+  --color-success: #10b981;
+  --color-success-text: #047857; /* 4.72:1 */
+  --color-success-tint: #ecfdf5;
+  --color-danger: #ef4444;
+  --color-danger-text: #b91c1c; /* 6.28:1 */
+  --color-danger-tint: #fef2f2;
+  --color-warning-text: #92400e; /* 7.62:1 */
+
+  /* ── Texto ──────────────────────────────────────────────────────────────
+   * --color-ink       16.8:1
+   * --color-ink-soft   7.38:1
+   * --color-ink-faint  2.56:1 — NO apto para texto. Solo decoración,
+   *                    separadores y estados deshabilitados, donde WCAG 1.4.3
+   *                    no aplica. El linter no puede detectar este uso:
+   *                    es responsabilidad de la revisión.
+   */
+  --color-ink: #0f172a;
+  --color-ink-mid: #1e293b;
+  --color-ink-soft: #475569;
+  --color-ink-faint: #94a3b8;
+
+  /* ── Superficies ───────────────────────────────────────────────────────── */
+  --color-surface: #ffffff;
+  --color-surface-sunken: #f8fafc;
+  --color-surface-raised: #eef3fa;
+  --color-border: #e2e8f0;
+  --color-border-soft: #f1f5f9;
+
+  /* ── Foco ───────────────────────────────────────────────────────────────
+   * Color único para el anillo de foco en toda la aplicación. 6.66:1 sobre
+   * blanco y 3.1:1 sobre la superficie hundida: cumple 1.4.11 en ambas.
+   */
+  --color-focus: #1a4fd8;
+
+  /* ── Tipografía ─────────────────────────────────────────────────────────
+   * Las familias declaran fallback real para que la página siga siendo
+   * legible si la fuente remota no carga.
+   */
+  --font-display: "Syne", "Trebuchet MS", system-ui, sans-serif;
+  --font-body: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  /* ── Radios ─────────────────────────────────────────────────────────────── */
+  --radius-xs: 0.5rem;
+  --radius-sm: 0.875rem;
+  --radius-md: 1.25rem;
+  --radius-lg: 1.5rem;
+  --radius-xl: 1.75rem;
+
+  /* ── Sombras ────────────────────────────────────────────────────────────── */
+  --shadow-sm: 0 2px 8px rgb(15 23 42 / 0.05);
+  --shadow-md: 0 8px 30px rgb(37 99 255 / 0.08);
+  --shadow-lg: 0 12px 40px rgb(37 99 255 / 0.12);
+  --shadow-card: 0 4px 20px rgb(15 23 42 / 0.07);
+
+  /* ── Movimiento ─────────────────────────────────────────────────────────── */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* ── Área táctil ────────────────────────────────────────────────────────
+   * WCAG 2.2 · 2.5.8 exige 24x24 CSS px como mínimo. 44px es la
+   * recomendación de las guías móviles y el valor que aplicamos.
+   */
+  --size-target: 2.75rem;
+}
