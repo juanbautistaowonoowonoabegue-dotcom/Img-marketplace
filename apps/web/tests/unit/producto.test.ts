@@ -6,7 +6,7 @@ const base = {
   titulo: "Teléfono Samsung A15",
   descripcion: "En buen estado, con cargador.",
   precio: 95000,
-  categoria: "telefonos",
+  categoria: "tecnologia",
   estado: "activo",
   imagenes: ["https://firebasestorage.googleapis.com/foto.webp"],
   vendedorId: "uid-vendedor",

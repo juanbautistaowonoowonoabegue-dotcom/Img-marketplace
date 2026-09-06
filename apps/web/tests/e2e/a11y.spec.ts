@@ -26,6 +26,10 @@ const PRODUCTO_DE_PRUEBA = process.env.PRODUCTO_DE_PRUEBA ?? "";
 
 const RUTAS = [
   "/",
+  // El catálogo no necesita datos: sin credenciales se degrada con un aviso
+  // accesible en lugar de romperse, así que axe lo recorre igual.
+  "/productos",
+  "/productos?q=telefono&categoria=tecnologia&precioMin=10.000&orden=precio-asc",
   ...(PRODUCTO_DE_PRUEBA ? [`/producto/${PRODUCTO_DE_PRUEBA}`] : []),
 ];
 
@@ -132,5 +136,47 @@ test.describe("ficha de producto", () => {
 
     await boton.click();
     await expect(page.getByTestId("region-polite")).toContainText(/añadido al carrito/i);
+  });
+});
+
+test.describe("catálogo", () => {
+  test("el buscador funciona con JavaScript desactivado", async ({ browser }) => {
+    // El formulario es un `<form method="get">` de servidor. Esta prueba es la
+    // que sostiene esa decisión: con una conexión que no llega a cargar el
+    // bundle —nada raro en Malabo o Bata— el catálogo se sigue pudiendo buscar.
+    const contexto = await browser.newContext({ javaScriptEnabled: false });
+    const pagina = await contexto.newPage();
+
+    await pagina.goto("/productos");
+    await pagina.getByLabel("Buscar en el catálogo").fill("nevera");
+    await pagina.getByRole("button", { name: "Aplicar filtros" }).click();
+
+    await expect(pagina).toHaveURL(/[?&]q=nevera/);
+    await expect(pagina.getByRole("heading", { level: 1 })).toContainText("nevera");
+
+    await contexto.close();
+  });
+
+  test("los filtros viven en la URL y sobreviven al botón atrás", async ({ page }) => {
+    await page.goto("/productos?categoria=vehiculos&orden=precio-asc");
+
+    // El estado está en la dirección, así que los controles se rellenan solos
+    // y el resultado se puede compartir.
+    await expect(page.getByLabel("Categoría")).toHaveValue("vehiculos");
+    await expect(page.getByLabel("Ordenar por")).toHaveValue("precio-asc");
+
+    await page.goto("/productos");
+    await page.goBack();
+    await expect(page.getByLabel("Categoría")).toHaveValue("vehiculos");
+  });
+
+  test("el rango de precio está agrupado en un fieldset con legend", async ({ page }) => {
+    // «Desde» y «Hasta» por separado no significan nada: la agrupación es la
+    // que da el contexto (WCAG 2.2 · 1.3.1).
+    await page.goto("/productos");
+    const grupo = page.getByRole("group", { name: "Precio en FCFA" });
+    await expect(grupo).toBeVisible();
+    await expect(grupo.getByLabel("Desde")).toBeVisible();
+    await expect(grupo.getByLabel("Hasta")).toBeVisible();
   });
 });

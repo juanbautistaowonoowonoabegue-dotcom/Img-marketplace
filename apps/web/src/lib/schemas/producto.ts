@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { CATEGORIAS } from "@/lib/productos/categorias";
+
 /**
  * Definición única de "producto válido".
  *
@@ -9,15 +11,12 @@ import { z } from "zod";
  * se creaban con campos que las consultas luego no encontraban.
  */
 
-export const CATEGORIAS = [
-  "telefonos",
-  "ordenadores",
-  "moda",
-  "hogar",
-  "vehiculos",
-  "servicios",
-  "otros",
-] as const;
+/**
+ * Las claves de categoría salen de `categorias.ts`, que las toma del selector
+ * real de publicación. La lista que había aquí antes estaba inventada y no
+ * correspondía con ningún dato de la base.
+ */
+const CLAVES_CATEGORIA = CATEGORIAS.map(([clave]) => clave) as [string, ...string[]];
 
 export const ESTADOS_PRODUCTO = ["borrador", "activo", "pausado", "vendido"] as const;
 
@@ -40,7 +39,7 @@ export const esquemaProducto = z.object({
     .max(2000, "La descripción no puede pasar de 2000 caracteres")
     .default(""),
   precio: precioFCFA,
-  categoria: z.enum(CATEGORIAS, { message: "Elige una categoría" }),
+  categoria: z.enum(CLAVES_CATEGORIA, { message: "Elige una categoría" }),
   estado: z.enum(ESTADOS_PRODUCTO).default("borrador"),
   imagenes: z
     .array(z.url("Cada imagen debe ser una URL válida"))
