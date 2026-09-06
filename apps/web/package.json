@@ -23,6 +23,7 @@
     "react": "^19.2.0",
     "react-aria-components": "^1",
     "react-dom": "^19.2.0",
+    "rollup": "^4.63.1",
     "zod": "^4"
   },
   "devDependencies": {

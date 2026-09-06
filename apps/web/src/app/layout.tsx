@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Plus_Jakarta_Sans, Syne } from "next/font/google";
+import Link from "next/link";
 import type { ReactNode } from "react";
 
 import { ProveedorAnuncios } from "@/components/a11y/announcer";
@@ -50,21 +51,21 @@ export default function RootLayout({ children }: { children: ReactNode }) {
 
           <header className="border-b border-border">
             <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3">
-              <a
+              <Link
                 href="/"
                 className="font-display text-xl font-extrabold text-brand-deep"
               >
                 Compra Ya
-              </a>
+              </Link>
 
               {/* `aria-label` distingue esta navegación de cualquier otra de la
                   página, requisito cuando hay más de un landmark del mismo tipo. */}
               <nav aria-label="Principal">
                 <ul className="flex list-none items-center gap-2 p-0">
                   <li>
-                    <a href="/" className="inline-flex items-center px-3 py-2">
+                    <Link href="/" className="inline-flex items-center px-3 py-2">
                       Inicio
-                    </a>
+                    </Link>
                   </li>
                 </ul>
               </nav>
