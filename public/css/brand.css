@@ -1,0 +1,72 @@
+:root {
+  --brand-primary: #0b5cf5;
+  --brand-primary-strong: #0a45c9;
+  --brand-surface: #f4f8ff;
+  --brand-card: #ffffff;
+  --brand-text: #101828;
+  --brand-muted: #475467;
+  --brand-border: rgba(11, 92, 245, 0.12);
+  --brand-shadow: 0 18px 45px rgba(11, 92, 245, 0.12);
+  --brand-radius: 20px;
+  --brand-version: 0.1.0;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap');
+
+html, body {
+  font-family: 'Montserrat', sans-serif;
+  background: var(--brand-surface);
+  color: var(--brand-text);
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+}
+
+.brand-shell {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 32px 20px 64px;
+}
+
+.brand-card {
+  background: var(--brand-card);
+  border: 1px solid var(--brand-border);
+  border-radius: var(--brand-radius);
+  box-shadow: var(--brand-shadow);
+}
+
+.brand-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 46px;
+  border-radius: 14px;
+  border: none;
+  background: linear-gradient(135deg, var(--brand-primary), var(--brand-primary-strong));
+  color: #fff;
+  padding: 0 18px;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.brand-button.secondary {
+  background: #eef4ff;
+  color: var(--brand-primary);
+}
+
+.brand-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--brand-border);
+  background: rgba(11, 92, 245, 0.04);
+  color: var(--brand-primary);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
