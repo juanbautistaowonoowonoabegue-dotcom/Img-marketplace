@@ -1,10 +1,11 @@
-import type { ApiResponse, WalletRequest, WalletResponse } from '../types/integrations.js';
+import type { ApiResponse } from '../types.js';
+import type { WalletProvider, WalletRequest, WalletResponse } from '../types/integrations.js';
 import { IntegrationService } from './integrations.js';
 
 export class PaymentService {
   private readonly integrationService = new IntegrationService();
 
-  async createPayment(provider: WalletRequest['provider'] extends never ? never : any, request: any): Promise<ApiResponse<WalletResponse>> {
+  async createPayment(provider: WalletProvider, request: WalletRequest): Promise<ApiResponse<WalletResponse>> {
     try {
       const result = await this.integrationService.createWalletPayment(provider, request);
       return { ok: true, data: result };

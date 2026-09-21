@@ -2,6 +2,9 @@ import { useEffect, useState } from 'react';
 import { Link, Route, Routes, useLocation } from 'react-router-dom';
 import { ArrowRight, Heart, Menu, Search, ShieldCheck, ShoppingBag, Sparkles, X } from 'lucide-react';
 import { api } from './api.js';
+import { AuthForm } from './auth/AuthForm.jsx';
+import { useAuth } from './auth/AuthContext.jsx';
+import AnalyticsPanel from './components/AnalyticsPanel.jsx';
 
 const fallbackProducts = [
   { id: 'demo-1', nombre: 'Auriculares inalámbricos', precio: 28000, categoria: 'Tecnología', ciudad: 'Malabo', imagen: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=800&q=80' },
@@ -12,12 +15,13 @@ const fallbackProducts = [
 function Layout({ children }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const location = useLocation();
-  const links = [['/', 'Explorar'], ['/empresa', 'La empresa'], ['/vender', 'Vender']];
+  const { user, signOut } = useAuth();
+  const links = [['/', 'Explorar'], ['/empresa', 'La empresa'], ['/vender', 'Vender'], ['/actividad', 'Actividad']];
   return <div className="app-shell">
     <header className="topbar">
       <Link className="brand" to="/"><span className="brand-mark">CY</span><span>Compra <b>Ya</b></span></Link>
       <nav className={menuOpen ? 'nav open' : 'nav'}>{links.map(([to, label]) => <Link className={location.pathname === to ? 'active' : ''} onClick={() => setMenuOpen(false)} key={to} to={to}>{label}</Link>)}</nav>
-      <div className="top-actions"><button className="icon-button" aria-label="Buscar"><Search size={18} /></button><button className="icon-button" aria-label="Favoritos"><Heart size={18} /></button><button className="menu-button" onClick={() => setMenuOpen(!menuOpen)} aria-label="Abrir menú">{menuOpen ? <X size={20} /> : <Menu size={20} />}</button></div>
+      <div className="top-actions"><button className="icon-button" aria-label="Buscar"><Search size={18} /></button><button className="icon-button" aria-label="Favoritos"><Heart size={18} /></button>{user ? <button className="session-button" onClick={() => signOut()}>Salir</button> : <Link className="session-button" to="/login">Entrar</Link>}<button className="menu-button" onClick={() => setMenuOpen(!menuOpen)} aria-label="Abrir menú">{menuOpen ? <X size={20} /> : <Menu size={20} />}</button></div>
     </header>
     <main>{children}</main>
     <footer><span>Compra Ya · v0.1.0</span><span>Un mercado más cercano, construido desde Guinea Ecuatorial.</span></footer>
@@ -39,4 +43,4 @@ function Company() { return <section className="company-page"><div className="co
 
 function Sell() { const [message, setMessage] = useState(''); const pay = async () => { setMessage('Preparando checkout seguro...'); try { const result = await api.createPayment('local-wallet', { amount: 1000, currency: 'XAF', reference: `demo_${Date.now()}` }); setMessage(result.data?.message || 'Checkout preparado correctamente.'); } catch (error) { setMessage(error.message); } }; return <section className="sell-page"><div><p className="eyebrow">PARA VENDEDORES</p><h1>Tu producto merece <em>ser encontrado.</em></h1><p>Publica, recibe pagos y sigue tus ventas desde una única experiencia.</p><button className="button primary" onClick={pay}><ShoppingBag size={17} /> Probar checkout</button>{message && <p className="status">{message}</p>}</div><div className="sell-panel"><span>PRÓXIMAMENTE</span><h2>Tu escaparate,<br />sin complicaciones.</h2><p>La nueva consola de vendedor conectará catálogo, pedidos y pagos centralizados.</p></div></section>; }
 
-export default function App() { return <Layout><Routes><Route path="/" element={<Home />} /><Route path="/empresa" element={<Company />} /><Route path="/vender" element={<Sell />} /></Routes></Layout>; }
+export default function App() { return <Layout><Routes><Route path="/" element={<Home />} /><Route path="/empresa" element={<Company />} /><Route path="/vender" element={<Sell />} /><Route path="/actividad" element={<AnalyticsPanel />} /><Route path="/login" element={<AuthForm mode="login" />} /><Route path="/register" element={<AuthForm mode="register" />} /></Routes></Layout>; }

@@ -14,9 +14,24 @@
 <link rel="stylesheet" href="/css/styles.css">
 <link rel="stylesheet" href="compra-ya-style.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+<script>window.COMPRA_YA_API_BASE = window.COMPRA_YA_API_BASE || 'http://localhost:4000';</script>
+<script src="/js/core-api.js" defer></script>
 <script src="/js/utils.js" defer></script>
 <script type="module" src="/js/compra-ya-bridge.mjs"></script>
- 
+<script>
+window.addEventListener('DOMContentLoaded', async () => {
+  if (!window.CompraYaCoreApi) return;
+
+  try {
+    const response = await window.CompraYaCoreApi.getProducts();
+    const products = Array.isArray(response?.data) ? response.data : [];
+    window.__CYCORE_PRODUCTS__ = products;
+    console.info('[CompraYaCore] Productos cargados desde API:', products.length);
+  } catch (error) {
+    console.warn('[CompraYaCore] API no disponible, usando fallback local.', error);
+  }
+});
+</script>
 
 <style>
 /* ══════════════════════════════════════════
